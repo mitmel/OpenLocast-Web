@@ -2,6 +2,7 @@ import settings
 
 from django import forms
 from django.contrib.admin import widgets
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.gis import admin
 from django.contrib.gis.maps.google import GoogleMap
 from django.db import models as djangomodels
@@ -130,7 +131,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('body', 'author', 'created')
 
     
-class LocastUserAdmin(admin.ModelAdmin):
+class LocastUserAdmin(UserAdmin):
     list_display = ('display_name', 'email', 'first_name', 'last_name', 'username', 'is_staff', 'date_joined')
 
 

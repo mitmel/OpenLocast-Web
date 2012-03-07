@@ -605,7 +605,7 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
 #login-container{
     top:40%;
     width:100%;
-    z-index:2500;
+    z-index:3500;
     text-align:center;
 }
 
