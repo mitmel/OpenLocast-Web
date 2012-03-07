@@ -1,0 +1,18 @@
+{{#body}}
+<div class="popup-content content-card cast {{#official}}official {{/official}}  cleared">
+    <!--<a class="{{#tooltip}}hide {{/tooltip}} locast-button" href="#!cast/{{id}}/">gettext('Open')</a>-->
+    <a href="#!cast/{{id}}/"> <div class="image-frame">{{#preview_image}}<img src="{{preview_image}}" />{{/preview_image}}</div></a>  
+    <!--<p class="{{#official}}hide {{/official}} type " >gettext('Community Cast')</p>
+    <p class="{{#official}}not {{/official}} hide type"  >gettext('Official Cast')</p>
+    <p class="stat cleared" >
+        <span class="locast-icon favorite"></span>
+        <span class="number">{{favorites}}</span>
+    </p>-->    
+    <h4>
+        <a href="#!cast/{{id}}/"><span class="cast-title title">{{title}}</span></a><br />
+        <a href="#!user/{{#author}}{{id}}{{/author}}/" class="cast-author author">{{#author}}{{display_name}}{{/author}}</a>
+    </h4>
+</div>
+{{/body}}
+
+

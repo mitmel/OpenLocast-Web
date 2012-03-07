@@ -1,0 +1,13 @@
+{{#body}}
+<div class="popup-content collection content-card cleared">
+    <a class="{{#tooltip}}hide {{/tooltip}} locast-button" href="#!collection/{{id}}/">Open</a>
+    <a href="#!collection/{{id}}/"> <div class="image-frame">{{#thumbnail}}<img src="{{thumbnail}}" />{{/thumbnail}}</div></a>       
+    <p class="type" >gettext('Collection')</p>
+    <p class="stat cleared" ><span class="locast-icon"></span><span class="number">{{casts_count}}</span></p>
+    <p class="stat cleared" ><span class="locast-icon favorite"></span><span class="number">{{favorites}}</span></p>
+    <h4>
+        <a href="#!collection/{{id}}/"><span class="cast-title title">{{title}}</span></a><a href="#!user/{{#author}}{{id}}{{/author}}/" class="cast-author author">{{#author}}{{display_name}}{{/author}}</a>
+    </h4>
+</div>
+{{/body}}
+

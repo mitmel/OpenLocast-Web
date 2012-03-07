@@ -1,0 +1,105 @@
+/*loading fonts from google fonts api*/
+@import url(http://fonts.googleapis.com/css?family=Permanent+Marker|Nunito:300,400);
+/*loading stylesheet with default styles -- override below for custom theme or comment out to unlink*/
+@import url('../../css/defaults.css');
+
+/*
+ *  FONTS
+ */
+
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
+#project-logo{
+    font-family: 'Permanent Marker', cursive;
+}
+
+/*
+ *  LOGO
+ */
+
+/*uncomment the rule below to use an image for your logo*/
+
+/*#project-logo{
+    background-image:url('img/sample_logo.png');
+    width:200px;
+    height:40px;
+    background-repeat:no-repeat;
+    text-indent:-9999px;
+    overflow:hidden;     
+}*/
+
+/*
+ *  COLORS
+ */
+
+/*base colors*/
+
+body{
+    color:#000;
+    background:#fff;    
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color:#000;
+}
+
+/*primary color*/
+
+.content-card,
+.primary-color{
+     background-color:#fff;
+     color:#000;
+}
+
+/*cast indicator color*/
+
+.indicator{
+    border-right:40px solid #fff; 
+}
+
+/*secondary color*/
+
+#map-controls .map-controls-slider,
+#view-switcher a.selected,
+#view-switcher a:hover.selected,
+.locast-login,
+.secondary-color{
+    background-color:#35BED3 !important;
+    color:#fff; 
+}
+
+#map-cast-list .cast:hover{
+    border: 3px solid #35BED3;
+}
+
+/*link color*/
+
+#view-switcher a:hover,
+#current-map h4,
+.locast-button:hover,
+a{
+    color:#35BED3;    
+}
+
+a:hover {
+    color: #000;
+}
+
+/*button color*/
+
+.locast-button{
+    color:#596869;
+    background-color:#E2E1DB !important;
+}
+
+.locast-button:hover {
+    border: solid 1px #596869;
+    color:#35BED3;   
+}
+
+.locast-button.selected,
+.locast-button:active {
+
+}

@@ -1,0 +1,112 @@
+{% extends "base.django.html" %}
+{% load i18n %}
+{% block body-class %}home{% endblock %}
+
+{% block search %}
+        <form class="locast-search">
+            <input class="locast-textfield dynamic" id="search-input" type="text" AUTOCOMPLETE="off"></input>
+        </form>
+{% endblock %}
+
+{% block login %}
+    {% if not request.user.is_authenticated %}
+        <div class="logins">
+            <a id="login-link" class="locast-login locast-button">{% trans "Login / Register" %}</a>
+            {% if settings.FACEBOOK %}
+                <fb:login-button class="fb-login"></fb:login-button>
+            {% endif %}
+        </div>   
+    {% else %}
+        
+        <a href="#!user/{{request.user.id}}/" class="cleared" id="login-info" >
+        {% if request.user.user_image %}
+            <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
+        {% else %}{% if request.user.is_facebook_user %}
+            <div class="image-frame user-image"><img src="http://graph.facebook.com/{{request.user.facebook_id}}/picture?type=large" /></div>
+        {% endif %}{% endif %}
+        <span class="message">{% trans "logged in as "%}</span>
+        {% if request.user.display_name %}
+            <span class="name ">{{ request.user.display_name }}</span>
+        {% endif %}
+         </a>
+        <ul id="login-options">
+        {% if request.user.facebook_id %}
+            <li><a href="#" onclick="facebook_logout(); return false;">Logout</a></li>
+        {% else %}
+            <li><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></li>
+        {% endif %}
+        </ul> 
+    {% endif %}
+{% endblock %}
+
+{% block main-content %}
+<div id="content-details" class="ui-overlay locast-content-details"></div>
+
+<div id="flowplayer-container" class="hidden" onClick="$('#flowplayer-container').addClass('hidden')" >
+    <div id="flowplayer-wrapper">
+     <a id="flowplayer-close" href="#" >[X]</a> 
+     <div id="flowplayer-player" style="width: 320px; height: 240px;"></div>
+    </div>
+</div>
+
+<div id="login-alert"><h3 class="alert content-card">{% trans "You Must Login" %}</h3></div>  
+
+<div style="" id="user-profile-info"></div>
+
+<div id="map-title-container" >
+    <div id="map-title" class="ui-overlay clear primary-color">
+        <div id="current-map" ><div id="map-list-dropdown" class="cleared"><h4>{% trans "All Casts" %}</h4><div class="arrow right"></div></div></div>
+        <div id="add-cast-button" class="locast-button cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-itin">{% trans " to This Map" %}</span></div>
+
+        <div id="view-switcher">
+            <a href="" id="view-switch-map" class="map selected ">{% trans "Map" %}</a>
+            <a href="" id="view-switch-list" class="list ">{% trans "List" %}</a>
+        </div> 
+    </div>
+</div>
+
+<div id="map-list"></div>    
+
+<div id="intro-page-container">
+    <div id="intro-page-content" class="content-card">
+        <h1 class="intro-message">{% trans "Welcome to the Open Locast Project"%}</h1>
+        <h2 class="map-list-header">{% trans "Collections"%}</h2>
+        <div id="intro-map-list"></div>
+    </div>   
+</div>
+
+<div id="change-location-container" class="ui-overlay"></div>
+
+<div id="map-info-container" class="ui-overlay cleared">
+    <div id="map-cast-list-title" class="content-card">
+        <h4 class="list-title">
+            <div id="cast-list-sort">
+                <a id="cast-list-sort_-created" class="selected">{% trans "Most Recent"%}</a>
+                <a id="cast-list-sort_popularity">{% trans "Most Popular"%}</a>
+                <div id="map-cast-list-pager"></div>  
+            </div>
+        </h4>
+    </div> 
+    <div id="map-cast-list">
+        <span class="list-content"><h3>{% trans "No Casts On Map" %}</h3></span>
+    </div>
+</div>
+
+<div id="map-controls-container" class="ui-overlay dynamic">
+    <div id="map-controls"></div>
+    <a id="map-reset" href="#">{% trans "Reset"%}</a>
+</div>
+
+<form id="map-layer-switcher" class="ui-overlay" >
+    <label for="osm-checkbox">OSM</label>
+    <input type="checkbox" id="osm-checkbox" value="visible" />
+</form>
+
+<div id="cast-add-container" class="closed content-card"></div>
+<div style="height: 480px; width: 640px;" id="main-map"></div>
+
+</div>
+
+<div id="map-loader"><h3 id="loader-message" >{% trans "Loading" %}</h3></div>
+{% endblock main-content %}
+

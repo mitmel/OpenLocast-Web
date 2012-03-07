@@ -1,0 +1,19 @@
+
+{{#comments}}
+<div class="locast-comment">
+    <p class="comment" >{{content}}</p>
+    <div class="author-bar">{{#author}}
+        <div class="image-frame">
+        {{#user_image}}
+            <img src="{{user_image}}"></img>
+        {{/user_image}}
+        </div>
+        <h6 class="author"><a href="#!user/{{id}}/">{{display_name}}</a></h6>{{/author}}
+        <p class="date comment-date" title="{{created}}">{{created}}</p>
+    </div>
+    <div id="flag-comment_{{id}}" class="flag-comment">
+        <a href="#" class="flag-comment locast-icon large grey flag"></a>
+    </div>  
+</div>
+{{/comments}}
+

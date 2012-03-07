@@ -1,0 +1,23 @@
+<div id="cast-add-pattern">
+    <div id="cast-add-header">
+        <a href="#" class="locast-icon close locast-button" id="cancel-cast-add">gettext('Cancel')</a> 
+        <h4 class="locast-instruction"><strong>gettext('Click The Map To Set Your Cast\'s Location')</strong></h4>
+        <p class="locast-help">gettext('Map Controls on the Left Reposition the Map')</p>
+    </div>
+    <h4 id="cast-add-error" class="error content-card">
+        <p  id="location-error">gettext('Select a Location for Your Cast by Clicking the Map.')</p>
+    </h4>
+    <form id="cast-add-form" class="cleared" action=""> 
+        <label for="id_title">gettext('Name Your Cast')</label><br />
+        <input id="id_title" type="text" maxlength="160" name="title" class="locast-textfield"></input><br />
+        <label for="id_description">gettext('Brief Description')</label><br />
+        <textarea id="id_description" name="description" class="locast-textfield" cols="40" rows="10"></textarea><br />
+
+        <label for="id_tags">gettext('Tags')</label><br />
+        <input id="id_tags" type="text" maxlength="200" name="tags" class="locast-textfield"></input>
+        <p class="locast-help">gettext('comma-seperated list')</p>
+        <input id="cast-add-submit" type="submit" value="gettext('Create Cast')" class="locast-button"></input>
+        <p class="locast-help">gettext('Up Next: Add Photos and Videos')</p>
+    </form>
+</div><!-- cast-add-pattern -->
+

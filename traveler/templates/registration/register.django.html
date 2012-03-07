@@ -1,0 +1,27 @@
+{% extends "base.django.html" %}
+
+{% load i18n %}
+{% block main-content %}
+<div class="static-form cleared">
+    <h2>{% trans 'Register A Mapping Account' %}</h2>  
+   <form method="post" enctype="multipart/form-data" action="{% url register %}" class="cleared">
+{% for field in form %}
+    {% if field.name == 'email' %}
+        <div id="required-info">
+            <h6 style="color:red;">{% trans "REQUIRED" %}</h6>
+    {% endif %}
+
+    {% if field.name == 'profile' %}  
+        </div><!-- required-info -->
+        <div id="optional-info">
+            <h6 style="color:blue">{% trans "OPTIONAL" %}</h6>
+    {% endif %}
+          
+    {{ field.label_tag }}{{ field }}{{ field.errors }}
+    {% endfor %}
+</div>
+<input type="submit" class="locast-button register" value="Register" /></div>
+</form>
+</div>
+{% endblock %}
+

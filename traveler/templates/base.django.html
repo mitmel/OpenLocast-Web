@@ -1,0 +1,68 @@
+{% extends "root.django.html" %}
+{% load i18n %}
+
+{% block style %}   
+    <link type="text/css" href="{{THEME_URL}}theme.css" rel="stylesheet" media="screen, projection" />
+    <link type="text/css" href="{{MEDIA_URL}}js/fancybox/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen, projection" />
+{% endblock style %}
+
+{% block script %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}js/frontpage_views.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}js/frontpage.js"></script>
+{% endblock script %}
+
+{% block body %}
+
+<div id="search-results" class="ui-overlay"></div>
+
+<div id="login-container" class="hidden content-card">
+    <h4 class="title">{% trans "Login to Your Account" %}</h4> <h4 id="login-container-close">{% trans "Close" %}</h4>
+    <form id="login-form" method="post" action="{% url locast.auth.views.login %}">
+        {% trans "Email" %}
+        {{ login_form.username }}
+        {{ login_form.password.label_tag }}
+        {{ login_form.password }}
+        <input type="submit" value="login" class="locast-button" /> 
+        <input type="hidden" name="next" value="{{ next }}" /> 
+    </form> 
+    <p class="locast-help"><a href="{% url register %}">{% trans "Register</a> a new account if you don't have one" %}</p> 
+</div><!-- end login-container -->
+
+<div id="main-content">
+    {% block main-content %}{% endblock %}
+</div>
+
+<div id="footer" class="ui-overlay primary-color">
+
+<div id="search-bar" class="content-card primary-color">
+        {% block search %}{% endblock %}
+</div>
+
+<div id="login-bar" class="cleared">
+
+        {% block login %}{% endblock %}
+</div>
+<a href="{{FULL_BASE_URL}}/#!" target="_blank"><div class="logo" id="project-logo">OPEN LOCAST</div></a>    
+
+<a id="home-link" href="{{FULL_BASE_URL}}/#!">{% trans "Home" %}</a>
+
+<div id="language-selector">
+    {% get_available_languages as languages %}
+    {% for lang in languages %}
+    <a href="{% url set_language %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
+        {{lang.1}} 
+        {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
+    </a>
+    {% endfor %}
+</div>
+<a id="locast-credit" href="http://locast.mit.edu" target="_blank">Built with Locast</a>
+
+<div style="" id="user-profile-info"></div>
+</div><!-- end footer -->
+
+{% endblock body %}
+
+
+
+
