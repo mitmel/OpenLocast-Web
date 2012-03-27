@@ -68,21 +68,8 @@ function update_auth_redirects() {
 }
 
 function get_next() {
-    return BASE_URL + '/' + location.hash;
+    return BASE_URL + '/';
 }
-
-{% if FACEBOOK_APP_ID %}
-function facebook_logout() {
-    if ( FB.getSession() == null ) {
-        window.location.replace('{% url logout %}?next=' + get_next());
-    }
-    else {
-        FB.logout(function(response) {
-            window.location.replace('{% url logout %}?next=' + get_next());
-        });
-    }
-}
-{% endif %}
 
 // var templates is defined in templates.js
 

@@ -1,9 +1,7 @@
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.geos import Point
 from django.db.models import Count, Q
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils import translation
 
 from locast.api import *

@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+import settings
+from django.core.management import setup_environ
+setup_environ(settings)
+
 from traveler.models import LocastUser
 
 users = LocastUser.objects.all()

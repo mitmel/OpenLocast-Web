@@ -4,7 +4,6 @@ import settings
 import urllib
 import urlparse
 
-from django.core import cache
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.gis.db import models as gismodels
@@ -12,7 +11,6 @@ from django.contrib.gis.db.models.manager import GeoManager
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
-from locast.api import datetostr
 from locast.models import interfaces, modelbases, managers
 from locast.models import ModelBase
 
@@ -42,11 +40,9 @@ class Boundry(modelbases.Boundry): pass
 # MAIN MODELS
 
 class LocastUserManager(GeoManager, 
-        managers.LocastUserManager,
-        managers.FacebookUserManager): pass
+        managers.LocastUserManager): pass
 
 class LocastUser(modelbases.LocastUser, 
-        interfaces.FacebookUser,
         interfaces.Locatable):
 
     @models.permalink
@@ -62,10 +58,7 @@ class LocastUser(modelbases.LocastUser,
     def api_serialize(self, request):
         d = {}
 
-        if settings.FACEBOOK_APP_ID and self.is_facebook_user():
-                d['user_image'] = 'http://graph.facebook.com/%s/picture?type=large' % self.facebook_id
-
-        elif self.user_image:
+        if self.user_image:
             d['user_image'] = self.user_image.url
 
         if self.profile:

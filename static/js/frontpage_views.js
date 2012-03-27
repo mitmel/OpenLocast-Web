@@ -2,7 +2,6 @@
 
 var frontpage_app = null;
 var current_view = null;
-var active_user_id = null;
 
 $(function() {
 frontpage_app = $.sammy('#main-content', function() {
@@ -49,8 +48,7 @@ var home_view = {
 var all_casts_view = {
     activate: function(context) {
         $('#current-map h4').html(gettext('All Casts'));
-        clear_cast_filters();
-        map_refresh(); 
+        clear_cast_filter();
     },
     deactivate: function() {}
 }
@@ -126,7 +124,7 @@ function cast_fade_in() {
         return false;
     });   
 
-    if (COLL_ID_FILTER) {
+    if (CAST_FILTER['collection']) {
         $('#collection-info').fadeOut();
     } 
 }
@@ -661,16 +659,16 @@ cast_info_refresh(context.params['id'], function(cast_id) {
 
     // set up close button
     $('#close-cast_' + cast_id).click(function() {
-        if (TAG_FILTER){
-            frontpage_app.setLocation('#!tag/'+TAG_FILTER+'/');
+        if (CAST_FILTER['collection']) {
+            frontpage_app.setLocation('#!collection/' + CAST_FILTER['collection'] + '/');
         }
-        if (COLL_ID_FILTER) {
-            frontpage_app.setLocation('#!collection/'+COLL_ID_FILTER+'/');
+        else if (CAST_FILTER['author']){
+            frontpage_app.setLocation('#!user/' + CAST_FILTER['author'] + '/');
         }
-        if (AUTHOR_FILTER){
-            frontpage_app.setLocation('#!user/'+active_user_id+'/');
+        else if (CAST_FILTER['tag']){
+            frontpage_app.setLocation('#!tag/' + CAST_FILTER['tag'] + '/');
         }
-        if(!AUTHOR_FILTER && !COLL_ID_FILTER && !TAG_FILTER) {
+        else {
             frontpage_app.setLocation('#!');
         }
         return false;
@@ -728,9 +726,7 @@ collection_single_view['activate'] = function(context) {
     context.load(COLLECTION_API_URL + id + '/').then(function(coll) {
 
         // show only casts in this collection
-        clear_cast_filters();
-        COLL_ID_FILTER = coll.id;
-        map_refresh();
+        set_cast_filter({'collection' : coll.id});
 
         // setup map
         highlightCollection(coll.id);
@@ -759,10 +755,8 @@ var user_single_view = {
 activate : function(context) {
     var user_id = context.params['id'];
     context.load(USER_API_URL + user_id + '/').then(function(user) { 
-        clear_cast_filters();
-        AUTHOR_FILTER = 'author=' + user_id;
         $('#current-map h4').html(gettext('Casts Created by') + ' ' + user.display_name);
-        map_refresh();
+        set_cast_filter({'author':user_id});
     });
     },
 
@@ -775,10 +769,8 @@ activate : function(context) {
 
 tag_view = {
     activate : function(context) {
-        clear_cast_filters();
-        TAG_FILTER = context.params['tag'];
-        $('#current-map h4').html(gettext('Casts Tagged') + ' ' + TAG_FILTER + '</h4>');
-        map_refresh();
+        $('#current-map h4').html(gettext('Casts Tagged') + ' ' + context.params['tag'] + '</h4>');
+        set_cast_filter({'tag': context.params['tag']});
     },
     // needs to be deactivated manually clear_open_tag
     deactivate : function() { }

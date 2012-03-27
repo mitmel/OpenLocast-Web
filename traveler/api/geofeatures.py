@@ -1,5 +1,5 @@
 from locast.api import * 
-from locast.api import qstranslate, exceptions 
+from locast.api import qstranslate
 
 from django.contrib.gis.geos import Polygon
 from django.db.models import Q

@@ -40,3 +40,4 @@ urlpatterns = patterns('traveler.api',
     # get_features
     url(r'^geofeatures/$', 'geofeatures.get_geofeatures', name='geofeatures_api'),
 )
+

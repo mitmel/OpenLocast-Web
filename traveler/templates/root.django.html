@@ -1,6 +1,6 @@
 {% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"{% if FACEBOOK_APP_ID %} xmlns:fb="http://www.facebook.com/2008/fbml"{% endif %}>
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <title>{% block title %}{% endblock %}The Open Locast Project by MIT Mobile Experience Lab</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -21,9 +21,6 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key={{GOOGLE_MAPS_KEY}}"></script>
-{% if FACEBOOK_APP_ID %}
-    <script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
-{% endif %}
     <script type="text/javascript" src="{{MEDIA_URL}}js/OpenLayers.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.mousewheel.pack.js"></script>
     <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.tooltip.min.js"></script>
@@ -53,21 +50,6 @@
 <body class="{% block body-class %}{% endblock %}">
 {% block body %}
 {% endblock %}
-<script>
-{% if FACEBOOK_APP_ID %}
-    FB.init({appId: '{{FACEBOOK_APP_ID}}', status: true, cookie: true, xfbml: true});
-    FB.Event.subscribe('auth.login', function(response) {
-        if (response.session) {
-            // New user logged in
-            window.location.replace('{% url facebook_login %}?next=' + get_next());
-        } 
-    });
-
-    FB.Event.subscribe('auth.logout', function(response) {
-        facebook_logout();
-    });
-{% endif %}
-
 {% if request.user.is_authenticated %}
     TRAVELS_USER = {{ request.user.id }};
 {% endif %}

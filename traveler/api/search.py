@@ -1,7 +1,4 @@
-import settings
-
 from locast.api import *
-from locast.api import rest, qstranslate, exceptions
 
 from django.db.models import Q
 

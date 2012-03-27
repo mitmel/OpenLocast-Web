@@ -66,13 +66,6 @@
     </div>
     {% comment %}
     <div class="cast-sharing-tools locast-sharing-tools">        
-    {% if FACEBOOK_APP_ID %}
-        <div id="facebook-share-cast_{{cast.id}}" class="facebook tool">
-        {% if cast.privacy < 3 %}
-            <fb:like href="{{HOST}}{{cast.get_absolute_url}}" layout="button_count" action="recommend" show_faces="false" width="52" font="lucida grande"></fb:like>
-        {% endif %}
-        </div>
-    {% endif %}
     </div>
     {% endcomment %}
     <div class="cast-content">

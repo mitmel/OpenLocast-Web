@@ -171,11 +171,14 @@ function on_map_move() {
     }
 }
 
+// if the map itself is currently being refreshed
 MAP_REFRESH_ACTIVE = false;
-MAP_LIST_REFRESH_ACTIVE = false;
+
+// If the cast list is currently being refreshed
+CAST_LIST_REFRESH_ACTIVE = false;
 
 function check_map_loader() {
-    if ( MAP_REFRESH_ACTIVE || MAP_LIST_REFRESH_ACTIVE ) {
+    if ( MAP_REFRESH_ACTIVE || CAST_LIST_REFRESH_ACTIVE ) {
         $('#map-loader').fadeIn();
     }
     else {
@@ -205,8 +208,8 @@ function map_refresh() {
 function map_refresh_cb(data) {
     main_map.clearFeatures();
     main_map.renderFeatures(data); 
-    if ( COLL_ID_FILTER ) {
-        highlightCollection( COLL_ID_FILTER );
+    if ( CAST_FILTER['collection'] ) {
+        highlightCollection( CAST_FILTER['collection'] );
     }
 
     MAP_REFRESH_ACTIVE = false;
@@ -228,7 +231,7 @@ function map_cast_list_refresh(maintain_page) {
     if ( query ) { query += '&'; }
     query += 'page=' + map_cast_list_page + '&pagesize=' + pagesize + '&orderby=' + orderby;
 
-    MAP_LIST_REFRESH_ACTIVE = true;
+    CAST_LIST_REFRESH_ACTIVE = true;
     check_map_loader();
    
     var resp = $.ajax({
@@ -268,7 +271,7 @@ function map_cast_list_cb(data, page, total) {
     map_cast_list_height();
     $('#map-cast-list').hide().fadeIn(200);
    
-    MAP_LIST_REFRESH_ACTIVE = false;
+    CAST_LIST_REFRESH_ACTIVE = false;
     check_map_loader();
 }
 
@@ -406,40 +409,62 @@ function universal_search(keyword) {
     }
 }
 
-/***********
- * FILTERS *
- ***********/
+/****************
+ * CAST FILTER *
+ ***************/
 
-var COLL_ID_FILTER = '';
-var AUTHOR_FILTER = '';
-var TAG_FILTER = '';
+var CAST_FILTER = {}
+CAST_FILTER['collection'] = null;
+CAST_FILTER['author'] = null;
+CAST_FILTER['tag'] = null;
+
+// { 'author' : 1, 'collection' : 1 }
+
+function set_cast_filter(new_filter) {
+    var changed = false;
+
+    // Iterate through the possible cast filters. If
+    // its not in new_filter, default to null
+    for ( var filter in CAST_FILTER ) {
+        var val = null; 
+        if (filter in new_filter) {
+            val = new_filter[filter]
+        }
+        if ( CAST_FILTER[filter] != val ) {
+            CAST_FILTER[filter] = val;
+            changed = true; 
+        }
+    }
+
+    if ( changed ) {
+        map_refresh(); 
+    }
+}
+
+function clear_cast_filter() {
+    set_cast_filter({});
+}
 
 function get_cast_filter_query() {
     var query = '';
 
-    if ( COLL_ID_FILTER ) {
+    if ( CAST_FILTER['collection'] ) {
         if ( query ) { query += '&'; }
-        query += 'collection=' + COLL_ID_FILTER;
+        query += 'collection=' + CAST_FILTER['collection'];
     }
 
-    if ( AUTHOR_FILTER ) {
+    if ( CAST_FILTER['author'] ) {
         if ( query ) { query += '&'; }
-        query += AUTHOR_FILTER;
+        query += 'author=' + CAST_FILTER['author'];
     }
 
-    if ( TAG_FILTER ) {
+    if ( CAST_FILTER['tag'] ) {
         if ( query ) { query += '&'; }
-        query += 'tags=' + TAG_FILTER;
+        query += 'tags=' + CAST_FILTER['tag'];
     }
 
     query = '?' + query;
     return query;
-}
-
-function clear_cast_filters() {
-    COLL_ID_FILTER = '';
-    AUTHOR_FILTER = '';
-    TAG_FILTER = '';
 }
 
 /***********
@@ -454,8 +479,8 @@ function activate_cast_add() {
     var action = CAST_API_URL;
 
     // If there is an active collection, assume we are adding it to that.
-    if ( COLL_ID_FILTER ) {
-        action = COLLECTION_API_URL + COLL_ID_FILTER + '/cast/';
+    if ( CAST_FILTER['collection'] ) {
+        action = COLLECTION_API_URL + CAST_FILTER['collection'] + '/cast/';
     }
 
     $('#cast-add-form').attr('action', action);
@@ -469,9 +494,9 @@ function activate_cast_add() {
 
     cast_add_container.fadeIn();
 
-    if ( COLL_ID_FILTER ) {
-        $('#add-cast-collection_' + COLL_ID_FILTER)
-        .add('#close-collection_' + COLL_ID_FILTER)
+    if ( CAST_FILTER['collection'] ) {
+        $('#add-cast-collection_' + CAST_FILTER['collection'])
+        .add('#close-collection_' + CAST_FILTER['collection'])
         .add('.open-collection')
             .fadeOut(0);
     }
@@ -491,7 +516,7 @@ function cast_add_form_clear() {
     }
     cast_add_container.html('');
 
-    if ( COLL_ID_FILTER ) {
+    if ( CAST_FILTER['collection'] ) {
         $('.collection-add-cast') 
         .add('#collection-info .locast-icon.close')
         .add('.open-collection')

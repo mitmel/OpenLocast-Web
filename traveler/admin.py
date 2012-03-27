@@ -1,11 +1,9 @@
 import settings
 
-from django import forms
 from django.contrib.admin import widgets
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.gis import admin
 from django.contrib.gis.maps.google import GoogleMap
-from django.db import models as djangomodels
 from django.utils.translation import ugettext_lazy as _
 
 from locast.admin import UserActivityAdmin, FlagAdmin
@@ -60,7 +58,6 @@ class LinkedMediaInline(MediaInline):
 
 
 class CastAdmin(MapAdmin): 
-
     inlines = [VideoMediaInline, ImageMediaInline, LinkedMediaInline]
 
     fields = ('title', 'description', 'privacy', 'location', 'tags')

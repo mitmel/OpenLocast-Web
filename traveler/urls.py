@@ -1,5 +1,3 @@
-import settings
-
 from django.conf.urls.defaults import *
 from django.contrib import admin
 
@@ -19,11 +17,6 @@ urlpatterns += patterns('traveler.views',
     url(r'^traveler.js', 'traveler_js', name='traveler_js'), 
     url(r'^templates.js$', 'templates_js', name='templates_js'),
 )
-
-if settings.FACEBOOK_APP_ID:
-    urlpatterns += patterns('traveler.views',
-        url(r'^fblogin/$', 'facebook_login', name='facebook_login')
-    )
 
 urlpatterns += patterns('locast.i18n.views',
     url(r'^setlang/$', 'set_language', name='set_language'),

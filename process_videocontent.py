@@ -1,7 +1,7 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from locast.models.modelbases import LocastContent
 

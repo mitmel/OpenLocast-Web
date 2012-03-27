@@ -94,7 +94,6 @@ SECRET_KEY = ''
 AUTHENTICATION_BACKENDS = (
     'locast.auth.backends.LocastEmailBackend',
     'locast.auth.backends.LocastUsernameBackend',
-    'locast.auth.backends.FacebookUserBackend',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -157,6 +156,7 @@ INSTALLED_APPS = (
 APP_LABEL = 'traveler'
 
 USER_MODEL = 'traveler.LocastUser'
+
 # Types of user actions, used for UserActivity logging
 USER_ACTIONS = (
     'joined',
@@ -181,6 +181,9 @@ GOOGLE_MAPS_KEY = ''
 # To enable facebook support, simply provide values for these in settings_local
 FACEBOOK_APP_ID = None
 FACEBOOK_APP_SECRET = None
+
+# Flowplayer swf
+FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
 
 # Enables google analytics
 GOOGLE_ANALYTICS_ID = None

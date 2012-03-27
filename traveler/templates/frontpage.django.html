@@ -12,29 +12,19 @@
     {% if not request.user.is_authenticated %}
         <div class="logins">
             <a id="login-link" class="locast-login locast-button">{% trans "Login / Register" %}</a>
-            {% if settings.FACEBOOK %}
-                <fb:login-button class="fb-login"></fb:login-button>
-            {% endif %}
         </div>   
     {% else %}
-        
         <a href="#!user/{{request.user.id}}/" class="cleared" id="login-info" >
         {% if request.user.user_image %}
             <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
-        {% else %}{% if request.user.is_facebook_user %}
-            <div class="image-frame user-image"><img src="http://graph.facebook.com/{{request.user.facebook_id}}/picture?type=large" /></div>
-        {% endif %}{% endif %}
+        {% endif %}
         <span class="message">{% trans "logged in as "%}</span>
         {% if request.user.display_name %}
             <span class="name ">{{ request.user.display_name }}</span>
         {% endif %}
          </a>
         <ul id="login-options">
-        {% if request.user.facebook_id %}
-            <li><a href="#" onclick="facebook_logout(); return false;">Logout</a></li>
-        {% else %}
             <li><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></li>
-        {% endif %}
         </ul> 
     {% endif %}
 {% endblock %}
@@ -67,7 +57,7 @@
 
 <div id="map-list"></div>    
 
-<div id="intro-page-container">
+<div id="intro-page-container" class="ui-overlay">
     <div id="intro-page-content" class="content-card">
         <h1 class="intro-message">{% trans "Welcome to the Open Locast Project"%}</h1>
         <h2 class="map-list-header">{% trans "Collections"%}</h2>
