@@ -3,10 +3,10 @@
 {% block body-class %}home{% endblock %}
 
 {% block search %}
-        <form class="locast-search">
-            <input class="locast-textfield dynamic" id="search-input" type="text" AUTOCOMPLETE="off"></input>
-        </form>
-{% endblock %}
+    <form class="locast-search">
+        <input class="locast-textfield dynamic" id="search-input" type="text" AUTOCOMPLETE="off"></input>
+    </form>
+{% endblock search %}
 
 {% block login %}
     {% if not request.user.is_authenticated %}
@@ -27,7 +27,7 @@
             <li><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></li>
         </ul> 
     {% endif %}
-{% endblock %}
+{% endblock login %}
 
 {% block main-content %}
 <div id="content-details" class="ui-overlay locast-content-details"></div>

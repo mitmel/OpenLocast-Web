@@ -32,6 +32,7 @@ DATABASES = {
 # system time zone.
 
 # This should always be UTC. All timezone conversion should happen on the client side.
+# TODO: Make use of Django 1.4 timezone magic
 TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
@@ -58,7 +59,7 @@ HOST = ''
 
 # The absolute URL of the application, i.e. /civicmedia
 # settings_local
-BASE_URL = None
+BASE_URL = ''
 
 # Generally, FULL_BASE_URL = HOST + BASE_URL
 # settings_local
@@ -81,12 +82,24 @@ MEDIA_ROOT = ''
 # settings_local
 MEDIA_URL = ''
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = ''
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
 
 # settings_local
-ADMIN_MEDIA_PREFIX = ''
+STATIC_URL = ''
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -97,10 +110,11 @@ AUTHENTICATION_BACKENDS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
     'locast.context_processors.settings_variables'
 )
@@ -109,7 +123,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.app_directories.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -143,6 +156,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.gis',
     'locast',
@@ -190,6 +204,10 @@ GOOGLE_ANALYTICS_ID = None
 
 # Allows arbitrary settings variables to be exposed to templates
 CONTEXT_VARIABLES = (
+    'HOST',
+    'BASE_URL',
+    'FULL_BASE_URL',
+    'THEME_URL',
     'GOOGLE_MAPS_KEY',
     'GOOGLE_ANALYTICS_ID',
     'FACEBOOK_APP_ID',
@@ -197,7 +215,6 @@ CONTEXT_VARIABLES = (
     'DEFAULT_LON',
     'DEFAULT_LAT',
     'DEFAULT_ZOOM',
-    'THEME_URL',
 )
 
 # import settings_local
@@ -206,5 +223,5 @@ except ImportError: raise 'Cannot find settings_local.py!'
 
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not default 
-THEME_URL = MEDIA_URL + 'themes/default/'
+THEME_URL = STATIC_URL + 'themes/default/'
 

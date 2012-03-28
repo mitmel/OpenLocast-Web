@@ -1,6 +1,8 @@
 FULL_BASE_URL = '{{ FULL_BASE_URL }}';
 BASE_URL = '{{ BASE_URL }}';
 MEDIA_URL = '{{ MEDIA_URL }}';
+STATIC_URL = '{{ STATIC_URL }}';
+THEME_URL = '{{ THEME_URL }}';
 
 FLOWPLAYER_SWF = '{{ FLOWPLAYER_SWF }}'
 
@@ -20,7 +22,7 @@ MAP_DEFAULTS = {
 MAP_BOUNDRY = {{boundry|safe}};
 
 // this is set right above the close body tag. Used for UI login prompt only.
-TRAVELS_USER = null;
+TRAVELER_USER = null;
 
 // taken from: 
 // http://tobiascohen.com/files/stackoverflow/jquery-form-serializeObject.html

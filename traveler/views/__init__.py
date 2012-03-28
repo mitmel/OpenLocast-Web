@@ -77,7 +77,7 @@ def traveler_js(request):
 def templates_js(request):
 
     # TODO: Do this in a not terrible way
-    template_dir = settings.MEDIA_ROOT + 'js/templates/'
+    template_dir = settings.STATIC_ROOT + 'js/templates/'
 
     template_files = [
         'castAddForm.js.html',

@@ -154,7 +154,7 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     activate_favorite_button('cast', cast_id, cast_url + 'favorite/');
 
     // activate flag button
-    if ( TRAVELS_USER ) {
+    if ( TRAVELER_USER ) {
         $('#flag-cast_' + cast_id).click(function() {
             var html = '<h4 class="locast-instruction">';
             html += gettext('Are you sure you want to flag this cast as inappropriate ?') + '</h4>';

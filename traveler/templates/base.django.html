@@ -1,19 +1,7 @@
 {% extends "root.django.html" %}
 {% load i18n %}
 
-{% block style %}   
-    <link type="text/css" href="{{THEME_URL}}theme.css" rel="stylesheet" media="screen, projection" />
-    <link type="text/css" href="{{MEDIA_URL}}js/fancybox/jquery.fancybox-1.3.4.css" rel="stylesheet" media="screen, projection" />
-{% endblock style %}
-
-{% block script %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-<script type="text/javascript" src="{{MEDIA_URL}}js/frontpage_views.js"></script>
-<script type="text/javascript" src="{{MEDIA_URL}}js/frontpage.js"></script>
-{% endblock script %}
-
 {% block body %}
-
 <div id="search-results" class="ui-overlay"></div>
 
 <div id="login-container" class="hidden content-card">
@@ -60,7 +48,6 @@
 
 <div style="" id="user-profile-info"></div>
 </div><!-- end footer -->
-
 {% endblock body %}
 
 

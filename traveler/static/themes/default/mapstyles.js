@@ -1,4 +1,3 @@
-var THEME_URL = MEDIA_URL + 'themes/default/';
 var COLLECTION_PATH_COLOR = '#35BED3';
 
 CLUSTER_DISTANCE = 30;
@@ -68,7 +67,7 @@ CAST_CONTEXT = {
             return THEME_URL + 'img/castCluster.png';
         }
         else {
-            return THEME_URL+'img/castMarker.png';
+            return THEME_URL + 'img/castMarker.png';
         }
     },
 
@@ -83,10 +82,10 @@ CAST_CONTEXT = {
 
     getBackground: function(feature) {
         if(feature.cluster){
-            return MEDIA_URL + 'img/blank.png';
+            return STATIC_URL + 'img/blank.png';
         }
         else{
-            return MEDIA_URL+'img/blank.png';
+            return STATIC_URL + 'img/blank.png';
         }
     },
 
@@ -177,15 +176,15 @@ CAST_HOVER_CONTEXT = {
             return THEME_URL + 'img/castClusterHover.png';
         }
         else {
-            return THEME_URL+'img/castMarkerHover.png';
+            return THEME_URL + 'img/castMarkerHover.png';
         }
     },
     getBackground: function(feature) {
         if( feature.cluster ) {
-            return MEDIA_URL + 'img/blank.png';
+            return STATIC_URL + 'img/blank.png';
         }
         else {
-            return MEDIA_URL+'img/blank.png';
+            return STATIC_URL+'img/blank.png';
         }
     }
 }

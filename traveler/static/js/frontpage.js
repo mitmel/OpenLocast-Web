@@ -103,7 +103,7 @@ function activateDHTML(){
     });
 
     $('#add-cast-button').click(function() {
-        if (!TRAVELS_USER) {
+        if (!TRAVELER_USER) {
             prompt_login();
         }
         else {
@@ -312,15 +312,6 @@ function collection_list_cb(data) {
              $('#current-map .arrow').removeClass('down').addClass('right');
         }
     }); 
-}
-
-function page_header_list(target_list) { 
-       $('.locast-list',target_list).quickPager({
-            pageSize: 9,
-            pagerLocation: 'before',
-            onPage: function(){
-            }
-       });
 }
 
 /* SEARCH BAR */
@@ -572,7 +563,7 @@ function cast_add_form_submit(e) {
 
 function activate_favorite_button(type, id, url) {
     $('#favorite-' + type + '_' + id).click(function() {
-        if ( TRAVELS_USER ) {
+        if ( TRAVELER_USER ) {
             var _this = $(this);
             var data = null;
 

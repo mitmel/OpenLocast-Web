@@ -14,46 +14,60 @@
     <meta name="distribution" content="global" />
     <!-- Force IE to render in standards mode -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
     <link rel="index" title="TRAVELER" href="{{BASE_URL}}" />
-    <link rel="shortcut icon" href="{{MEDIA_URL}}img/favicon.ico" type="image/x-icon" />
-{% block style %}   
-{% endblock style %}
+    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.0.5" type="text/css" media="screen" />
+    <link type="text/css" href="{{THEME_URL}}theme.css" rel="stylesheet" media="screen, projection" />
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key={{GOOGLE_MAPS_KEY}}"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/OpenLayers.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.mousewheel.pack.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.tooltip.min.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.xfader.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/jquery.pager.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/plupload/plupload.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/plupload/plupload.html5.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/plupload/plupload.flash.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/flowplayer/flowplayer-3.2.6.min.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/prettyDate.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/json2.min.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/mustache.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/sammy.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/OpenLayers.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.mousewheel.pack.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.tooltip.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.xfader.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.pager.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/fancybox/jquery.fancybox.pack.js?v=2.0.5"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.html5.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.flash.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/flowplayer/flowplayer-3.2.6.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/prettyDate.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/json2.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/mustache.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/sammy.min.js"></script>
 
     <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
     <script type="text/javascript" src="{{BASE_URL}}/templates.js"></script>
     <script type="text/javascript" src="{{BASE_URL}}/traveler.js"></script>
     <script type="text/javascript" src="{{THEME_URL}}mapstyles.js"></script>
-    <script type="text/javascript" src="{{MEDIA_URL}}js/travelermap.js"></script>
-{% block script %}
-{% endblock %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/travelermap.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage_views.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage.js"></script>
+    <script type="text/javascript">
+    {% if request.user.is_authenticated %}
+        TRAVELER_USER = {{ request.user.id }};
+    {% endif %}
+    </script>
 {% if GOOGLE_ANALYTICS_ID %}
-    {% include "google_analytics.django.html" %} 
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '{{GOOGLE_ANALYTICS_ID}}']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+</script>
 {% endif %}
 </head>
 <body class="{% block body-class %}{% endblock %}">
 {% block body %}
 {% endblock %}
-{% if request.user.is_authenticated %}
-    TRAVELS_USER = {{ request.user.id }};
-{% endif %}
-</script>
 </body>
 </html>
 
