@@ -89,3 +89,37 @@ class RegisterForm(forms.Form):
 
     user_image = forms.ImageField(required=False, label=_('Profile Picture'))
 
+# TODO: this should probably subclass Django's built in password change form
+# django.contrib.auth.forms
+class EditProfileForm(forms.Form):
+
+    def __init__(self, user=None, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self._user = user
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        password = cleaned_data.get('password')
+        password_verify = cleaned_data.get('password_verify')
+
+        if not password == password_verify:
+            msg = _('Passwords did not match!')
+            self._errors['password'] = self.error_class([msg])
+
+            del self.cleaned_data['password']
+            del self.cleaned_data['password_verify']
+
+        return cleaned_data
+
+    def save(self):
+        cleaned_data = self.cleaned_data
+        self._user.set_password(cleaned_data.get('password'))
+		
+        self._user.save()
+
+    password = forms.CharField(required=False,widget=forms.PasswordInput(render_value=False), 
+        label=_('New Password'))
+
+    password_verify = forms.CharField(required=False,widget=forms.PasswordInput(render_value=False), 
+        label=_('Verify New Password'))
+

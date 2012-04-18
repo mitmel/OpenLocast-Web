@@ -18,6 +18,9 @@ def frontpage(request):
         return content_page(request, fragment)
 
     login_form = AuthenticationForm(request)
+    edit_profile_form = None
+    if request.user.is_authenticated:
+        edit_profile_form = forms.EditProfileForm(user = request.user)
 
     return render_to_response('frontpage.django.html', locals(), context_instance = RequestContext(request))
 
@@ -61,6 +64,23 @@ def register(request):
         form = forms.RegisterForm()
 
     return render_to_response('registration/register.django.html', locals(), context_instance = RequestContext(request))
+
+
+def edit_profile(request):
+    form = None
+    success = False
+
+    if request.method == 'POST': # If the form has been submitted...
+        form = forms.EditProfileForm(data = request.POST, user = request.user) # A form bound to the POST data
+        if form.is_valid():
+            form.save()
+            success = True
+            #return HttpResponseRedirect(settings.FULL_BASE_URL)
+
+    elif request.method == 'GET':
+        form = forms.EditProfileForm()
+
+    return render_to_response('registration/edit_profile.django.html', locals(), context_instance = RequestContext(request))
 
 
 def traveler_js(request):

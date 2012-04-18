@@ -127,6 +127,18 @@ function activateDHTML(){
     // Collection and user box draggable
     $('#cast-add-container').draggable({containment:'#main-map'});
 
+    // Collection and user box draggable
+    $('#edit-profile-container').draggable({containment:'#main-map'});
+
+    $('#edit-profile-link').click(function() {
+        $('#edit-profile-container').fadeIn();
+        $('#edit-profile-close').click(function() {
+            $('#edit-profile-container').fadeOut();
+            return false;
+        }); 
+        return false;
+    });
+
     // orderby switchers
     $('#cast-list-sort a').click(function() {
         $(this).siblings('.selected').removeClass('selected');

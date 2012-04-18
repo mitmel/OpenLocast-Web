@@ -23,6 +23,7 @@ a img {border:none;}
 
 .cleared:after,
 #cast-add-container form:after,
+#edit-profile-container form:after,
 #content-details form:after,
 .locast-list-item:after,
 .cast-content:after,
@@ -40,6 +41,7 @@ a img {border:none;}
 
 .cleared,
 #cast-add-container form,
+#edit-profile-container form,
 #content-details form,
 .locast-list-item,
 .cast-content,
@@ -49,6 +51,7 @@ a img {border:none;}
 /* Hides from IE-mac */
 * html .cleared,
 * html #cast-add-container form,
+* html #edit-profile-container form,
 * html #content-details form,
 * html .locast-list-item,
 * html .cast-content,
@@ -57,6 +60,7 @@ a img {border:none;}
 
 .cleared,
 #cast-add-container form,
+#edit-profile-container form,
 #content-details form,
 .locast-list-item,
 .cast-content,
@@ -122,7 +126,7 @@ tbody tr:nth-child(even) td, tbody tr.even td {background:#D1D2B8;}
 tfoot {font-style:italic;}
 caption {background:#eee;}
 
-#header, #footer,#map-controls-container,.list-title,.filter,#map-cast-list,#map-controls,#collection-info,#cast-add-container,#user-profile-info,#top-tags,#map-title{
+#header, #footer,#map-controls-container,.list-title,.filter,#map-cast-list,#map-controls,#collection-info,#cast-add-container,#edit-profile-container,#user-profile-info,#top-tags,#map-title{
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
@@ -517,9 +521,14 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     overflow:auto;
 }
 
-.ui-overlay, #login-alert, #login-container,#map-title-container,#map-list, #tooltip, #cast-add-container{
+.ui-overlay, #login-alert, #login-container, #map-title-container, #map-list, #tooltip, #cast-add-container{
     position:absolute;
     z-index:2000;
+}
+
+#edit-profile-container {
+    position:absolute;
+    z-index:2001;
 }
 
 #map-list,
@@ -532,7 +541,8 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     z-index:1500;
 }
 
-#cast-add-container{
+#cast-add-container,
+#edit-profile-container {
     display:none;
     right:12px;
     top:10%;
@@ -1327,21 +1337,28 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     padding:0 4px;
 }
 
-#login-bar{
+#login-bar {
     position:absolute;
-    width:400px;
+    width:305px;
     right:12px;
     top:12px;
 }
 
 #login-bar #login-info{
     position:absolute;
-    right:64px;
     top:6px;
 }
 
-#login-bar .logins,
-#login-bar #login-options{
+#login-info .login-info-item {
+    float: left;
+    margin-left: 20px;
+}
+
+#logout-link {
+    margin-top: -6px;
+}
+
+#login-bar .logins {
     position:absolute;
     right:0;
     top:0;

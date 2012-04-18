@@ -9,24 +9,27 @@
 {% endblock search %}
 
 {% block login %}
-    {% if not request.user.is_authenticated %}
-        <div class="logins">
-            <a id="login-link" class="locast-login locast-button">{% trans "Login / Register" %}</a>
-        </div>   
-    {% else %}
-        <a href="#!user/{{request.user.id}}/" class="cleared" id="login-info" >
-        {% if request.user.user_image %}
-            <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
-        {% endif %}
-        <span class="message">{% trans "logged in as "%}</span>
-        {% if request.user.display_name %}
-            <span class="name ">{{ request.user.display_name }}</span>
-        {% endif %}
-         </a>
-        <ul id="login-options">
-            <li><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></li>
-        </ul> 
-    {% endif %}
+{% if not request.user.is_authenticated %}
+    <div class="logins">
+        <a id="login-link" class="locast-login locast-button">{% trans "Login / Register" %}</a>
+    </div>   
+{% else %}
+    <div id="login-info">
+        <div class="login-info-item">
+            <a href="#!user/{{request.user.id}}/">
+            {% if request.user.user_image %}
+                <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
+            {% endif %}
+                <span class="message">{% trans "logged in as "%}</span>
+            {% if request.user.display_name %}
+                <span class="name ">{{ request.user.display_name }}</span>
+            {% endif %}
+            </a>
+        </div>
+        <div class="login-info-item"><a id="edit-profile-link" href="#">Edit Profile</a></div>
+        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></div>
+    </div>
+{% endif %}
 {% endblock login %}
 
 {% block main-content %}
@@ -41,7 +44,25 @@
 
 <div id="login-alert"><h3 class="alert content-card">{% trans "You Must Login" %}</h3></div>  
 
-<div style="" id="user-profile-info"></div>
+<div class="content-card ui-draggable closed" id="edit-profile-container">
+{% if request.user.is_authenticated %}
+    <div id="edit-profile-header">
+        <a href="#" class="locast-icon close locast-button" id="edit-profile-close">Cancel</a> 
+        <h4 class="locast-instruction"><strong>{% trans "Edit Your Profile" %}</strong></h4>
+        <div id="user-name"><h4>{{ request.user.display_name }}</h4></div>
+        <p class="locast-help">{% trans "Edit your password and other information using the form below" %}</p>
+    </div>
+    <div>  
+        <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url edit_profile %}">
+        {% for field in edit_profile_form %}
+            {{ field.label_tag }}<br/>{{ field }}<br/>
+        {% endfor %}
+            <br/>
+            <input type="submit" class="locast-button" value="Edit Profile" />
+        </form>
+    </div>
+{% endif %}
+</div>
 
 <div id="map-title-container" >
     <div id="map-title" class="ui-overlay clear primary-color">

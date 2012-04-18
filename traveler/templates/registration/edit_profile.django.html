@@ -1,0 +1,28 @@
+{% extends "base.django.html" %}
+
+{% load i18n %}
+{% block main-content %}
+
+{% if success %}
+<div class="static-form cleared">
+<h2>{% trans "Your profile has been updated! Redirecting "%}<a href="{% url frontpage %}">{% trans "home..." %}</a></h2>
+<script type="text/javascript">
+    setTimeout(function() {
+        window.location = '{% url frontpage %}';
+    }, 5000);
+</script>
+</div>
+{% else %}
+<div class="static-form cleared">
+   <h2>{% trans "Edit your profile" %}</h2>  
+<form method="post" enctype="multipart/form-data" action="{% url edit_profile %}" class="cleared">
+    {% for field in form %}
+        {{ field.label_tag }}{{ field }}{{ field.errors }}
+    {% endfor %}
+<input type="submit" class="locast-button register" value="Edit Profile" /></div>
+</form>
+</div>
+{% endif %}
+
+{% endblock %}
+

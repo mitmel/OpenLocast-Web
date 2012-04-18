@@ -11,6 +11,7 @@ urlpatterns = patterns('',
 urlpatterns += patterns('traveler.views',
     url(r'^$', 'frontpage', name='frontpage'),
     url(r'^register/$', 'register', name='register'),
+    url(r'^edit_profile/$', 'edit_profile', name='edit_profile'),
 )
 
 urlpatterns += patterns('traveler.views',
