@@ -171,12 +171,17 @@ APP_LABEL = 'traveler'
 
 USER_MODEL = 'traveler.LocastUser'
 
+AUTH_PROFILE_MODULE = 'traveler.LocastUserProfile'
+
 # Types of user actions, used for UserActivity logging
 USER_ACTIONS = (
     'joined',
     'created',
     'commented',
 )
+
+# The title of the site
+SITE_TITLE = 'Open Locast'
 
 # The theme to use
 THEME = 'default'
@@ -210,6 +215,7 @@ CONTEXT_VARIABLES = (
     'DEFAULT_LON',
     'DEFAULT_LAT',
     'DEFAULT_ZOOM',
+    'SITE_TITLE',
 )
 
 # import settings_local

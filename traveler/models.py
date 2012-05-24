@@ -8,9 +8,11 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.db.models.manager import GeoManager
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
+from locast.api import datetostr
 from locast.models import interfaces, modelbases, managers
 from locast.models import ModelBase
 
@@ -56,13 +58,39 @@ class LocastUser(modelbases.LocastUser,
             return u'%s' % self.username
 
     def api_serialize(self, request):
-        d = {}
+        d = {'joined' : datetostr(self.date_joined)}
+        profile = None
+        try:
+            profile = self.get_profile()
+        except ObjectDoesNotExist:
+            pass
 
+        if ( profile ):
+            d['profile'] = profile.api_serialize(request)
+
+        return d
+
+class LocastUserProfile(ModelBase):
+    user = models.OneToOneField(LocastUser)
+
+    user_image = models.ImageField(upload_to='user_images/%Y/%m/', null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    personal_url = models.URLField(null=True, blank=True)
+    hometown = models.CharField(max_length=128, null=True, blank=True)
+
+    @property
+    def user_image_small(self):
+        if self.user_image:
+            return get_thumbnail(self.user_image, '150', quality=75)
+
+    def api_serialize(self, request):
+        d = {}
         if self.user_image:
             d['user_image'] = self.user_image.url
+            d['user_image_small'] = self.user_image_small.url
 
-        if self.profile:
-            d['profile'] = self.profile
+        if self.bio:
+            d['bio'] = self.bio
 
         if self.personal_url:
             d['personal_url'] = self.personal_url
@@ -72,16 +100,7 @@ class LocastUser(modelbases.LocastUser,
 
         return d
 
-    objects = LocastUserManager()
-
-    user_image = models.ImageField(upload_to='user_images/%Y/%m/', null=True, blank=True)
-    
-    personal_url = models.URLField(null=True, blank=True)
-
-    hometown = models.CharField(max_length=128, null=True, blank=True)
-
 # A collection of casts
-
 class Collection(ModelBase,
         interfaces.Authorable,
         interfaces.Titled,

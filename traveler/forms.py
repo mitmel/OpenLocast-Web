@@ -63,9 +63,6 @@ class RegisterForm(forms.Form):
 
         u.set_password(cleaned_data.get('password'))
 
-        u.profile = cleaned_data.get('profile')
-        u.personal_url = cleaned_data.get('personal_url')
-
         u.save()
 
         # lc stands for locast!!
@@ -84,10 +81,18 @@ class RegisterForm(forms.Form):
     password_verify = forms.CharField(widget=forms.PasswordInput(render_value=False), 
         label=_('Verify Password'))
 
-    profile = forms.CharField(required=False, label=_('Short Bio'), widget=widgets.Textarea())
-    personal_url = forms.URLField(required=False, label=_('Your Website'))
 
+# Used when registering
+class RegisterProfileForm(forms.ModelForm):
+    class Meta:
+        model = models.LocastUserProfile
+        exclude = ('user',)
+
+    bio = forms.CharField(required=False, label=_('Short Bio'), widget=widgets.Textarea())
+    personal_url = forms.URLField(required=False, label=_('Your Website'))
     user_image = forms.ImageField(required=False, label=_('Profile Picture'))
+    hometown = forms.CharField(required=False, label=_('Where are you from?'))
+
 
 # TODO: this should probably subclass Django's built in password change form
 # django.contrib.auth.forms

@@ -1,7 +1,6 @@
 import settings
 
 from django.contrib.admin import widgets
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.gis import admin
 from django.contrib.gis.maps.google import GoogleMap
 from django.utils.translation import ugettext_lazy as _
@@ -13,19 +12,10 @@ from traveler import models
 # TODO: Change this to open street maps.
 GMAP = GoogleMap(key=settings.GOOGLE_API_KEY) # Can also set GOOGLE_MAPS_API_KEY in settings
 
+# Use this with locatable models
 class MapAdmin(admin.OSMGeoAdmin):
-
-    class Media:
-        css = { 'all': ('css/jquery.tooltip.css',) }
-        js = ('js/admin_jquery_hack.js',
-              'js/jquery.tooltip.min.js')
-
-    extra_js = [GMAP.api_url + GMAP.key]
-    map_template = 'admin/map_admin.django.html'
     default_lon = settings.DEFAULT_LON
     default_lat = settings.DEFAULT_LAT
-
-    # because of the way that the site switches base layers
     default_zoom = settings.DEFAULT_ZOOM + 6 
 
 
@@ -129,8 +119,12 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('body', 'author', 'created')
 
     
-class LocastUserAdmin(UserAdmin):
+class LocastUserAdmin(MapAdmin):
     list_display = ('display_name', 'email', 'first_name', 'last_name', 'username', 'is_staff', 'date_joined')
+
+
+class LocastUserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user',)
 
 
 class VideoMediaAdmin(MapAdmin):
@@ -153,6 +147,7 @@ admin.site.register(models.Boundry, MapAdmin)
 admin.site.register(models.Comment, CommentAdmin)
 
 admin.site.register(models.LocastUser, LocastUserAdmin)
+admin.site.register(models.LocastUserProfile, LocastUserProfileAdmin)
 admin.site.register(models.Cast, CastAdmin)
 admin.site.register(models.Collection, CollectionAdmin)
 

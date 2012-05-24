@@ -46,22 +46,33 @@ def content_page(request, fragment):
 
 def register(request):
     form = None
+    profile_form = None
 
     if request.method == 'POST':
         form = forms.RegisterForm(request.POST)
-        if form.is_valid():
+        profile_form = forms.RegisterProfileForm(request.POST)
+        if form.is_valid() and profile_form.is_valid():
             u = form.save()
+
+            models.UserActivity.objects.create_activity(u, u, 'joined')
+
+            u.save()
+
+            profile = profile_form.save(commit = False)
+            profile.user = u
+            profile.save()
 
             user_image = request.FILES.get('user_image', None)
             if user_image:
-                u.user_image.save(user_image.name, user_image, save=True)
-
-            models.UserActivity.objects.create_activity(u, u, 'joined')
+                profile.user_image.save(user_image.name, user_image, save=True)
+            
+            profile.save()
 
             return HttpResponseRedirect(settings.FULL_BASE_URL)
 
     elif request.method == 'GET':
         form = forms.RegisterForm()
+        profile_form = forms.RegisterProfileForm
 
     return render_to_response('registration/register.django.html', locals(), context_instance = RequestContext(request))
 
