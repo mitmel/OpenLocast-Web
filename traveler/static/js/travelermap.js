@@ -111,15 +111,15 @@ self.init = function(div) {
     image_bounds.extend(new OpenLayers.LonLat(-map_center[0], -map_center[1]));
     image_bounds.extend(new OpenLayers.LonLat(map_center[0], map_center[1]));
 
-    self.gterrainLayer = new OpenLayers.Layer.Google('Google Terrain', {
-        type: G_PHYSICAL_MAP,
+    self.gterrainLayer = new OpenLayers.Layer.Google('Google Physical', {
+        type: google.maps.MapTypeId.TERRAIN,
         sphericalMercator: true,
         maxZoomLevel: 17,
         minZoomLevel: 7,
     });
 
     self.gstreetLayer = new OpenLayers.Layer.Google('Google Streets', {
-        type: G_NORMAL_MAP,
+        type: google.maps.MapTypeId.NORMAL,
         sphericalMercator: true,
         maxZoomLevel: 17,
         minZoomLevel: 7,
@@ -138,12 +138,10 @@ self.init = function(div) {
     });
 
     self.addCastLayer.events.on({
-        'sketchstarted' : function(){
-            if ( self.addCastPoint ) {
-                self.addCastPoint.destroy();
-            } 
-        },
         'featureadded' : function(evt) {
+            if (self.addCastPoint) {
+                self.addCastPoint.destroy();
+            }
             var feature = evt.feature;
             self.addCastPoint = feature;
             var ll = new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y);
@@ -333,10 +331,21 @@ self.init = function(div) {
     });
 
     // SETUP
-    self.gstreetLayer.events.on({moveend: self.baseLayerSwitcher});
-    self.gterrainLayer.events.on({moveend: self.baseLayerSwitcher});
+    // TODO: move base layers to the theme
+    if ( GOOGLE_API_KEY ) {
+        self.gstreetLayer.events.on({moveend: self.baseLayerSwitcher});
+        self.gterrainLayer.events.on({moveend: self.baseLayerSwitcher});
+		self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
+		self.map.setBaseLayer(self.gterrainLayer);
+    }
+    else {
+		self.map.addLayers([self.osmLayer]);
+		self.map.setBaseLayer(self.osmLayer);
+    }
 
     self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
+
+
     self.map.addLayers([self.collectionLayer, self.castLayer, self.boundryLayer, self.addCastLayer, self.openCastLayer]);
 
     self.map.addControls([self.addCastControl, self.highlightCtrl, self.selectCast, self.selectCollection]);
@@ -359,17 +368,7 @@ self.init = function(div) {
 }
 // END INIT
 
-self.osmLayerSwitcher = function(on){
-    if(on){
-        self.map.setBaseLayer(self.osmLayer);
-        fix_openlayers_zoombar();
-    }
-    else{
-        self.map.setBaseLayer(self.gterrainLayer);
-        fix_openlayers_zoombar();
-    }    
-}
-
+// Only called if google maps base layers are enabled
 self.baseLayerSwitcher = function(e) {
     if (e.zoomChanged) {
         self.clearPopups();

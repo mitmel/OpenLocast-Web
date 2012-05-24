@@ -62,19 +62,22 @@
         </form>
     </div>
 {% endif %}
-</div>
+</div> <!-- edit-profile-container -->
 
 <div id="map-title-container" >
     <div id="map-title" class="ui-overlay clear primary-color">
-        <div id="current-map" ><div id="map-list-dropdown" class="cleared"><h4>{% trans "All Casts" %}</h4><div class="arrow right"></div></div></div>
-        <div id="add-cast-button" class="locast-button cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-itin">{% trans " to This Map" %}</span></div>
-
+        <div id="current-map">
+            <div id="map-list-dropdown" class="cleared"><h4>{% trans "All Casts" %}</h4>
+                <div class="arrow right"></div>
+            </div>
+        </div>
+        <div id="add-cast-button" class="locast-button cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></div>
         <div id="view-switcher">
             <a href="" id="view-switch-map" class="map selected ">{% trans "Map" %}</a>
             <a href="" id="view-switch-list" class="list ">{% trans "List" %}</a>
         </div> 
     </div>
-</div>
+</div> <!-- map-title-container -->
 
 <div id="map-list"></div>    
 
@@ -101,22 +104,16 @@
     <div id="map-cast-list">
         <span class="list-content"><h3>{% trans "No Casts On Map" %}</h3></span>
     </div>
-</div>
+</div> <!-- map-info-container -->
 
 <div id="map-controls-container" class="ui-overlay dynamic">
     <div id="map-controls"></div>
     <a id="map-reset" href="#">{% trans "Reset"%}</a>
 </div>
 
-<form id="map-layer-switcher" class="ui-overlay" >
-    <label for="osm-checkbox">OSM</label>
-    <input type="checkbox" id="osm-checkbox" value="visible" />
-</form>
-
 <div id="cast-add-container" class="closed content-card"></div>
-<div style="height: 480px; width: 640px;" id="main-map"></div>
 
-</div>
+<div style="height: 480px; width: 640px;" id="main-map"></div>
 
 <div id="map-loader"><h3 id="loader-message" >{% trans "Loading" %}</h3></div>
 {% endblock main-content %}

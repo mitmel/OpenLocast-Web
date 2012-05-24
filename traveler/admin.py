@@ -10,7 +10,8 @@ from locast.admin import UserActivityAdmin, FlagAdmin
 
 from traveler import models 
 
-GMAP = GoogleMap(key=settings.GOOGLE_MAPS_KEY) # Can also set GOOGLE_MAPS_API_KEY in settings
+# TODO: Change this to open street maps.
+GMAP = GoogleMap(key=settings.GOOGLE_API_KEY) # Can also set GOOGLE_MAPS_API_KEY in settings
 
 class MapAdmin(admin.OSMGeoAdmin):
 

@@ -39,7 +39,7 @@ TIME_ZONE = 'UTC'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 
 # settings_local
-LANGUAGE_CODE = None
+LANGUAGE_CODE = 'en-us'
 LANGUAGES = None
 
 # settings_local
@@ -178,23 +178,18 @@ USER_ACTIONS = (
     'commented',
 )
 
+# The theme to use
+THEME = 'default'
+
 # Default privacy value of newly created PrivatelyAuthorable models
 DEFAULT_PRIVACY = 2
-
-# TODO
-#MAX_VIDEO_SIZE = 100000kb
-#MAX_IMAGE_SIZE = 1000kb
 
 # settings_local
 DEFAULT_LON = 0.0
 DEFAULT_LAT = 0.0
 DEFAULT_ZOOM = 0
 
-GOOGLE_MAPS_KEY = ''
-
-# To enable facebook support, simply provide values for these in settings_local
-FACEBOOK_APP_ID = None
-FACEBOOK_APP_SECRET = None
+GOOGLE_API_KEY = ''
 
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
@@ -208,7 +203,7 @@ CONTEXT_VARIABLES = (
     'BASE_URL',
     'FULL_BASE_URL',
     'THEME_URL',
-    'GOOGLE_MAPS_KEY',
+    'GOOGLE_API_KEY',
     'GOOGLE_ANALYTICS_ID',
     'FACEBOOK_APP_ID',
     'FLOWPLAYER_SWF',
@@ -222,6 +217,6 @@ try: from settings_local import *
 except ImportError: raise 'Cannot find settings_local.py!'
 
 # Sets up the URL to load theme resources. Only needs to be overriden
-# if the theme is not default 
-THEME_URL = STATIC_URL + 'themes/default/'
+# if the theme is not in the default location
+THEME_URL = STATIC_URL + 'themes/' + THEME + '/'
 

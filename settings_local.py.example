@@ -3,15 +3,11 @@
 # Place any overrides to settings.py in here      #
 ###################################################
 
-#DEBUG = False
-#TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 
-# Whether or not this is a production machine
-# (Used for Google analytics type things)
-#PRODUCTION = False
-
-#ADMINS = ()
-#MANAGERS = ADMINS
+ADMINS = ()
+MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -24,65 +20,72 @@ DATABASES = {
     }
 }
 
-# configure the available languages
+LANGUAGE_CODE = 'en-us'
+LANGUAGES = (
+    ('en', 'English'),
+)
 
-#LANGUAGE_CODE = 'en-us'
-#LANGUAGES = (
-#     ('en', 'English'),
-#     ('it', 'Italian')
-# )
+SITE_ID = 1
 
-#SITE_ID = 1
-
-# The host address of this installation, i.e. http://locast.mit.edu
-# settings_local
+# The host address of this installation, e.g. http://locast.mit.edu
 HOST = ''
 
-# The absolute URL of the application, i.e. /civicmedia
-# settings_local
-BASE_URL = None
+# The absolute URL of the application, e.g. /civicmedia
+BASE_URL = ''
 
 # Generally, FULL_BASE_URL = HOST + BASE_URL
-# settings_local
-FULL_BASE_URL = ''
+FULL_BASE_URL = HOST + BASE_URL
 
-# settings_local
-LOGIN_REDIRECT_URL = ''
-LOGIN_URL = ''
+# Generally, BASE_URL + '/'
+LOGIN_REDIRECT_URL = BASE_URL + '/'
+
+# Generally, BASE_URL + '/login/'
+LOGIN_URL = BASE_URL + '/login/'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-
-# settings_local
 MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-
-# settings_local
 MEDIA_URL = ''
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = ''
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = ''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-
-# settings_local
-ADMIN_MEDIA_PREFIX = ''
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
 
 ############ 
 # Locast-specific settings
+#
 
-#DEFAULT_LON = 0.0
-#DEFAULT_LAT = 0.0
-#DEFAULT_ZOOM = 0
+# Which theme to use
+THEME = 'default'
 
-#GOOGLE_MAPS_KEY = ''
+DEFAULT_PRIVACY = 2
 
-#FACEBOOK_APP_ID = ''
-#FACEBOOK_APP_SECRET = ''
+DEFAULT_LON = 0.0
+DEFAULT_LAT = 0.0
+DEFAULT_ZOOM = 0
 
+GOOGLE_API_KEY = ''
+
+# Custom Flowplayer swf
+FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
+
+# Enables google analytics
+GOOGLE_ANALYTICS_ID = None
 

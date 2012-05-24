@@ -48,6 +48,7 @@ var home_view = {
 var all_casts_view = {
     activate: function(context) {
         $('#current-map h4').html(gettext('All Casts'));
+        $('#add-cast-coll').html('');
         clear_cast_filter();
     },
     deactivate: function() {}
@@ -697,11 +698,12 @@ cast_single_view['deactivate'] = function() {
     $('#add-cast-button-container').hide();
 
     var viewIsList = $('#view-switch-list').hasClass('selected');
-    if(viewIsList){
+    if ( viewIsList ) {
         $('#view-switch-map').removeClass('selected');
         $('#view-switch-list').addClass('selected');
         $('#map-info-container').fadeIn(100);
-    }else{
+    }
+    else {
         $('#view-switch-map').addClass('selected');
         $('#view-switch-list').removeClass('selected');
         $('#map-info-container').fadeOut(100);
@@ -738,6 +740,7 @@ collection_single_view['activate'] = function(context) {
         }
         
         $('#current-map h4').html(coll.title);
+        $('#add-cast-coll').html(gettext(' to this Collection'));
 
         // DHTML
         activate_favorite_button('collection', coll.id, COLLECTION_API_URL + coll.id + '/favorite/');

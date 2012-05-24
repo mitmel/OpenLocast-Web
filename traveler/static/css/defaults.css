@@ -633,6 +633,10 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     margin-right:auto;
 }
 
+#intro-page-content ul li{
+   padding-top: 10px; 
+}
+
 /*
  * MAP TITLE
  */
@@ -1441,14 +1445,10 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
  * GOOGLE COPYRIGHT
  */
 
-.olLayerGoogleCopyright{
-     bottom:60px !important;
-     left:80px !important;
-}
-
-.olLayerGooglePoweredBy{
-     bottom:57px !important;
-     left:8px !important;
+div.olLayerGoogleCopyright,
+div.olLayerGooglePoweredBy
+{
+    display: none !important;
 }
 
 /*

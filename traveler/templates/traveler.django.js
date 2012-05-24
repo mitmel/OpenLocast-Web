@@ -3,15 +3,13 @@ BASE_URL = '{{ BASE_URL }}';
 MEDIA_URL = '{{ MEDIA_URL }}';
 STATIC_URL = '{{ STATIC_URL }}';
 THEME_URL = '{{ THEME_URL }}';
-
+GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
 FLOWPLAYER_SWF = '{{ FLOWPLAYER_SWF }}'
 
 COLLECTION_API_URL = '{% url collection_api %}';
 CAST_API_URL = '{% url cast_api %}';
 USER_API_URL = '{% url user_api %}';
-
 FEATURES_API_URL = '{% url geofeatures_api %}'
-
 SEARCH_API_URL = '{% url search_api %}';
 
 MAP_DEFAULTS = {
