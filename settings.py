@@ -65,8 +65,9 @@ BASE_URL = ''
 # settings_local
 FULL_BASE_URL = ''
 
-# settings_local
+# Set below, after settings_local import
 LOGIN_REDIRECT_URL = ''
+
 LOGIN_URL = ''
 
 # Absolute path to the directory that holds media.
@@ -222,7 +223,12 @@ CONTEXT_VARIABLES = (
 try: from settings_local import *
 except ImportError: raise 'Cannot find settings_local.py!'
 
+# These rely on settings_local variables. Don't change anything below this line!
+
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not in the default location
 THEME_URL = STATIC_URL + 'themes/' + THEME + '/'
+
+LOGIN_REDIRECT_URL = BASE_URL + '/'
+LOGIN_URL = BASE_URL + '/login/'
 

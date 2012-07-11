@@ -81,6 +81,7 @@ class LocastUserProfile(ModelBase):
     @property
     def user_image_small(self):
         if self.user_image:
+            # TODO: This can raise an IOError if PIL is incorrectly configured on the system...
             return get_thumbnail(self.user_image, '150', quality=75)
 
     def api_serialize(self, request):

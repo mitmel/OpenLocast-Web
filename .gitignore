@@ -1,6 +1,3 @@
 *.pyc
 *.mo
 *.swp
-static/content*
-static/user_images/
-static/cache/

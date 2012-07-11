@@ -98,8 +98,8 @@ class CastAPI(rest.ResourceView):
                 raise exceptions.APIBadRequest(e.message)
 
             cast_arr = []
-            for m in objs:
-                cast_arr.append(api_serialize(m, request))
+            for c in objs:
+                cast_arr.append(api_serialize(c, request))
 
             return APIResponseOK(content=cast_arr, total=total, pg=pg)
 
@@ -257,25 +257,17 @@ class CastAPI(rest.ResourceView):
             mime_type = media.path_to_mimetype(file.name, media.content.MIME_TYPES)
 
         else:
-            # create_file_from_data currently is only part of videocontent.
-            # so this won't currently work with imagecontent.
-            # see: locast.models.modelbases, line 332 
             media.content.create_file_from_data(request.raw_post_data, mime_type)
 
         if not mime_type:
             raise exceptions.APIBadRequest('Invalid file type!')
 
         # media is the generic holder, media.content is the specific
-        # content model.
+        # content model (ImageMedia, VideoMedia etc.).
 
         media.content.mime_type = mime_type
         media.content.content_state = models.Media.STATE_COMPLETE
         media.content.save()
-        
-        # if not content_type:
-        #    raise exceptions.APIBadRequest('No content_type specified')
-
-        #media.content.create_file_from_data(request.raw_post_data, 'video/3gpp')
 
         return APIResponseOK(content=api_serialize(media, request))
 
@@ -427,7 +419,6 @@ def cast_from_post(request, cast = None):
 
     if location:
         cast.set_location(location[0], location[1])
-
 
     cast.save()
 

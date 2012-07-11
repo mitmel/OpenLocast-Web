@@ -2,15 +2,11 @@ import settings
 
 from django.contrib.admin import widgets
 from django.contrib.gis import admin
-from django.contrib.gis.maps.google import GoogleMap
 from django.utils.translation import ugettext_lazy as _
 
 from locast.admin import UserActivityAdmin, FlagAdmin
 
 from traveler import models 
-
-# TODO: Change this to open street maps.
-GMAP = GoogleMap(key=settings.GOOGLE_API_KEY) # Can also set GOOGLE_MAPS_API_KEY in settings
 
 # Use this with locatable models
 class MapAdmin(admin.OSMGeoAdmin):
