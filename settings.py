@@ -198,7 +198,7 @@ DEFAULT_ZOOM = 0
 GOOGLE_API_KEY = ''
 
 # Flowplayer swf
-FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
+FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
 
 # Enables google analytics
 GOOGLE_ANALYTICS_ID = None

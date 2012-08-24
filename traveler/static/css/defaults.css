@@ -1133,9 +1133,12 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
 
 .locast-open-cast .cast-content .cast-media .image-frame .video-icon{
     z-index:1000;
+    height:80px;
+    width:80px;
     position:absolute;
     left:245px;
     top:90px;
+    background-image:url('../img/play.png');
 }
 
 .locast-open-cast .cast-content .cast-media .image-frame .title .media-type{

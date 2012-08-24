@@ -4,23 +4,22 @@ from locast.auth.decorators import require_http_auth, optional_http_auth
 
 from traveler.models import Collection
 
+ruleset = {
+    # Authorable
+    'title'         :    { 'type' : 'string' },
+    'description'   :    { 'type' : 'string' },
+
+    # Taggable
+    'tags'          :    { 'type' : 'list' },
+
+    # Favoritable
+    'favorited_by'  :    { 'type': 'int' },
+
+    # Collection
+    'within'        :    { 'type': 'geo_polygon', 'alias' : 'path__intersects' },
+}
+
 class CollectionAPI(rest.ResourceView):
-
-    ruleset = {
-        # Authorable
-        'title'         :    { 'type' : 'string' },
-        'description'   :    { 'type' : 'string' },
-
-        # Taggable
-        'tags'          :    { 'type' : 'list' },
-
-        # Favoritable
-        'favorited_by'  :    { 'type': 'int' },
-
-        # Collection
-        'within'        :    { 'type': 'geo_polygon', 'alias' : 'path__intersects' },
-    }
-
 
     @optional_http_auth
     def get(request, coll_id = None):
@@ -33,7 +32,7 @@ class CollectionAPI(rest.ResourceView):
 
         else:
             query = request.GET.copy()
-            q = qstranslate.QueryTranslator(Collection, CollectionAPI.ruleset)
+            q = qstranslate.QueryTranslator(Collection, ruleset)
             try:
                 objs = q.filter(query)
             except qstranslate.InvalidParameterException, e:
@@ -47,7 +46,6 @@ class CollectionAPI(rest.ResourceView):
 
             return APIResponseOK(content=collection_arr, total=total, pg=pg)
 
-
     @require_http_auth
     def post_favorite(request, coll_id):
         coll = get_object(Collection, id=coll_id)
@@ -59,4 +57,3 @@ class CollectionAPI(rest.ResourceView):
             coll.unfavorite(request.user)
 
         return APIResponseOK(content='success')
-
