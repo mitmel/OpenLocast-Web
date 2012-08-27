@@ -11,6 +11,9 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = None
 MANAGERS = None
 
+import djcelery
+djcelery.setup_loader()
+
 # Set this in settings_local.py
 DATABASES = {
     'default': {
@@ -164,6 +167,7 @@ INSTALLED_APPS = (
     'south',
     'sorl.thumbnail',
     'traveler',
+    'djcelery',
 )
 
 ### LOCAST SETTINGS ###
