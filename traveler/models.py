@@ -20,9 +20,9 @@ from sorl.thumbnail import get_thumbnail
 
 # DEPENDENCIES
 
-class Tag(interfaces.Tag): pass
+class Tag(modelbases.Tag): pass
 
-class Comment(interfaces.Comment,
+class Comment(modelbases.Comment,
         interfaces.Flaggable): 
 
     # TODO: this should be more generic incase anything else becomes commentable
@@ -33,7 +33,7 @@ class Comment(interfaces.Comment,
     def get_absolute_url(self):
         return self.content_object.get_absolute_url()
 
-class Flag(interfaces.Flag): pass
+class Flag(modelbases.Flag): pass
 
 class UserActivity(modelbases.UserActivity): pass
 
