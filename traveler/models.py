@@ -17,6 +17,13 @@ from locast.models import interfaces, modelbases, managers
 from locast.models import ModelBase
 
 from sorl.thumbnail import get_thumbnail
+from sorl.thumbnail.helpers import ThumbnailError
+
+def l_get_thumbnail(*args, **kwargs):
+    try:
+        return get_thumbnail(*args, **kwargs)
+    except (IOError, ThumbnailError):
+        return None
 
 # DEPENDENCIES
 
@@ -81,13 +88,14 @@ class LocastUserProfile(ModelBase):
     @property
     def user_image_small(self):
         if self.user_image:
-            # TODO: This can raise an IOError if PIL is incorrectly configured on the system...
-            return get_thumbnail(self.user_image, '150', quality=75)
+            return l_get_thumbnail(self.user_image, '150', quality=75)
 
     def api_serialize(self, request):
         d = {}
         if self.user_image:
             d['user_image'] = self.user_image.url
+        
+        if self.user_image_small:
             d['user_image_small'] = self.user_image_small.url
 
         if self.bio:
@@ -130,8 +138,11 @@ class Collection(ModelBase,
             d['casts_ids'].append(c.id)
 
         d['casts_count'] = self.related_casts.count()
+
         if self.preview_image:
             d['preview_image'] = self.preview_image.url
+
+        if self.thumbnail:
             d['thumbnail'] = self.thumbnail.url
 
         return d
@@ -145,6 +156,8 @@ class Collection(ModelBase,
 
         if self.preview_image:
             d['preview_image'] = self.preview_image.url
+
+        if self.thumbnail:
             d['thumbnail'] = self.thumbnail.url
 
         return d
@@ -159,7 +172,7 @@ class Collection(ModelBase,
 
     @property
     def thumbnail(self):
-        return get_thumbnail(self.preview_image, '600', quality=75)
+        return l_get_thumbnail(self.preview_image, '600', quality=75)
 
 
 class Cast(ModelBase,
@@ -222,7 +235,7 @@ class Cast(ModelBase,
     def preview_image(self):
         if len(self.imagemedia):
             image = self.imagemedia[0].content
-            if image and image.file:
+            if image and image.file and image.medium_file:
                 return image.medium_file.url
 
         elif len(self.videomedia):
@@ -240,7 +253,7 @@ class Cast(ModelBase,
     @property
     def thumbnail(self):
         if self.preview_image:
-            return get_thumbnail(self.preview_image, '150', quality=75)
+            return l_get_thumbnail(self.preview_image, '150', quality=75)
 
         return None
 
@@ -314,25 +327,29 @@ class ImageMedia(Media,
     class Meta:
         verbose_name = _('photo')
 
-    # Overwrite the ImageContent._content_api_serialize method to provide
+    # Overwrite the ImageContent.content_api_serialize method to provide
     # thumbnails
-    def _content_api_serialize(self, request=None):
+    def content_api_serialize(self, request=None):
         d = {}
         if self.file:
             d['resources'] = {}
             d['resources']['primary'] = self.serialize_resource(self.file.url)
-            d['resources']['medium'] = self.serialize_resource(self.medium_file.url)
-            d['resources']['thumbnail'] = self.serialize_resource(self.thumbnail.url)
+
+            if self.medium_file:
+                d['resources']['medium'] = self.serialize_resource(self.medium_file.url)
+
+            if self.thumbnail:
+                d['resources']['thumbnail'] = self.serialize_resource(self.thumbnail.url)
 
         return d
     
     @property
     def thumbnail(self):
-        return get_thumbnail(self.file, '150', quality=75)
+        return l_get_thumbnail(self.file, '150', quality=75)
 
     @property
     def medium_file(self):
-        return get_thumbnail(self.file, '600', quality=75)
+        return l_get_thumbnail(self.file, '600', quality=75)
 
     def process(self):
         pass
@@ -356,7 +373,7 @@ class LinkedMedia(Media):
 
     video_id = models.CharField(max_length=32)
     
-    def _content_api_serialize(self, request=None):
+    def content_api_serialize(self, request=None):
         d = dict(url=self.url)
 
         if self.screenshot:

@@ -11,6 +11,9 @@ def process_casts():
 
     videomedias = models.VideoMedia.objects.filter(content_state=LocastContent.STATE_COMPLETE)
 
+    if videomedias.count():
+        print str(datetime.now()) + ' =======  running process_casts ======'
+
     for v in videomedias:
         # This is done in order to make sure the object is up to date with the database
         videomedia = models.VideoMedia.objects.get(id=v.id)
@@ -18,5 +21,4 @@ def process_casts():
             videomedia.process(verbose=True, force_update=True)
 
 if __name__ == '__main__':
-    print str(datetime.now()) + ' =======  running process_casts ======'
     process_casts()

@@ -1,16 +1,15 @@
 from django.contrib.gis.geos import Point
 from django.db.models import Count, Q
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import translation
 
-from locast.api import *
-from locast.api import rest, qstranslate, exceptions
+from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, exceptions, form_validate, \
+    geojson_serialize, get_json, get_object, get_param, paginate, rest, qstranslate
 from locast.auth.decorators import require_http_auth, optional_http_auth
 
 from traveler import models, forms
-
-from locast.api import comment as comment_api
 
 class CastAPI(rest.ResourceView):
 
@@ -38,7 +37,6 @@ class CastAPI(rest.ResourceView):
         # traveler cast
         'collection'     :    { 'type' : 'int' },
     }
-
 
     @optional_http_auth
     def get(request, cast_id=None, coll_id=None, format='.json'):
@@ -72,7 +70,7 @@ class CastAPI(rest.ResourceView):
             base_query = models.Cast.get_privacy_q(request)
 
             if coll_id:
-                coll = get_object(models.Collection, id=coll_id)
+                get_object(models.Collection, id=coll_id)
                 base_query = base_query & Q(collection=coll_id)
 
             q = qstranslate.QueryTranslator(models.Cast, CastAPI.ruleset, base_query)
@@ -234,7 +232,7 @@ class CastAPI(rest.ResourceView):
 
     @require_http_auth
     def post_media_content(request, cast_id, media_id):
-        cast = get_object(models.Cast, cast_id)
+        get_object(models.Cast, cast_id)
         media = get_object(models.Media, media_id)
 
         if not media.author == request.user:
@@ -423,4 +421,3 @@ def cast_from_post(request, cast = None):
     cast.save()
 
     return cast
-
