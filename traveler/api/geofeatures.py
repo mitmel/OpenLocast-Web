@@ -5,11 +5,12 @@ from django.contrib.gis.geos import Polygon
 from django.db.models import Q
 
 from traveler import models
-from traveler.api.cast import CastAPI
+from traveler.api.cast import ruleset as cast_ruleset
 
 def get_geofeatures(request):
     bounds_param = get_param(request.GET, 'within')
     query = request.GET.copy()
+    base_query = Q()
     
     if bounds_param:
         pnts = bounds_param.split(',')
@@ -22,14 +23,12 @@ def get_geofeatures(request):
 
         del query['within']
 
-    base_query = Q()
-    if bounds_param:
         base_query = base_query & Q(location__within=poly)
 
     # cast within bounds
     cast_base_query = models.Cast.get_privacy_q(request) & base_query
 
-    q = qstranslate.QueryTranslator(models.Cast, CastAPI.ruleset, cast_base_query)
+    q = qstranslate.QueryTranslator(models.Cast, cast_ruleset, cast_base_query)
     casts = q.filter(query)
 
     cast_arr = []
@@ -54,4 +53,3 @@ def get_geofeatures(request):
     features_dict['collections'] = dict(type='FeatureCollection', features=coll_arr)
     
     return APIResponseOK(content=features_dict)
-

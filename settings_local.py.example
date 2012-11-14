@@ -27,10 +27,10 @@ LANGUAGES = (
 
 SITE_ID = 1
 
-# The host address of this installation, e.g. http://locast.mit.edu/
+# The host address of this installation, e.g. http://locast.mit.edu -- No trailing slash
 HOST = ''
 
-# The relative URL of the application, e.g. /civicmedia. No trailing slash, leave blank if its the root.
+# The relative URL of the application, e.g. /civicmedia -- No trailing slash, leave blank if its the root.
 BASE_URL = ''
 
 # Generally, FULL_BASE_URL = HOST + BASE_URL
@@ -43,7 +43,7 @@ MEDIA_ROOT = ''
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = FULL_BASE_URL + 'media/'
+MEDIA_URL = FULL_BASE_URL + '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -53,7 +53,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = FULL_BASE_URL + 'static/'
+STATIC_URL = FULL_BASE_URL + '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -73,11 +73,12 @@ DEFAULT_PRIVACY = 2
 
 DEFAULT_LON = 0.0
 DEFAULT_LAT = 0.0
-DEFAULT_ZOOM = 0
+DEFAULT_ZOOM = 4
 
+# If a GOOGLE_API_KEY isn't specified, will use Open Street Maps tile layer
 GOOGLE_API_KEY = ''
 
-# Custom Flowplayer swf
+# Custom Flowplayer swf, if desired. Set by default to the generic flowplayer
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
 
 # Enables google analytics

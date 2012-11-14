@@ -11,7 +11,6 @@ from locast import get_model
 
 from traveler import forms, models
 
-
 def frontpage(request):
     fragment = request.GET.get('_escaped_fragment_')
     if fragment:

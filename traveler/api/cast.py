@@ -11,32 +11,32 @@ from locast.auth.decorators import require_http_auth, optional_http_auth
 
 from traveler import models, forms
 
+ruleset = {
+    # Authorable
+    'author'        :    { 'type' : 'int' },
+    'title'         :    { 'type' : 'string' },
+    'description'   :    { 'type' : 'string' },
+    'created'       :    { 'type' : 'datetime' },
+    'modified'      :    { 'type' : 'datetime' },
+
+    # Privately Authorable
+    'privacy'       :    { 'type' : 'string' },
+
+    # Taggable
+    'tags'          :    { 'type' : 'list' },
+
+    # Locatable
+    'dist'          :    { 'type': 'geo_distance', 'alias' : 'location__distance_lte' },
+    'within'        :    { 'type': 'geo_polygon', 'alias' : 'location__within' },
+
+    # Favoritable
+    'favorited_by'  :    { 'type': 'int' },
+
+    # traveler cast
+    'collection'     :    { 'type' : 'int' },
+}
+
 class CastAPI(rest.ResourceView):
-
-    ruleset = {
-        # Authorable
-        'author'        :    { 'type' : 'int' },
-        'title'         :    { 'type' : 'string' },
-        'description'   :    { 'type' : 'string' },
-        'created'       :    { 'type' : 'datetime' },
-        'modified'      :    { 'type' : 'datetime' },
-
-        # Privately Authorable
-        'privacy'       :    { 'type' : 'string' },
-
-        # Taggable
-        'tags'          :    { 'type' : 'list' },
-
-        # Locatable
-        'dist'          :    { 'type': 'geo_distance', 'alias' : 'location__distance_lte' },
-        'within'        :    { 'type': 'geo_polygon', 'alias' : 'location__within' },
-
-        # Favoritable
-        'favorited_by'  :    { 'type': 'int' },
-
-        # traveler cast
-        'collection'     :    { 'type' : 'int' },
-    }
 
     @optional_http_auth
     def get(request, cast_id=None, coll_id=None, format='.json'):
@@ -73,7 +73,7 @@ class CastAPI(rest.ResourceView):
                 get_object(models.Collection, id=coll_id)
                 base_query = base_query & Q(collection=coll_id)
 
-            q = qstranslate.QueryTranslator(models.Cast, CastAPI.ruleset, base_query)
+            q = qstranslate.QueryTranslator(models.Cast, ruleset, base_query)
             query = request.GET.copy()
 
             # Need to do some magic to order by popularity, so remove from
