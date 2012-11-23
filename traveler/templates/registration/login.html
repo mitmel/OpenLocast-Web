@@ -4,7 +4,11 @@
 {% block main-content %}
 <div class="static-form login">
 {% if form.errors %}
-<p class="login-error">{% trans "Your username and password didn't match. Please try again." %} </p>
+    {% if form.get_user and not form.get_user.is_active %}
+        You have not confirmed your registration.
+    {% else %}
+        <p class="login-error">{% trans "Your username and password didn't match. Please try again." %} </p>
+    {% endif %}
 {% endif %}
 
 <form method="post" action="{% url locast.auth.views.login %}">

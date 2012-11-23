@@ -4,7 +4,7 @@ from django.contrib.admin import widgets
 from django.contrib.gis import admin
 from django.utils.translation import ugettext_lazy as _
 
-from locast.admin import UserActivityAdmin, FlagAdmin
+from locast.admin import UserActivityAdmin, UserConfirmationAdmin, FlagAdmin
 
 from traveler import models 
 
@@ -88,7 +88,6 @@ class CastSelect(widgets.FilteredSelectMultiple):
 ### COLLECTION ###
 
 class CollectionAdmin(MapAdmin):
-
     fields = ('title', 'description', 'path', 'related_casts', 'tags', 'preview_image')
     list_display = ('title', 'description', 'created', 'modified')
 
@@ -137,7 +136,12 @@ class LinkedMediaAdmin(MapAdmin):
 
 admin.site.register(models.Tag, admin.ModelAdmin)
 admin.site.register(models.Flag, FlagAdmin)
+
 admin.site.register(models.UserActivity, UserActivityAdmin)
+
+if settings.USER_CONFIRMATION:
+    admin.site.register(models.UserConfirmation, UserConfirmationAdmin)
+
 admin.site.register(models.Boundry, MapAdmin)
 
 admin.site.register(models.Comment, CommentAdmin)

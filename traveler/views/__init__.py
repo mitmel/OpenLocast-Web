@@ -3,13 +3,15 @@ import settings
 
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.contrib.sites.models import get_current_site
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils import simplejson
 
 from locast import get_model
 
-from traveler import forms, models
+from traveler.forms import EditProfileForm, RegisterForm, RegisterProfileForm
+from traveler.models import Cast, UserActivity, UserConfirmation, Boundry
 
 def frontpage(request):
     fragment = request.GET.get('_escaped_fragment_')
@@ -19,7 +21,7 @@ def frontpage(request):
     login_form = AuthenticationForm(request)
     edit_profile_form = None
     if request.user.is_authenticated:
-        edit_profile_form = forms.EditProfileForm(user = request.user)
+        edit_profile_form = EditProfileForm(user = request.user)
 
     return render_to_response('frontpage.django.html', locals(), context_instance = RequestContext(request))
 
@@ -30,7 +32,7 @@ def content_page(request, fragment):
         raise Http404
 
     model = get_model(fragment[0])
-    if not model or (not model == models.Cast):
+    if not model or (not model == Cast):
         raise Http404
 
     try:
@@ -48,18 +50,31 @@ def register(request):
     profile_form = None
 
     if request.method == 'POST':
-        form = forms.RegisterForm(request.POST)
-        profile_form = forms.RegisterProfileForm(request.POST)
+        form = RegisterForm(request.POST)
+        profile_form = RegisterProfileForm(request.POST)
         if form.is_valid() and profile_form.is_valid():
-            u = form.save()
+            user = form.save()
 
-            models.UserActivity.objects.create_activity(u, u, 'joined')
+            # Create a UserActivity
+            UserActivity.objects.create_activity(user, user, 'joined')
 
-            u.save()
+            # IF confirmation is turned on, the user is inactive until they confirm
+            if settings.USER_CONFIRMATION:
+                user.is_active = False
 
+            user.save()
+
+            # Create a profile
             profile = profile_form.save(commit = False)
-            profile.user = u
+            profile.user = user
             profile.save()
+
+            uc = None
+            # Send confirmation email
+            if settings.USER_CONFIRMATION:
+                uc = UserConfirmation.objects.create_confirmation(user)
+                site_name = get_current_site(request).name
+                uc.send_confirmation_email('Welcome to ' + site_name + '!')
 
             user_image = request.FILES.get('user_image', None)
             if user_image:
@@ -67,11 +82,13 @@ def register(request):
             
             profile.save()
 
-            return HttpResponseRedirect(settings.FULL_BASE_URL)
+            # If user confirmation is off, redirect to the login url
+            if not uc:
+                return HttpResponseRedirect(settings.LOGIN_URL)
 
     elif request.method == 'GET':
-        form = forms.RegisterForm()
-        profile_form = forms.RegisterProfileForm
+        form = RegisterForm()
+        profile_form = RegisterProfileForm
 
     return render_to_response('registration/register.django.html', locals(), context_instance = RequestContext(request))
 
@@ -81,20 +98,20 @@ def edit_profile(request):
     success = False
 
     if request.method == 'POST': # If the form has been submitted...
-        form = forms.EditProfileForm(data = request.POST, user = request.user) # A form bound to the POST data
+        form = EditProfileForm(data = request.POST, user = request.user) # A form bound to the POST data
         if form.is_valid():
             form.save()
             success = True
             #return HttpResponseRedirect(settings.FULL_BASE_URL)
 
     elif request.method == 'GET':
-        form = forms.EditProfileForm()
+        form = EditProfileForm()
 
     return render_to_response('registration/edit_profile.django.html', locals(), context_instance = RequestContext(request))
 
 
 def traveler_js(request):
-    boundry_obj = models.Boundry.objects.get_default_boundry()
+    boundry_obj = Boundry.objects.get_default_boundry()
     boundry = 'null';
 
     if boundry_obj:
@@ -133,4 +150,3 @@ def templates_js(request):
     content = 'var templates = ' + simplejson.dumps(templates);
 
     return HttpResponse(status=200, mimetype='application/json; charset=utf-8', content=content)
-

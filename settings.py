@@ -117,7 +117,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-    'locast.context_processors.settings_variables'
+    'locast.context_processors.settings_variables',
+    'locast.context_processors.site_name'
 )
 
 # List of callables that know how to import templates from various sources.
@@ -166,7 +167,7 @@ INSTALLED_APPS = (
     'traveler',
 )
 
-### LOCAST SETTINGS ###
+### LOCAST CORE SETTINGS ###
 
 APP_LABEL = 'traveler'
 
@@ -181,24 +182,26 @@ USER_ACTIONS = (
     'commented',
 )
 
-# The title of the site
-SITE_TITLE = 'Open Locast'
+# Default privacy value of newly created PrivatelyAuthorable models
+DEFAULT_PRIVACY = 2
+
+# Confirm users by email before allowing them to login
+# Make sure the Site object is configured with the site name and domain name
+USER_CONFIRMATION = False
+
+### OPEN LOCAST SETTINGS ###
 
 # The theme to use
 THEME = 'default'
 
-# Default privacy value of newly created PrivatelyAuthorable models
-DEFAULT_PRIVACY = 2
-
-# settings_local
 DEFAULT_LON = 0.0
 DEFAULT_LAT = 0.0
 DEFAULT_ZOOM = 0
 
-GOOGLE_API_KEY = ''
-
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
+
+GOOGLE_API_KEY = ''
 
 # Enables google analytics
 GOOGLE_ANALYTICS_ID = None
@@ -216,14 +219,13 @@ CONTEXT_VARIABLES = (
     'DEFAULT_LON',
     'DEFAULT_LAT',
     'DEFAULT_ZOOM',
-    'SITE_TITLE',
 )
 
 # import settings_local
 try: from settings_local import *
 except ImportError: raise 'Cannot find settings_local.py!'
 
-# These rely on settings_local variables. Don't change anything below this line!
+# --- These rely on settings_local variables. Careful when changing anything below this line! ---
 
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not in the default location
@@ -231,4 +233,3 @@ THEME_URL = STATIC_URL + 'themes/' + THEME + '/'
 
 LOGIN_REDIRECT_URL = BASE_URL + '/'
 LOGIN_URL = BASE_URL + '/login/'
-

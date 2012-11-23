@@ -39,8 +39,6 @@
     <script type="text/javascript" src="{{THEME_URL}}mapstyles.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/travelermap.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage_views.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage.js"></script>
     <script type="text/javascript">
     {% if request.user.is_authenticated %}
         TRAVELER_USER = {{ request.user.id }};
@@ -59,6 +57,7 @@
      })();
 </script>
 {% endif %}
+{% block script %}{% endblock %}
 </head>
 <body class="{% block body-class %}{% endblock %}">
 {% block body %}

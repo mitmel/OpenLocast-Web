@@ -36,6 +36,7 @@ ruleset = {
     'collection'     :    { 'type' : 'int' },
 }
 
+#TODO: Make this CSRF exempt so we can enable CSRF site-wide
 class CastAPI(rest.ResourceView):
 
     @optional_http_auth

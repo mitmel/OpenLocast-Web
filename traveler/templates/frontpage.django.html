@@ -1,5 +1,9 @@
 {% extends "base.django.html" %}
 {% load i18n %}
+{% block script %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage_views.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage.js"></script>
+{% endblock %}
 {% block body-class %}home{% endblock %}
 
 {% block search %}

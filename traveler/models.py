@@ -44,12 +44,15 @@ class Flag(modelbases.Flag): pass
 
 class UserActivity(modelbases.UserActivity): pass
 
+class UserConfirmation(modelbases.UserConfirmation): pass
+
 class Boundry(modelbases.Boundry): pass
 
 # MAIN MODELS
 
 class LocastUserManager(GeoManager, 
         managers.LocastUserManager): pass
+
 
 class LocastUser(modelbases.LocastUser, 
         interfaces.Locatable):
@@ -76,6 +79,7 @@ class LocastUser(modelbases.LocastUser,
             d['profile'] = profile.api_serialize(request)
 
         return d
+
 
 class LocastUserProfile(ModelBase):
     user = models.OneToOneField(LocastUser)
@@ -108,6 +112,7 @@ class LocastUserProfile(ModelBase):
             d['hometown'] = self.hometown
 
         return d
+
 
 # A collection of casts
 class Collection(ModelBase,
@@ -438,4 +443,3 @@ class LinkedMedia(Media):
 
                 self.screenshot = vimeo_data[0]['thumbnail_large']
                 self.title = vimeo_data[0]['title']
-

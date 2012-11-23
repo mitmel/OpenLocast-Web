@@ -25,10 +25,10 @@ urlpatterns += patterns('locast.i18n.views',
 
 urlpatterns += patterns('locast.auth.views',
     url(r'^login/$', 'login', name='login'),
-    url(r'^logout/$', 'logout', name='logout')
+    url(r'^logout/$', 'logout', name='logout'),
+    url(r'^confirm_user/$', 'confirm_user', name='confirm_user')
 )
 
 urlpatterns += patterns('',
     url(r'^api/', include('traveler.api.urls')), 
 )
-
