@@ -294,7 +294,7 @@ class Media(modelbases.LocastContent,
     objects = GeoManager()
 
     # Interface.titled has a required title, this can be null
-    title = models.CharField(max_length=160, null=True, blank=True, default='Untitled')
+    title = models.CharField(max_length=160, null=True, blank=True)
 
     language = models.CharField(max_length=90,choices=settings.LANGUAGES, default='en')
 
