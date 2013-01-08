@@ -20,6 +20,13 @@ DATABASES = {
     }
 }
 
+#Broker information for RabbitMQ
+BROKER_HOST = '127.0.0.1'
+BROKER_PORT = 5672
+BROKER_USER = 'locast'
+BROKER_PASSWORD = 'locast'
+BROKER_VHOST = 'locast_core'
+
 LANGUAGE_CODE = 'en-us'
 LANGUAGES = (
     ('en', 'English'),
