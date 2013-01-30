@@ -147,6 +147,7 @@ LOCALE_PATHS = (
     '%s/locale' % BASE_PATH,
 )
 
+LOCAL_APPS = ()
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -220,7 +221,7 @@ CONTEXT_VARIABLES = (
 try: from settings_local import *
 except ImportError: raise 'Cannot find settings_local.py!'
 
-# --- These rely on settings_local variables. Careful when changing anything below this line! ---
+# --- These rely on settings_local variables. Be careful when changing anything below this line! ---
 
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not in the default location
@@ -232,3 +233,5 @@ TEMPLATE_DIRS = (
 
 LOGIN_REDIRECT_URL = BASE_URL + '/'
 LOGIN_URL = BASE_URL + '/login/'
+
+INSTALLED_APPS += LOCAL_APPS

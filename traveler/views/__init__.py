@@ -11,7 +11,7 @@ from django.utils import simplejson
 from locast import get_model
 
 from traveler.forms import EditProfileForm, RegisterForm, RegisterProfileForm
-from traveler.models import Cast, UserActivity, UserConfirmation, Boundry
+from traveler.models import Cast, UserActivity, Boundry
 
 def frontpage(request):
     fragment = request.GET.get('_escaped_fragment_')
@@ -53,16 +53,13 @@ def register(request):
         form = RegisterForm(request.POST)
         profile_form = RegisterProfileForm(request.POST)
         if form.is_valid() and profile_form.is_valid():
+
+            # Create the user
             user = form.save()
+            user.save()
 
             # Create a UserActivity
             UserActivity.objects.create_activity(user, user, 'joined')
-
-            # IF confirmation is turned on, the user is inactive until they confirm
-            if settings.USER_CONFIRMATION:
-                user.is_active = False
-
-            user.save()
 
             # Create a profile
             profile = profile_form.save(commit = False)
@@ -71,7 +68,10 @@ def register(request):
 
             uc = None
             # Send confirmation email
-            if settings.USER_CONFIRMATION:
+            if 'locast.userconfirmation' in settings.INSTALLED_APPS:
+                from locast.userconfirmation.models import UserConfirmation
+                user.is_active = False
+                user.save()
                 uc = UserConfirmation.objects.create_confirmation(user)
                 site_name = get_current_site(request).name
                 uc.send_confirmation_email('Welcome to ' + site_name + '!')
