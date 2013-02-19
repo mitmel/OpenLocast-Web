@@ -1,15 +1,15 @@
 from locast.api import * 
 from locast.api import qstranslate
+from locast.api.cache import request_cache_key, get_cache, set_cache
 
 from django.contrib.gis.geos import Polygon
 from django.db.models import Q
 
-from traveler import models
+from traveler.models import Cast, Collection, CAST_GEO_GROUP
 from traveler.api.cast import ruleset as cast_ruleset
 
 def get_geofeatures(request):
     bounds_param = get_param(request.GET, 'within')
-    query = request.GET.copy()
     base_query = Q()
     
     if bounds_param:
@@ -25,22 +25,40 @@ def get_geofeatures(request):
 
         base_query = base_query & Q(location__within=poly)
 
-    # cast within bounds
-    cast_base_query = models.Cast.get_privacy_q(request) & base_query
+    # PUBLIC cast within bounds
+    cast_base_query = Q(privacy__lt=3) & base_query
+    q = qstranslate.QueryTranslator(Cast, cast_ruleset, cast_base_query)
+    public_casts = q.filter(request.GET)
 
-    q = qstranslate.QueryTranslator(models.Cast, cast_ruleset, cast_base_query)
-    casts = q.filter(query)
+    cache_key = request_cache_key(request, ignore_params=['_'])
+    cast_arr = get_cache(cache_key, cache_group=CAST_GEO_GROUP)
 
-    cast_arr = []
-    for c in casts:
-        if c.location:
-            cast_arr.append(geojson_serialize(c, c.location, request))
+    if not cast_arr:
+        cast_arr = []
+        for c in public_casts:
+            if c.location:
+                cast_arr.append(geojson_serialize(c, c.location, request))
+
+        set_cache(cache_key, cast_arr, cache_group=CAST_GEO_GROUP)
+
+    # casts that ONLY THIS user can see. Superusers can see all casts, logged in users can see any casts they authored.
+    if request.user.is_authenticated():
+        if request.user.is_superuser:
+            cast_base_query = Q(privacy=3) & base_query
+        else:
+            cast_base_query = Q(privacy=3) & Q(author=request.user) & base_query
+        
+        q = qstranslate.QueryTranslator(Cast, cast_ruleset, cast_base_query)
+        user_casts = q.filter(request.GET)
+        for c in user_casts:
+            if c.location:
+                cast_arr.append(geojson_serialize(c, c.location, request))
 
     # collection intersects bounds
     if bounds_param:
         base_query = Q(path__intersects = poly)
 
-    colls = models.Collection.objects.filter(base_query)
+    colls = Collection.objects.filter(base_query)
 
     coll_arr = []
     for i in colls:

@@ -3,6 +3,8 @@ BASE_URL = '{{ BASE_URL }}';
 MEDIA_URL = '{{ MEDIA_URL }}';
 STATIC_URL = '{{ STATIC_URL }}';
 THEME_URL = '{{ THEME_URL }}';
+MAX_VIDEO_SIZE = '{{MAX_VIDEO_SIZE}}';
+MAX_PHOTO_SIZE = '{{MAX_PHOTO_SIZE}}';
 GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
 FLOWPLAYER_SWF = '{{ FLOWPLAYER_SWF }}'
 
@@ -15,6 +17,8 @@ SEARCH_API_URL = '{% url search_api %}';
 MAP_DEFAULTS = {
     zoom: {{DEFAULT_ZOOM}},
     center: [{{ DEFAULT_LON }}, {{ DEFAULT_LAT }}],
+    max_zoom: {{MAX_ZOOM}},
+    min_zoom: {{MIN_ZOOM}},
 }
 
 MAP_BOUNDRY = {{boundry|safe}};

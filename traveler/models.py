@@ -4,15 +4,18 @@ import settings
 import urllib
 import urlparse
 
+
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.db.models.manager import GeoManager
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
-from locast.api import datetostr
+from locast.api import cache, datetostr
 from locast.models import interfaces, modelbases, managers
 from locast.models import ModelBase
 
@@ -273,6 +276,13 @@ class Cast(ModelBase,
     @property
     def linkedmedia(self):
         return self.media_set.filter(content_type_model='linkedmedia')
+
+CAST_GEO_GROUP = 'cast_geo'
+
+@receiver(signals.post_save, sender=Cast)
+@receiver(signals.post_delete, sender=Cast)
+def _clear_cast_geo_cache(sender, **kwargs):
+    cache.incr_group(CAST_GEO_GROUP)
 
 
 class Media(modelbases.LocastContent,
