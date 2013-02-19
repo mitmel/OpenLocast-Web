@@ -47,8 +47,6 @@ class Flag(modelbases.Flag): pass
 
 class UserActivity(modelbases.UserActivity): pass
 
-class UserConfirmation(modelbases.UserConfirmation): pass
-
 class Boundry(modelbases.Boundry): pass
 
 # MAIN MODELS

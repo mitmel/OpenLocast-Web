@@ -143,15 +143,11 @@ ROOT_URLCONF = 'urls'
 import os
 BASE_PATH = os.path.split(__file__)[0]
 
-TEMPLATE_DIRS = (
-    # necessary for the admin template override to work
-    '%s/traveler/templates' % BASE_PATH,
-)
-
 LOCALE_PATHS = (
     '%s/locale' % BASE_PATH,
 )
 
+LOCAL_APPS = ()
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -159,12 +155,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
     'django.contrib.gis',
     'locast',
     'south',
     'sorl.thumbnail',
     'traveler',
+    'django.contrib.admin',
 )
 
 ### LOCAST CORE SETTINGS ###
@@ -238,11 +234,17 @@ CONTEXT_VARIABLES = (
 try: from settings_local import *
 except ImportError: raise 'Cannot find settings_local.py!'
 
-# --- These rely on settings_local variables. Careful when changing anything below this line! ---
+# --- These rely on settings_local variables. Be careful when changing anything below this line! ---
 
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not in the default location
 THEME_URL = STATIC_URL + 'themes/' + THEME + '/'
 
+TEMPLATE_DIRS = (
+    '%s/traveler/static/themes/' % BASE_PATH + THEME + '/templates',
+)
+
 LOGIN_REDIRECT_URL = BASE_URL + '/'
 LOGIN_URL = BASE_URL + '/login/'
+
+INSTALLED_APPS += LOCAL_APPS

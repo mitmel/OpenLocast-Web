@@ -240,4 +240,3 @@ BOUNDRY_STYLE = {
     strokeColor:'#fff',
     strokeDashstyle: 'solid'
 }
-
