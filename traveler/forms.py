@@ -10,25 +10,25 @@ from traveler import models
 class CastAPIForm(forms.ModelForm):
     class Meta: 
         model = models.Cast
-        fields = ('author', 'title', 'description', 'privacy')
+        fields = ('uuid', 'author', 'title', 'description', 'privacy')
 
 
 class VideoMediaForm(forms.ModelForm):
     class Meta: 
         model = models.VideoMedia
-        fields = ('author', 'title', 'language')
+        fields = ('uuid', 'author', 'title', 'language')
         
 
 class ImageMediaForm(forms.ModelForm):
     class Meta: 
         model = models.ImageMedia
-        fields = ('author', 'title', 'language')
+        fields = ('uuid', 'author', 'title', 'language')
 
 
 class LinkedMediaForm(forms.ModelForm):
     class Meta: 
         model = models.LinkedMedia
-        fields = ('author', 'url',)
+        fields = ('uuid', 'author', 'url',)
 
 
 class RegisterForm(forms.Form):
@@ -127,4 +127,3 @@ class EditProfileForm(forms.Form):
 
     password_verify = forms.CharField(required=False,widget=forms.PasswordInput(render_value=False), 
         label=_('Verify New Password'))
-

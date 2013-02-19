@@ -42,4 +42,3 @@ class UserAPI(rest.ResourceView):
     @require_http_auth
     def get_me(request):
         return APIResponseOK(content=api_serialize(request.user))
-

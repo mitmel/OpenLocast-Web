@@ -404,12 +404,6 @@ def cast_from_post(request, cast = None):
 
     cast = form_validate(forms.CastAPIForm, data, instance = cast)
 
-    # Necessary to do because of model_translation quirkyness.
-    if 'title' in data and not cast.title:
-        cast.title = data['title'] 
-    if 'description' in data and not cast.description:
-        cast.description = data['description'] 
-
     if not tags == None:
         # Clear all tags
         if tags == "":

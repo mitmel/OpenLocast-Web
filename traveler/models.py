@@ -284,6 +284,10 @@ class Media(modelbases.LocastContent,
     def api_serialize(self, request):
         d = {}
         d['language'] = self.language
+
+        if self.capture_time:
+            d['capture_time'] = datetostr(self.capture_time)
+
         if self.cast:
             d['cast'] = self.cast.get_api_uri()
 
@@ -297,6 +301,8 @@ class Media(modelbases.LocastContent,
     language = models.CharField(max_length=90,choices=settings.LANGUAGES, default='en')
 
     cast = models.ForeignKey(Cast, null=True, blank=True)
+    
+    capture_time = models.DateTimeField('date and time captured', null=True, blank=True)
 
     
 class VideoMedia(Media, 
