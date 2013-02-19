@@ -114,15 +114,15 @@ self.init = function(div) {
     self.gterrainLayer = new OpenLayers.Layer.Google('Google Physical', {
         type: google.maps.MapTypeId.TERRAIN,
         sphericalMercator: true,
-        maxZoomLevel: 17,
-        minZoomLevel: 7,
+        maxZoomLevel: defaults['max_zoom'],
+        minZoomLevel: defaults['min_zoom']
     });
 
     self.gstreetLayer = new OpenLayers.Layer.Google('Google Streets', {
         type: google.maps.MapTypeId.NORMAL,
         sphericalMercator: true,
-        maxZoomLevel: 17,
-        minZoomLevel: 7,
+        maxZoomLevel: defaults['max_zoom'],
+        minZoomLevel: defaults['min_zoom']
     });
 
     self.osmLayer = new OpenLayers.Layer.OSM(
@@ -384,12 +384,27 @@ self.baseLayerSwitcher = function(e) {
     }
 }
 
+self.castFeatures = null;
+
+self.collectionFeatures = null;
+
+self.reloadFeatures = function(data) {
+    self.castFeatures = self.geojson_format.read(data['casts']);
+    self.collectionFeatures = self.geojson_format.read(data['collections']);
+    self.renderFeatures();
+}
+
+self.addCastFeature = function(data) {
+    fc = {'type': 'FeatureCollection', 'features': [data]}
+    var cast = self.geojson_format.read(data); 
+    self.castFeatures.push(cast[0]);
+    self.renderFeatures();
+}
+
 self.renderFeatures = function(features) {
-    var casts = self.geojson_format.read(features['casts']);
-    self.castLayer.addFeatures(casts)
-        
-    var colls = self.geojson_format.read(features['collections']);
-    self.collectionLayer.addFeatures(colls)
+    main_map.clearFeatures();
+    self.castLayer.addFeatures(self.castFeatures);
+    self.collectionLayer.addFeatures(self.collectionFeatures);
 }
 
 self.clearFeatures = function() {

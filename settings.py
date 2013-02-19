@@ -190,9 +190,18 @@ USER_CONFIRMATION = False
 # The theme to use
 THEME = 'default'
 
+# Map settings
 DEFAULT_LON = 0.0
 DEFAULT_LAT = 0.0
 DEFAULT_ZOOM = 0
+
+MAX_ZOOM = 17
+MIN_ZOOM = 7
+
+# Uploader settings (client side)
+# This string can be in the following formats 100b, 10kb, 10mb.
+MAX_VIDEO_SIZE = '100mb'
+MAX_PHOTO_SIZE = '1mb'
 
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
@@ -215,6 +224,10 @@ CONTEXT_VARIABLES = (
     'DEFAULT_LON',
     'DEFAULT_LAT',
     'DEFAULT_ZOOM',
+    'MAX_ZOOM',
+    'MIN_ZOOM',
+    'MAX_VIDEO_SIZE',
+    'MAX_PHOTO_SIZE',
 )
 
 # import settings_local

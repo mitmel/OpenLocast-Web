@@ -218,8 +218,8 @@ function map_refresh() {
 }
 
 function map_refresh_cb(data) {
-    main_map.clearFeatures();
-    main_map.renderFeatures(data); 
+    main_map.reloadFeatures(data);
+
     if ( CAST_FILTER['collection'] ) {
         highlightCollection( CAST_FILTER['collection'] );
     }
@@ -556,11 +556,7 @@ function cast_add_form_submit(e) {
                     $('#cast-add-error').text(gettext('Enter a Title for Your Cast')).fadeIn();
                 }
             },
-            success: function(cast) { 
-                cast_add_form_clear();
-                map_refresh();
-                frontpage_app.setLocation('#!cast/' + cast.id + '/'); 
-            }
+            success: cast_add_success,
         });
     }
 
@@ -571,6 +567,19 @@ function cast_add_form_submit(e) {
     // prevent default form handling
     e.returnValue = false;
     return false;
+}
+
+function cast_add_success(cast) {
+    $.ajax({
+        url: CAST_API_URL + cast.id + '/geofeature/',
+        contentType: 'application/json; charset=utf-8',
+        type: 'GET',
+        success: function(data) {
+            main_map.addCastFeature(data);
+            cast_add_form_clear();
+            frontpage_app.setLocation('#!cast/' + cast.id + '/'); 
+        }
+    });
 }
 
 function activate_favorite_button(type, id, url) {
@@ -635,14 +644,14 @@ function create_uploader(container, content_type, url, callback) {
             title: 'Video file', 
             extensions: '3gp,mp4,mov,mpg,mpeg',
         }
-        max_file_size = '100mb';
+        max_file_size = MAX_VIDEO_SIZE;
     }
     else if ( content_type == 'imagemedia' ) {
         filters = { 
             title: 'Photo file', 
             extensions: 'jpg,jpeg,png' 
         }
-        max_file_size = '1mb';
+        max_file_size = MAX_PHOTO_SIZE;
     }
 
     var extensions_arr = filters['extensions'].split(',');
@@ -761,4 +770,3 @@ function make_p (t){
         return;
     }
 }
-
