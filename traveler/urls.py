@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url, include
 from django.contrib import admin
 
 admin.autodiscover()
@@ -15,7 +15,7 @@ urlpatterns += patterns('traveler.views',
 )
 
 urlpatterns += patterns('traveler.views',
-    url(r'^traveler.js', 'traveler_js', name='traveler_js'), 
+    url(r'^traveler.js', 'traveler_js', name='traveler_js'),
     url(r'^templates.js$', 'templates_js', name='templates_js'),
 )
 
@@ -33,5 +33,5 @@ urlpatterns += patterns('locast.userconfirmation.views',
 )
 
 urlpatterns += patterns('',
-    url(r'^api/', include('traveler.api.urls')), 
+    url(r'^api/', include('traveler.api.urls')),
 )
