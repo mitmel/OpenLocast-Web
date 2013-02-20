@@ -56,7 +56,7 @@ urlpatterns += patterns('traveler.api.cast',
 # USER
 urlpatterns += patterns('traveler.api.user',
     url(r'^user/(?P<user_id>\d+)/$', 'UserAPI', name='user_api_single'),
-    url(r'^user/me$', 'UserAPI', kwargs={'method':'me'}),
+    url(r'^user/me/?$', 'UserAPI', kwargs={'method':'me'}),
     url(r'^user/$', 'UserAPI', name='user_api'),
 )
 
