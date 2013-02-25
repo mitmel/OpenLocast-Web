@@ -1,0 +1,58 @@
+[
+  {
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+      "username": "test",
+      "first_name": "Test",
+      "last_name": "User",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2013-02-21T17:45:54.090",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$10000$J7th18SJ5BIM$01rYoLnzfc0/hHH3+nAN3HqGPPPw2X95gKxiYanbso4=",
+      "email": "test@example.org",
+      "date_joined": "2013-02-21T17:45:54.090"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "traveler.locastuser",
+    "fields": {
+      "user_permissions": [],
+      "language": "en",
+      "display_name": "Test U.",
+      "location": null,
+      "groups": []
+    }
+  },
+ {
+    "pk": 1,
+    "model": "traveler.locastuserprofile",
+    "fields": {
+      "user_image": "",
+      "bio": "",
+      "user": 1,
+      "personal_url": "",
+      "hometown": ""
+    }
+  },
+ {
+    "pk": 1,
+    "model": "traveler.cast",
+    "fields":{
+      "uuid": "b5b6c4ce-3b9e-44a9-b9cc-7a9a6b777aba",
+      "author": 1,
+      "created": "2013-02-20T22:56:54.881",
+      "modified": "2013-02-20T22:56:54.893",
+      "favorited_by": [],
+      "privacy": 2,
+      "location": null,
+      "title": "my unit test cast 1",
+      "tags": [],
+      "description": ""
+    }
+  }
+]
