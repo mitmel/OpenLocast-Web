@@ -19,11 +19,11 @@ p_search = 'search/'
 p_geofeatures = 'geofeatures/'
 
 # these are all the known top-level paths
-known_paths = { p_cast, p_collection, p_user, p_search, p_geofeatures }
+known_paths = [ p_cast, p_collection, p_user, p_search, p_geofeatures ]
 # these paths are known to represent a list of things
 # this implies that path/1/ is a valid identifier and will
 # return an individual item
-dir_paths = { p_cast, p_collection, p_user }
+dir_paths = [ p_cast, p_collection, p_user ]
 
 class ApiError(Exception):
     pass
