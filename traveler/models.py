@@ -12,7 +12,7 @@ from django.dispatch import receiver
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.db.models.manager import GeoManager
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import simplejson
+from django.utils import simplejson, timezone
 from django.utils.translation import ugettext_lazy as _
 
 from locast.api import cache, datetostr
@@ -139,10 +139,6 @@ class Collection(ModelBase,
             d['path'] = self.path.coords
         d['casts'] = reverse('collection_cast_api', kwargs={'coll_id':self.id})
 
-        d['casts_ids'] = []
-        for c in self.related_casts.all():
-            d['casts_ids'].append(c.id)
-
         d['casts_count'] = self.related_casts.count()
 
         if self.preview_image:
@@ -203,14 +199,19 @@ class Cast(ModelBase,
     def __unicode__(self):
         return u'%s (id: %s)' % (self.title, str(self.id))
 
+    datetime = models.DateTimeField('Date and Time', default = timezone.now, null=True, blank=True)
+
     objects = GeoManager()
 
     def api_serialize(self, request):
         d = {}
 
-        d['collections_ids'] = []
+        d['collections'] = []
         for i in self.collection_set.all():
-            d['collections_ids'].append(i.id)
+            d['collections'].append(i.get_api_uri())
+
+        if self.datetime:
+            d['datetime'] = datetostr(self.datetime)
 
         d['media'] = reverse('cast_media_api', kwargs={'cast_id':self.id})
         d['comments'] = reverse('cast_comments_api', kwargs={'cast_id':self.id})
@@ -225,6 +226,9 @@ class Cast(ModelBase,
         d['id'] = self.id
         d['title'] = self.title
         d['author'] = {'id' : self.author.id, 'display_name' : self.author.display_name }
+
+        if self.datetime:
+            d['datetime'] = datetostr(self.datetime)
         
         if self.preview_image:
             d['preview_image'] = self.preview_image
@@ -295,6 +299,9 @@ class Media(modelbases.LocastContent,
         d = {}
         d['language'] = self.language
 
+        if self.caption:
+            d['caption'] = self.caption
+
         if self.capture_time:
             d['capture_time'] = datetostr(self.capture_time)
 
@@ -305,8 +312,8 @@ class Media(modelbases.LocastContent,
 
     objects = GeoManager()
 
-    # Interface.titled has a required title, this can be null
-    title = models.CharField(max_length=160, null=True, blank=True)
+    # Caption length borrowed from pinterest.
+    caption = models.CharField(max_length=500, null=True, blank=True)
 
     language = models.CharField(max_length=90,choices=settings.LANGUAGES, default='en')
 
@@ -320,6 +327,13 @@ class VideoMedia(Media,
 
     class Meta:
         verbose_name = _('video')
+
+    def __unicode__(self):
+        un = u'id: %s' % self.id
+        if self.cast:
+            un = un + u' (cast: %s)' % str(self.cast.id)
+
+        return un
 
     def pre_save(self):
         if self.content_state == Media.STATE_INCOMPLETE:
@@ -345,6 +359,11 @@ class ImageMedia(Media,
     
     class Meta:
         verbose_name = _('photo')
+
+    def __unicode__(self):
+        un = u'id: %s' % self.id
+        if self.cast:
+            un = un + u' (cast: %s)' % str(self.cast.id)
 
     # Overwrite the ImageContent.content_api_serialize method to provide
     # thumbnails
@@ -447,7 +466,7 @@ class LinkedMedia(Media):
                 elif len(thumbs):
                     self.screenshot = thumbs[0]['url']
 
-                self.title = youtube_data['entry']['title']['$t']
+                self.caption = youtube_data['entry']['title']['$t']
 
             # vimeo
             elif self.content_provider == 'vimeo.com':
@@ -456,4 +475,4 @@ class LinkedMedia(Media):
                 vimeo_data = simplejson.load(urllib.urlopen(data_url))
 
                 self.screenshot = vimeo_data[0]['thumbnail_large']
-                self.title = vimeo_data[0]['title']
+                self.caption = vimeo_data[0]['title']

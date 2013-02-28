@@ -28,7 +28,7 @@ def get_geofeatures(request):
     # PUBLIC cast within bounds
     cast_base_query = Q(privacy__lt=3) & base_query
     q = qstranslate.QueryTranslator(Cast, cast_ruleset, cast_base_query)
-    public_casts = q.filter(request.GET)
+    public_casts = q.filter(request.GET).order_by('-created')
 
     cache_key = request_cache_key(request, ignore_params=['_'])
     cast_arr = get_cache(cache_key, cache_group=CAST_GEO_GROUP)
@@ -49,7 +49,7 @@ def get_geofeatures(request):
             cast_base_query = Q(privacy=3) & Q(author=request.user) & base_query
         
         q = qstranslate.QueryTranslator(Cast, cast_ruleset, cast_base_query)
-        user_casts = q.filter(request.GET)
+        user_casts = q.filter(request.GET).order_by('-created')
         for c in user_casts:
             if c.location:
                 cast_arr.append(geojson_serialize(c, c.location, request))
@@ -58,7 +58,7 @@ def get_geofeatures(request):
     if bounds_param:
         base_query = Q(path__intersects = poly)
 
-    colls = Collection.objects.filter(base_query)
+    colls = Collection.objects.filter(base_query).order_by('-created')
 
     coll_arr = []
     for i in colls:

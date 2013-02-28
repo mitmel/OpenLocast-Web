@@ -34,6 +34,7 @@ ruleset = {
 
     # traveler cast
     'collection'     :    { 'type' : 'int' },
+    'datetime'       :    { 'type' : 'datetime' },
 }
 
 #TODO: Make this CSRF exempt so we can enable CSRF site-wide
@@ -176,8 +177,9 @@ class CastAPI(rest.ResourceView):
             raise exceptions.APIForbidden
 
         if 'content_type' in data:
-	    content_type = data['content_type'] 
-	    del data['content_type']
+            content_type = data['content_type'] 
+            del data['content_type']
+
         else:
             raise exceptions.APIBadRequest('missing "content_type"')
 

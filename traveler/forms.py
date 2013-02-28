@@ -16,19 +16,19 @@ class CastAPIForm(forms.ModelForm):
 class VideoMediaForm(forms.ModelForm):
     class Meta: 
         model = models.VideoMedia
-        fields = ('uuid', 'author', 'title', 'language')
+        fields = ('uuid', 'author', 'caption')
         
 
 class ImageMediaForm(forms.ModelForm):
     class Meta: 
         model = models.ImageMedia
-        fields = ('uuid', 'author', 'title', 'language')
+        fields = ('uuid', 'author', 'caption')
 
 
 class LinkedMediaForm(forms.ModelForm):
     class Meta: 
         model = models.LinkedMedia
-        fields = ('uuid', 'author', 'url',)
+        fields = ('uuid', 'author', 'caption', 'url',)
 
 
 class RegisterForm(forms.Form):

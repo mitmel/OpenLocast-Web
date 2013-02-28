@@ -89,9 +89,9 @@
                         <a id="delete-media_{{v.content.id}}" class="delete-media secondary-color">delete</a>
                     {% endif %}
                         <a class="web-stream-file" href="{{v.content.web_stream_file.url}}"><div class="image-frame">
-                            <h6 class="title">
-                                <span class="media-type">{% trans "video" %}</span> {{v.content.title}}
-                            </h6>
+                            {% if v.content.caption %}
+                                <h6 class="title">{{v.content.caption}}</h6>
+                            {% endif %}
                             <div class="video-icon"></div>
                             <img src="{{v.content.screenshot.url}}"></img>
                         </div></a>
@@ -99,7 +99,7 @@
                 {% else %}
                     <li class="video cleared">
                         <div class="image-frame no-media">
-                            <h6 class="title">"{{v.content.title}}" {% trans "Video is Processing" %}</h6>
+                            <h6 class="title">{% if v.content.caption %}"{{v.content.caption}}" {% endif %}{% trans "Video is Processing" %}</h6>
                         </div>
                     </li>
                 {% endif %}
@@ -110,11 +110,15 @@
                 {% if allowed_edit %}
                     <a id="delete-media_{{l.content.id}}" class="delete-media secondary-color">delete</a>
                 {% endif %}
-                    <a class="{{l.content.content_provider|cut:'.'}}" href="{{l.content.url}}"><div class="image-frame">
-                        <h6 class="title"><span class="media-type">{% trans "linked video" %}</span> {{l.content.title}}</h6>
+                    <a class="{{l.content.content_provider|cut:'.'}}" href="{{l.content.url}}">
+                        <div class="image-frame">
+                        {% if l.content.caption %}
+                            <h6 class="title">{{l.content.caption}}</h6>
+                        {% endif %}
                         <div class="video-icon"></div>
-                            <img src="{{ l.content.screenshot }}"></img>
-                    </div></a>                
+                        <img src="{{ l.content.screenshot }}"></img>
+                        </div>
+                    </a>                
                 </li>
             {% endif %}{% endfor %} 
 
@@ -123,9 +127,10 @@
                 {% if allowed_edit %}
                     <a id="delete-media_{{i.content.id}}" class="delete-media secondary-color">delete</a>
                 {% endif %}
-                    <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="<h4> {{i.content.title}} </h4> <p> {{i.content.description}} </p> ">
+                <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="{% if i.content.caption %}<h4> {{i.content.caption}} </h4>{% endif %}">
                         <div class="image-frame">
-                            <h6 class="title"><span class="media-type">{% trans "photo" %}</span> {{i.content.title}}</h6><img src="{{i.content.medium_file.url}}" />
+                            {% if i.content.caption %}<h6 class="title">{{i.content.caption}}</h6>{% endif %}
+                            <img src="{{i.content.medium_file.url}}" />
                         </div>
                     </a> 
                 </li>
@@ -190,8 +195,8 @@
                 <div id="photo-uploader-cast_{{cast.id}}-list"></div>
             </div>
             <div class="upload-info hidden">
-            <label for="id_title">{% trans "Title" %}</label>
-            <input id="id_title" type="text" value="untitled" maxlength="160" name="title" class="locast-textfield">
+            <label for="id_caption">{% trans "caption (optional)" %}</label>
+            <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
             <input type="hidden" name="content_type" value="imagemedia"></input>
             <input type="submit" value="Upload" class="locast-button" />
         </div>
@@ -203,8 +208,8 @@
                 <div id="video-uploader-cast_{{cast.id}}-list"></div> 
             </div>
             <div class="upload-info hidden">
-                <label for="id_title">{% trans "Title" %}</label>
-                <input id="id_title" type="text" value="untitled" maxlength="160" name="title" class="locast-textfield">
+                <label for="id_caption">{% trans "caption (optional)" %}</label>
+                <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
                 <input type="hidden" name="content_type" value="videomedia"></input>
 
                 <input type="submit" value="Upload" class="locast-button" />

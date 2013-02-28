@@ -1141,12 +1141,6 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     background-image:url('../img/play.png');
 }
 
-.locast-open-cast .cast-content .cast-media .image-frame .title .media-type{
-    display:block;
-    margin-bottom:4px;
-    width:100%;
-}
-
 .locast-open-cast .cast-content .cast-description{
     width:530px;
 }
@@ -1582,16 +1576,6 @@ div.olLayerGooglePoweredBy
     z-index: 6000;
 }
 
-/*
-#fancybox-wrap{
-    z-index:6000 !important;
-}
-
-#fancybox-overlay{
-    z-index:6000 !important;
-}
-*/
-
 #flowplayer-wrapper{
    height:65% !important;
    width:50% !important;
@@ -1616,36 +1600,10 @@ div.olLayerGooglePoweredBy
    top:4px; 
 }
 
-/*
-#fancybox-close{
-    left:-28px;
-    margin-top:18px;
+.fancybox-title h4 {
+    color: #FFFFFF;
 }
 
-#fancybox-outer{
-    padding:4px;
-}
-
-#fancybox-content{
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:10px;
-    margin-bottom:10px;
-}
-
-#fancybox-outer div{
-    background-color:transparent !important;
-}
-
-#fancybox-outer .fancybox-bg{
-    display:none;
-}
-
-#fancybox-content{
-    border:none !important;
-    background:transparent; 
-}
-*/
 
 /*
  *  POPUPS AND TOOLTIPS

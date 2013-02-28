@@ -29,13 +29,13 @@ class MediaInline(admin.TabularInline):
 class VideoMediaInline(MediaInline):
     extra = 1
     model = models.VideoMedia
-    fields = ('file', 'title', 'language')
+    fields = ('file', 'caption')
 
 
 class ImageMediaInline(MediaInline):
     extra = 1
     model = models.ImageMedia
-    fields = ('file', 'title', 'language')
+    fields = ('file', 'caption')
 
 
 class LinkedMediaInline(MediaInline):
@@ -47,7 +47,7 @@ class LinkedMediaInline(MediaInline):
 class CastAdmin(MapAdmin): 
     inlines = [VideoMediaInline, ImageMediaInline, LinkedMediaInline]
 
-    fields = ('title', 'description', 'privacy', 'location', 'tags')
+    fields = ('title', 'description', 'privacy', 'datetime', 'location', 'tags')
     list_display = ('title', 'author', 'created', 'modified', 'privacy')
     list_filter = ('privacy',)
     search_fields = ('title',)
@@ -61,6 +61,7 @@ class CastAdmin(MapAdmin):
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
 
+        # Auto save the cast with the author set to the current user
         for instance in instances:
             if isinstance(instance, models.Media): #Check if it is the correct type of inline
                 if request.user.is_authenticated():
@@ -123,15 +124,15 @@ class LocastUserProfileAdmin(admin.ModelAdmin):
 
 
 class VideoMediaAdmin(MapAdmin):
-    fields = ('title', 'location', 'language', 'cast', 'file')
+    fields = ('cast', 'caption', 'capture_time', 'location', 'file')
 
 
 class ImageMediaAdmin(MapAdmin):
-    fields = ('title', 'location', 'language', 'cast', 'file')
+    fields = ('cast', 'caption', 'capture_time', 'location', 'file')
 
 
 class LinkedMediaAdmin(MapAdmin):
-    fields = ('language', 'cast', 'url', 'content_provider', 'video_id')
+    fields = ('cast', 'url', 'content_provider', 'video_id')
 
 
 admin.site.register(models.Tag, admin.ModelAdmin)
@@ -154,4 +155,3 @@ admin.site.register(models.Collection, CollectionAdmin)
 admin.site.register(models.VideoMedia, VideoMediaAdmin)
 admin.site.register(models.ImageMedia, ImageMediaAdmin)
 admin.site.register(models.LinkedMedia, LinkedMediaAdmin)
-

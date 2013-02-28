@@ -20,6 +20,13 @@ DATABASES = {
     }
 }
 
+# See: https://docs.djangoproject.com/en/dev/topics/cache/
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 LANGUAGE_CODE = 'en-us'
 LANGUAGES = (
     ('en', 'English'),
@@ -83,4 +90,3 @@ FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.8.swf'
 
 # Enables google analytics
 GOOGLE_ANALYTICS_ID = None
-
