@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from traveler.models import Cast, Collection, LocastUser
 
 api_index = [

@@ -6,7 +6,7 @@
 
 <div id="login-container" class="hidden content-card">
     <h4 class="title">{% trans "Login to Your Account" %}</h4> <h4 id="login-container-close">{% trans "Close" %}</h4>
-    <form id="login-form" method="post" action="{% url locast.auth.views.login %}">
+    <form id="login-form" method="post" action="{% url "locast.auth.views.login" %}">
         {% trans "Email" %}
         <input id="id_username" type="text" maxlength="254" name="username">
         {{ login_form.password.label_tag }}
@@ -14,7 +14,7 @@
         <input type="submit" value="login" class="locast-button" /> 
         <input type="hidden" name="next" value="{{ next }}" /> 
     </form> 
-    <p class="locast-help"><a href="{% url register %}">{% trans "Register</a> a new account if you don't have one" %}</p> 
+    <p class="locast-help"><a href="{% url "register" %}">{% trans "Register</a> a new account if you don't have one" %}</p> 
 </div><!-- end login-container -->
 
 <div id="main-content">
@@ -38,7 +38,7 @@
 <div id="language-selector">
     {% get_available_languages as languages %}
     {% for lang in languages %}
-    <a href="{% url set_language %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
+    <a href="{% url "set_language" %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
         {{lang.1}} 
         {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
     </a>

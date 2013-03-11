@@ -9,12 +9,12 @@
       "is_active": true,
       "is_superuser": false,
       "is_staff": false,
-      "last_login": "2013-02-21T17:45:54.090",
+      "last_login": "2013-02-21T17:45:54.090Z",
       "groups": [],
       "user_permissions": [],
       "password": "pbkdf2_sha256$10000$J7th18SJ5BIM$01rYoLnzfc0/hHH3+nAN3HqGPPPw2X95gKxiYanbso4=",
       "email": "test@example.org",
-      "date_joined": "2013-02-21T17:45:54.090"
+      "date_joined": "2013-02-21T17:45:54.090Z"
     }
   },
   {
@@ -45,8 +45,8 @@
     "fields":{
       "uuid": "b5b6c4ce-3b9e-44a9-b9cc-7a9a6b777aba",
       "author": 1,
-      "created": "2013-02-20T22:56:54.881",
-      "modified": "2013-02-20T22:56:54.893",
+      "created": "2013-02-20T22:56:54.881Z",
+      "modified": "2013-02-20T22:56:54.893Z",
       "favorited_by": [],
       "privacy": 2,
       "location": null,

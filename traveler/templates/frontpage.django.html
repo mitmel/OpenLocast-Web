@@ -31,7 +31,7 @@
             </a>
         </div>
         <div class="login-info-item"><a id="edit-profile-link" href="#">Edit Profile</a></div>
-        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url logout %}?next={{request.path}}">Logout</a></div>
+        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url "logout" %}?next={{request.path}}">Logout</a></div>
     </div>
 {% endif %}
 {% endblock login %}
@@ -57,7 +57,7 @@
         <p class="locast-help">{% trans "Edit your password and other information using the form below" %}</p>
     </div>
     <div>  
-        <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url edit_profile %}">
+        <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url "edit_profile" %}">
         {% for field in edit_profile_form %}
             {{ field.label_tag }}<br/>{{ field }}<br/>
         {% endfor %}

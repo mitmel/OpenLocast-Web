@@ -8,11 +8,11 @@ MAX_PHOTO_SIZE = '{{MAX_PHOTO_SIZE}}';
 GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
 FLOWPLAYER_SWF = '{{ FLOWPLAYER_SWF }}'
 
-COLLECTION_API_URL = '{% url collection_api %}';
-CAST_API_URL = '{% url cast_api %}';
-USER_API_URL = '{% url user_api %}';
-FEATURES_API_URL = '{% url geofeatures_api %}'
-SEARCH_API_URL = '{% url search_api %}';
+COLLECTION_API_URL = '{% url "collection_api" %}';
+CAST_API_URL = '{% url "cast_api" %}';
+USER_API_URL = '{% url "user_api" %}';
+FEATURES_API_URL = '{% url "geofeatures_api" %}'
+SEARCH_API_URL = '{% url "search_api" %}';
 
 MAP_DEFAULTS = {
     zoom: {{DEFAULT_ZOOM}},
@@ -67,7 +67,7 @@ $.ajaxSetup({
 // maybe find a different way to do current_path
 function update_auth_redirects() {
     var next = get_next();
-    $('#logout-link').attr('href', '{% url logout%}?next=' + next);
+    $('#logout-link').attr('href', '{% url "logout" %}?next=' + next);
     $('#login-form input[name$="next"]').val(next);
 }
 

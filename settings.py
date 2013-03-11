@@ -31,9 +31,7 @@ DATABASES = {
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 
-# This should always be UTC. All timezone conversion should happen on the client side.
-# TODO: Make use of Django 1.4 timezone magic
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -52,6 +50,9 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = False
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
 
 # The host address of this installation, i.e. http://locast.mit.edu
 # settings_local

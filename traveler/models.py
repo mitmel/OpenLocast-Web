@@ -403,9 +403,9 @@ class LinkedMedia(Media):
     class Meta:
         verbose_name = _('link')
 
-    url = models.URLField(verify_exists=True)
+    url = models.URLField()
 
-    screenshot = models.URLField(verify_exists=True, null=True, blank=True)
+    screenshot = models.URLField(null=True, blank=True)
 
     content_provider = models.CharField(max_length=32, choices=CONTENT_PROVIDERS)
 

@@ -9,7 +9,7 @@ class UserAPI(rest.ResourceView):
     ruleset = {
         # Authorable
         'display_name'  :    { 'type' : 'string' },
-        'created'       :    { 'type' : 'datetime' },
+        'joined'        :    { 'type' : 'datetime', 'alias' : 'date_joined' },
     }
 
     @optional_http_auth

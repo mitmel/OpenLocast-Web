@@ -20,7 +20,7 @@ ruleset = {
     'modified'      :    { 'type' : 'datetime' },
 
     # Privately Authorable
-    'privacy'       :    { 'type' : 'string' },
+    'privacy'       :    { 'type' : 'int' },
 
     # Taggable
     'tags'          :    { 'type' : 'list' },
@@ -170,7 +170,7 @@ class CastAPI(rest.ResourceView):
 
     @require_http_auth
     def post_media(request, cast_id):
-        data = get_json(request.raw_post_data)
+        data = get_json(request.body)
         cast = get_object(models.Cast, cast_id)
         
         if not cast.allowed_edit(request.user):
@@ -258,7 +258,7 @@ class CastAPI(rest.ResourceView):
             mime_type = media.path_to_mimetype(file.name, media.content.MIME_TYPES)
 
         else:
-            media.content.create_file_from_data(request.raw_post_data, mime_type)
+            media.content.create_file_from_data(request.body, mime_type)
 
         if not mime_type:
             raise exceptions.APIBadRequest('Invalid file type!')
@@ -371,7 +371,7 @@ def cast_from_post(request, cast = None):
     if cast:
         data = api_serialize(cast)
 
-    data.update(get_json(request.raw_post_data))
+    data.update(get_json(request.body))
 
     if not cast:
         data['author'] = request.user.id
