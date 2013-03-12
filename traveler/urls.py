@@ -23,7 +23,7 @@ urlpatterns += patterns('locast.i18n.views',
     url(r'^setlang/$', 'set_language', name='set_language'),
 )
 
-urlpatterns += patterns('locast.auth.views',
+urlpatterns += patterns('django.contrib.auth.views',
     url(r'^login/$', 'login', name='login'),
     url(r'^logout/$', 'logout', name='logout'),
 )

@@ -1,9 +1,12 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from locast.api import *
 from locast.api import rest, qstranslate, exceptions
 from locast.auth.decorators import optional_http_auth, require_http_auth
 
 from traveler.models import LocastUser
 
+@csrf_exempt
 class UserAPI(rest.ResourceView):
 
     ruleset = {

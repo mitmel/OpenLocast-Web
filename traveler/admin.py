@@ -4,7 +4,8 @@ from django.contrib.admin import widgets
 from django.contrib.gis import admin
 from django.utils.translation import ugettext_lazy as _
 
-from locast.admin import UserActivityAdmin, UserConfirmationAdmin, FlagAdmin
+from locast.admin import UserActivityAdmin, FlagAdmin
+from locast.auth.admin import LocastUserAdmin
 
 from traveler import models 
 
@@ -114,10 +115,8 @@ class CollectionAdmin(MapAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('body', 'author', 'created')
 
-    
-class LocastUserAdmin(MapAdmin):
-    list_display = ('display_name', 'email', 'first_name', 'last_name', 'username', 'is_staff', 'date_joined')
 
+class LocastUserAdmin(MapAdmin, LocastUserAdmin): pass
 
 class LocastUserProfileAdmin(admin.ModelAdmin):
     list_display = ('user',)
@@ -140,8 +139,10 @@ admin.site.register(models.Flag, FlagAdmin)
 
 admin.site.register(models.UserActivity, UserActivityAdmin)
 
-if settings.USER_CONFIRMATION:
-    admin.site.register(models.UserConfirmation, UserConfirmationAdmin)
+if 'locast.userconfirmation' in settings.INSTALLED_APPS:
+    from locast.userconfirmation.models import UserConfirmation
+    from locast.userconfirmation.admin import UserConfirmationAdmin
+    admin.site.register(UserConfirmation, UserConfirmationAdmin)
 
 admin.site.register(models.Boundry, MapAdmin)
 

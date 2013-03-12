@@ -1,3 +1,5 @@
+from django.views.decorators.csrf import csrf_exempt
+
 from locast.api import *
 from locast.api import rest, qstranslate, exceptions
 from locast.auth.decorators import require_http_auth, optional_http_auth
@@ -19,6 +21,7 @@ ruleset = {
     'within'        :    { 'type': 'geo_polygon', 'alias' : 'path__intersects' },
 }
 
+@csrf_exempt
 class CollectionAPI(rest.ResourceView):
 
     @optional_http_auth

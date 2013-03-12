@@ -5,7 +5,7 @@
 
 {% if success %}
 <div class="static-form cleared">
-<h2>{% trans "Your profile has been updated! Redirecting "%}<a href="{% url frontpage %}">{% trans "home..." %}</a></h2>
+<h2>{% trans "Your profile has been updated! Redirecting "%}<a href="{% url "frontpage" %}">{% trans "home..." %}</a></h2>
 <script type="text/javascript">
     setTimeout(function() {
         window.location = '{% url frontpage %}';
@@ -15,7 +15,8 @@
 {% else %}
 <div class="static-form cleared">
    <h2>{% trans "Edit your profile" %}</h2>  
-<form method="post" enctype="multipart/form-data" action="{% url edit_profile %}" class="cleared">
+<form method="post" enctype="multipart/form-data" action="{% url "edit_profile" %}" class="cleared">
+    {% csrf_token %}
     {% for field in form %}
         {{ field.label_tag }}{{ field }}{{ field.errors }}
     {% endfor %}

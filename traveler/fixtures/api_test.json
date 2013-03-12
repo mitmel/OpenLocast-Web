@@ -1,31 +1,23 @@
 [
   {
     "pk": 1,
-    "model": "auth.user",
+    "model": "traveler.locastuser",
     "fields": {
       "username": "test",
       "first_name": "Test",
       "last_name": "User",
+      "display_name": "Test U.",
+      "language": "en",
       "is_active": true,
       "is_superuser": false,
       "is_staff": false,
       "last_login": "2013-02-21T17:45:54.090Z",
+      "location": null,
       "groups": [],
       "user_permissions": [],
       "password": "pbkdf2_sha256$10000$J7th18SJ5BIM$01rYoLnzfc0/hHH3+nAN3HqGPPPw2X95gKxiYanbso4=",
       "email": "test@example.org",
       "date_joined": "2013-02-21T17:45:54.090Z"
-    }
-  },
-  {
-    "pk": 1,
-    "model": "traveler.locastuser",
-    "fields": {
-      "user_permissions": [],
-      "language": "en",
-      "display_name": "Test U.",
-      "location": null,
-      "groups": []
     }
   },
  {

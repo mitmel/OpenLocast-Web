@@ -6,7 +6,8 @@
 
 <div id="login-container" class="hidden content-card">
     <h4 class="title">{% trans "Login to Your Account" %}</h4> <h4 id="login-container-close">{% trans "Close" %}</h4>
-    <form id="login-form" method="post" action="{% url "locast.auth.views.login" %}">
+    <form id="login-form" method="post" action="{% url "django.contrib.auth.views.login" %}">
+        {% csrf_token %}
         {% trans "Email" %}
         <input id="id_username" type="text" maxlength="254" name="username">
         {{ login_form.password.label_tag }}

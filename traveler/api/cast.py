@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import translation
+from django.views.decorators.csrf import csrf_exempt
 
 from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, exceptions, form_validate, \
     geojson_serialize, get_json, get_object, get_param, paginate, rest, qstranslate
@@ -37,7 +38,7 @@ ruleset = {
     'datetime'       :    { 'type' : 'datetime' },
 }
 
-#TODO: Make this CSRF exempt so we can enable CSRF site-wide
+@csrf_exempt
 class CastAPI(rest.ResourceView):
 
     @optional_http_auth
