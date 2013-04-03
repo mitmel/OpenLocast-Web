@@ -27,6 +27,13 @@ CACHES = {
     }
 }
 
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+#
+# This will generally be the same as your HOST setting, without the protocol
+# e.g. locast.mit.edu
+ALLOWED_HOSTS = []
+
 LANGUAGE_CODE = 'en-us'
 LANGUAGES = (
     ('en', 'English'),
@@ -68,6 +75,12 @@ STATIC_URL = FULL_BASE_URL + '/static/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
+
+# APPS that are unique to this instance.
+LOCAL_APPS = (
+    # Uncomment this to turn on userconfirmation
+    # 'locast.userconfirmation',
+)
 
 ############ 
 # Locast-specific settings

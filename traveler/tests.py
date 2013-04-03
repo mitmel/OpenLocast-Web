@@ -127,8 +127,11 @@ class ApiTestBasic(ApiTestCase):
 
     def test_index(self):
         index = self.c.get_index()
-        self.assertIsInstance(index, list)
-        for entry in index:
+        print type(index)
+        self.assertIsInstance(index, dict)
+        resources = index['resources']
+        self.assertIsInstance(resources, list)
+        for entry in resources:
             self.assertIn(self.c.get_full_url(entry['uri']), self.full_urls)
 
     def test_types(self):

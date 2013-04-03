@@ -17,6 +17,7 @@ urlpatterns += patterns('traveler.views',
 urlpatterns += patterns('traveler.views',
     url(r'^traveler.js', 'traveler_js', name='traveler_js'),
     url(r'^templates.js$', 'templates_js', name='templates_js'),
+    url(r'^sync_code.png$', 'sync_code_png', name='sync_code_png'),
 )
 
 urlpatterns += patterns('locast.i18n.views',

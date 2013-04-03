@@ -61,7 +61,7 @@
             </form> 
             {% endif %}
             <br /><a href="#!user/{{cast.author.id}}/" class="author cast-author">{{cast.author.display_name}}</a></h3>
-        <p class="cast-date date" title="{{cast.created|date:"Y-m-d\TH:i:s\Z"}}">{{cast.created|date:"Y-m-d\TH:i:s\Z"}}</p>
+        <p class="cast-date date" title="{{cast.datetime|date:"Y-m-d\TH:i:s\Z"}}">{{cast.datetime|date:"Y-m-d\TH:i:s\Z"}}</p>
         
     </div>
     {% comment %}

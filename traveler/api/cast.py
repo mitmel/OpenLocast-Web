@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.utils import translation
 from django.views.decorators.csrf import csrf_exempt
 
-from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, exceptions, form_validate, \
+from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, favorite as favorite_api, exceptions, form_validate, \
     geojson_serialize, get_json, get_object, get_param, paginate, rest, qstranslate
 from locast.auth.decorators import require_http_auth, optional_http_auth
 
@@ -307,17 +307,7 @@ class CastAPI(rest.ResourceView):
         cast = get_object(models.Cast, id=cast_id)
         favorite = get_param(request.POST, 'favorite')
 
-        if not favorite:
-            raise exceptions.APIBadRequest('Incorrect data posted. Should be favorite=true or favorite=false.')
-
-        favorite = (favorite in ['true','True'])
-
-        if favorite:
-            cast.favorite(request.user)
-        else:
-            cast.unfavorite(request.user)
-
-        return APIResponseOK(content={'is_favorite':cast.is_favorited_by(request.user)})
+        return favorite_api.post_favorite(request, cast)
 
 
     @require_http_auth

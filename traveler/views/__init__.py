@@ -1,7 +1,9 @@
 import codecs
 import settings
+import StringIO
 
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.sites.models import get_current_site
 from django.shortcuts import render_to_response, get_object_or_404
@@ -123,7 +125,7 @@ def traveler_js(request):
 
 def templates_js(request):
 
-    # TODO: Do this in a not terrible way
+    # TODO: Do this in a not terrible way, and a way that keeps themes in mind
     template_dir = settings.STATIC_ROOT + 'js/templates/'
 
     template_files = [
@@ -150,3 +152,36 @@ def templates_js(request):
     content = 'var templates = ' + simplejson.dumps(templates);
 
     return HttpResponse(status=200, mimetype='application/json; charset=utf-8', content=content)
+
+
+def sync_code_png(request):
+    import qrcode
+    data = settings.HOST + reverse('api_index')
+
+    # If there is an authenticated user, append their email
+    # OR username to the url to help prefil login info
+    if request.user.is_authenticated():
+        user = request.user
+        if user.email:
+            data = data + '?email=' + user.email
+        else:
+            data = data + '?username=' + user.username
+
+    # make the code
+    # img = qrcode.make(data)
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=5,
+        border=4,
+    )
+
+    qr.add_data(data)
+    img = qr.make_image()
+
+    # write it to temp string
+    img_io = StringIO.StringIO()
+    img.save(img_io, 'PNG')
+    img_io.seek(0)
+
+    return HttpResponse(status=200, mimetype='image/png;', content=img_io)
