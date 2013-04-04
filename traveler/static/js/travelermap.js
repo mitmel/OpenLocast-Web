@@ -235,7 +235,6 @@ self.init = function(div) {
                 }
 
                 $('#tooltip .body').html(html);                 
-                format_date($('.date', '#tooltip'), false);
             },
 
             featureunhighlighted: function(evt) {

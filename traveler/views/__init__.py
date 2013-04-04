@@ -44,7 +44,7 @@ def content_page(request, fragment):
 
     cast = get_object_or_404(model, id=id)
 
-    return render_to_response('cast_view.django.html', locals(), context_instance = RequestContext(request))
+    return render_to_response('cast_content_page.django.html', locals(), context_instance = RequestContext(request))
 
 
 def register(request):

@@ -99,38 +99,24 @@ function form_to_json(form_jq) {
     return JSON.stringify(obj, null, 2);
 }
 
-function format_date(jq_obj, pretty) {
-    var format = 'M d, yy';
-
-    // force pretty. auto pretties anything up to a month old.
-    if ( pretty ) {
-        jq_obj.prettyDate(format);
-    }
-
-    else { 
-        jq_obj.each(function() {
-            var _this = $(this);
-            var date = new Date(_this.html());
-            var res = $.datepicker.formatDate(format, date);
-            _this.html(res);
-        });
-    }
+function format_date(jq_obj) {
+    jq_obj.each(function() {
+        var _this = $(this);
+        var out_str = '';
+        var datetime = moment(_this.html());
+        var this_morn = moment().startOf('day')
+        
+        if (datetime.isAfter(this_morn)) {
+            out_str = datetime.fromNow();
+        }
+        else {
+            out_str = datetime.format('D MMM YY @ h:mm a');
+        }
+            
+        _this.html(out_str);
+    });
 }
 
 function mapValue(value, istart, istop, ostart, ostop) {
        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
-
-function is_same_day(rawstr1, rawstr2){
-     var date1 = new Date((rawstr1 || "").replace(/-/g,"/").replace(/[TZ]/g," "));
-     var date2 = new Date((rawstr2 || "").replace(/-/g,"/").replace(/[TZ]/g," "));
-
-     if ( date1.getDate() == date2.getDate() &&
-          date1.getMonth() == date2.getMonth() &&
-          date1.getYear() == date2.getYear() ) {
-        return true;
-     }
-
-    return false;
-}
-
