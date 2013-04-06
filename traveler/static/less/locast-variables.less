@@ -1,0 +1,161 @@
+@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Nunito:400,300");
+
+
+// Site typography
+// --------------------------------------------------
+@sansFontFamily:        "Nunito", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@displayFontFamily:     'Permanent Marker', "Helvetica Neue", Helvetica, Arial, sans-serif;
+@serifFontFamily:       Georgia, "Times New Roman", Times, serif;
+@monoFontFamily:        Monaco, Menlo, Consolas, "Courier New", monospace;
+
+@baseFontSize:          14px;
+@baseFontFamily:        @sansFontFamily;
+@baseLineHeight:        @baseFontSize*1.618;
+@altFontFamily:         @serifFontFamily;
+@empDescriptionFamily: @serifFontFamily;
+
+@headingsFontFamily:    inherit; // empty to use BS default, @baseFontFamily
+@headingsFontWeight:    400;    // instead of browser default, bold
+@headingsColor:         inherit; // empty to use BS default, @textColor
+
+
+// Site colors
+// --------------------------------------------------
+@olBlue:              #2DA9BD;
+
+
+@transparentOverlay:    rgba(100,100,100, .5);
+@primaryAccent:         @olBlue;
+@secondaryAccent:       @grayDark;
+@bodyBackground:        @white;
+@textColor:             @grayDark;
+@reversedTextColor:     @white;
+@linesColor:            @grayDark;
+@cardColor:             @white;
+
+//switch site icons to white based on lightness of background
+//higher number is more sensitive 
+@autoIconThreshold:     70%;
+@autoIcon:              true;
+
+
+// Global values
+// --------------------------------------------------
+
+//icon dimensions (twitter bootstrap glyphicons)
+@iconHeight:                    14px;
+@iconWidth:                     14px;
+
+//if using card styles
+@cardBorderWidth:                10;
+
+
+// Map Markers
+// --------------------------------------------------
+
+
+
+// Collection Preview Style 
+// --------------------------------------------------
+@collectionPreviewLayout:       block;    
+
+
+// Cast Preview Style 
+// --------------------------------------------------
+
+@castPreviewStyle:               cast-preview-card-fixed;
+
+// style used for cast previews in collection preview
+@collectionCastPreviewStyle:    @castPreviewStyle;
+
+
+// Cast Style 
+// --------------------------------------------------
+
+// layouts: centered, columns, description-emphasis-(centered or columns), media-emphasis-(centered or columns)
+@castLayoutStyle:               columns;
+
+// cast media styles: (cast-media or cast-preview) + (centered, bottom or card) + fixed
+@castMediaStyle:                 cast-media-bottom;
+
+// if using emphasis style: height of emphasized area added to top of cast
+@castEmphasisHeight:             450px;
+
+
+
+// Cast media sizing
+// --------------------------------------------------
+
+//dimensions for cast media
+@castMediaHeight:               160px;
+@castMediaWidth:                @castMediaHeight;
+
+//spacing between media in cast
+@castMediaSpacing:              8px;
+
+//dimensions for single cast media
+@castSingleMediaHeight:      400px;
+
+
+// Collection cast preview sizing
+// --------------------------------------------------
+
+//dimensions for preview images in list of collections
+@collectionListHeight:          80px;
+@collectionListWidth:           @collectionListHeight;
+
+//spacing between cast previews in collection list
+@collectionListSpacing:         4px;
+
+
+// Cast list preview image sizing
+// --------------------------------------------------
+
+//dimensions for preview images in list of casts
+@castListHeight:                140px;
+@castListWidth:                 @castListHeight;
+
+//spacing between casts in cast list
+@castListSpacing:               16px;
+
+
+// Collection cast preview sizing in cast
+// --------------------------------------------------
+
+//dimensions for cast collection preview
+@castCollectionHeight:          50px;
+@castCollectionWidth:           50px;
+
+//spacing between collection preview in cast
+@castCollectionPreviewSpacing: 4px;
+
+
+// Search results sizing
+// --------------------------------------------------
+
+//dimensions for preview images in search results
+@searchResultsHeight:           80px;
+@searchResultsWidth:            @searchResultsHeight;
+
+//spacing between search result previews
+@searchResultSpacing:           8px;
+
+//dimension for search result user image
+@searchResultUserHeight:        30px;
+@searchResultUserWidth:         @searchResultUserHeight;
+
+
+// User image sizing
+// --------------------------------------------------
+
+//dimensions for user image
+@userImageHeight:               40px;
+@userImageWidth:                40px;
+
+//dimensions for large user image
+@userImageHeightLarge:          80px;
+@userImageWidthLarge:           80px;
+
+
+
+

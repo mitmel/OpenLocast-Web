@@ -1,8 +1,7 @@
 var COLLECTION_PATH_COLOR = '#35BED3';
 
-CLUSTER_DISTANCE = 40;
+CLUSTER_DISTANCE = 30;
 CLUSTER_THRESHOLD = 2;
-MAX_CLUSTER_SIZE = 75;
 
 CAST_STYLE = {
     backgroundGraphic: '${getBackground}',
@@ -28,6 +27,8 @@ CAST_STYLE = {
     fontColor: 'white',
 }
 
+CAST_OPEN_STYLE = _.clone(CAST_STYLE);
+
 CAST_HOVER_STYLE = {
     externalGraphic: '${getIcon}',
     backgroundGraphic: '${getBackground}'
@@ -48,9 +49,6 @@ CAST_ICON = {
 // Calculates the dimensions of the cluster icon
 CALC_CLUSTER_ICON = function(c_length) {
     var size = mapValue(c_length, 2, 60, 40,90);
-    if ( size > MAX_CLUSTER_SIZE ) {
-        size = MAX_CLUSTER_SIZE;
-    }
     var x_off = -size*.5;
     var y_off = -size*.5-(size*.01);
     var bx_off = -size*.2;
@@ -174,6 +172,19 @@ CAST_CONTEXT = {
     }
 }
 
+//copy default cast context
+CAST_OPEN_CONTEXT = _.clone(CAST_CONTEXT);
+
+//cast open icon
+CAST_OPEN_CONTEXT['getIcon'] = function(feature) { 
+        if ( feature.cluster ) {
+            return THEME_URL + 'img/castClusterHover.png';
+        }
+        else {
+            return THEME_URL + 'img/castMarkerHover.png';
+        }
+}
+
 CAST_HOVER_CONTEXT = {
     getIcon: function(feature) { 
         if ( feature.cluster ) {
@@ -240,3 +251,4 @@ BOUNDRY_STYLE = {
     strokeColor:'#fff',
     strokeDashstyle: 'solid'
 }
+

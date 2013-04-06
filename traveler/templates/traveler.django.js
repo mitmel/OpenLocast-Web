@@ -3,8 +3,6 @@ BASE_URL = '{{ BASE_URL }}';
 MEDIA_URL = '{{ MEDIA_URL }}';
 STATIC_URL = '{{ STATIC_URL }}';
 THEME_URL = '{{ THEME_URL }}';
-MAX_VIDEO_SIZE = '{{MAX_VIDEO_SIZE}}';
-MAX_PHOTO_SIZE = '{{MAX_PHOTO_SIZE}}';
 GOOGLE_API_KEY = '{{ GOOGLE_API_KEY }}';
 FLOWPLAYER_SWF = '{{ FLOWPLAYER_SWF }}'
 
@@ -17,8 +15,6 @@ SEARCH_API_URL = '{% url "search_api" %}';
 MAP_DEFAULTS = {
     zoom: {{DEFAULT_ZOOM}},
     center: [{{ DEFAULT_LON }}, {{ DEFAULT_LAT }}],
-    max_zoom: {{MAX_ZOOM}},
-    min_zoom: {{MIN_ZOOM}},
 }
 
 MAP_BOUNDRY = {{boundry|safe}};
@@ -67,7 +63,7 @@ $.ajaxSetup({
 // maybe find a different way to do current_path
 function update_auth_redirects() {
     var next = get_next();
-    $('#logout-link').attr('href', '{% url "logout" %}?next=' + next);
+    $('#logout-link').attr('href', '{% url "logout"%}?next=' + next);
     $('#login-form input[name$="next"]').val(next);
 }
 
@@ -99,24 +95,38 @@ function form_to_json(form_jq) {
     return JSON.stringify(obj, null, 2);
 }
 
-function format_date(jq_obj) {
-    jq_obj.each(function() {
-        var _this = $(this);
-        var out_str = '';
-        var datetime = moment(_this.html());
-        var this_morn = moment().startOf('day')
-        
-        if (datetime.isAfter(this_morn)) {
-            out_str = datetime.fromNow();
-        }
-        else {
-            out_str = datetime.format('D MMM YY @ h:mm a');
-        }
-            
-        _this.html(out_str);
-    });
+function format_date(jq_obj, pretty) {
+    var format = 'M d, yy';
+
+    // force pretty. auto pretties anything up to a month old.
+    if ( pretty ) {
+        jq_obj.prettyDate(format);
+    }
+
+    else { 
+        jq_obj.each(function() {
+            var _this = $(this);
+            var date = new Date(_this.html());
+            var res = $.datepicker.formatDate(format, date);
+            _this.html(res);
+        });
+    }
 }
 
 function mapValue(value, istart, istop, ostart, ostop) {
        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
+
+function is_same_day(rawstr1, rawstr2){
+     var date1 = new Date((rawstr1 || "").replace(/-/g,"/").replace(/[TZ]/g," "));
+     var date2 = new Date((rawstr2 || "").replace(/-/g,"/").replace(/[TZ]/g," "));
+
+     if ( date1.getDate() == date2.getDate() &&
+          date1.getMonth() == date2.getMonth() &&
+          date1.getYear() == date2.getYear() ) {
+        return true;
+     }
+
+    return false;
+}
+

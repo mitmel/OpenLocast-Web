@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'traveler',
     'django.contrib.admin',
+    'django.contrib.markup',
 )
 
 # A sample logging configuration. The only tangible logging

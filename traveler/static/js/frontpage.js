@@ -1,15 +1,16 @@
 var main_map = null;
 
+var locast = locast || {};
+
 /********/
 /* INIT */
 /********/
 
 $(function() {
     // map
-    on_resize();
     setup_map();
     collection_list_refresh();
-    map_refresh();
+    //map_refresh();
 
     // dhtml
     activateDHTML();
@@ -24,39 +25,33 @@ $(function() {
     });
 
     // If no URL is specified, redirect to home
-    if (location.hash == '') { frontpage_app.setLocation('#!home'); }
+    if (location.hash == '') { frontpage_app.setLocation('#!/home/'); }
 });
 
-function on_resize() {
 
-    var height = $(window).height();
-    var width = $(window).width(); 
+/***************
+ * LAYOUT      *
+ ***************/
 
-    //if we are on a static form then make the page the height of the form so that scrolling works on mobile
-    if($('#main-content .static-form').length == 0) {
-         $('#main-map').add('#content-details').height(height);
+function calculate_cast_layout(container){
+
+    // if description is absolutely positioned assume description-emphasis layout
+    var des_pos = $('.cast-description', container).css('position');
+    if(des_pos == 'absolute'){
+        var desc_height = $('.cast-description', container).outerHeight();
+        console.log(desc_height);
+        $('.cast-content', container).css('margin-top', desc_height);
+        $('#cast-description-edit-button').bind('click', function(){
+            calculate_cast_layout(container);
+            $('#cast-description-edit-button').unbind('click');
+        })
     }
-    else {
-        $('#footer').add('#fdbk_tab').addClass('form');
-        var min_height = height
-            - parseInt($('#main-content .static-form').css('margin-top')) 
-            - $('#header').height()
-            - 10;
-        $('#main-content .static-form').css('min-height',min_height);    
-        $('body').height($('#main-content .static-form').height()).css('overflow', 'auto');
-    }
-
-    $('#main-map').width(width);
-    $('#map-list').height(height-100);
-    map_cast_list_height();
 }
 
-$(window).resize(on_resize);
 
-function map_cast_list_height() {
-    var height = $(window).height - parseInt( $('#footer').height());
-    $('#map-info-container').height(height);
-}
+/***************
+ * INTERACTION *
+ ***************/
 
 function activateDHTML(){
 
@@ -77,43 +72,28 @@ function activateDHTML(){
         reset_map();
     });
 
-    //view switcher
-    $('#map-info-container').click(function(e){
-        if($(e.target).is('#map-cast-list-title a')||$(e.target).is('#map-cast-list-title li')){
-            return;
-        }     
-        $('#view-switch-map').addClass('selected');
-        $('#view-switch-list').removeClass('selected');
-        $('#map-info-container').fadeOut(100);
-    });
-
-    $('#view-switcher a').click(function(e){
-        var isMap = $(this).hasClass('map');
-        if(isMap) {
-            $('#view-switch-map').addClass('selected');
-            $('#view-switch-list').removeClass('selected');
-            $('#map-info-container').fadeOut(100);
-        }
-        else {
-            $('#view-switch-map').removeClass('selected');
-            $('#view-switch-list').addClass('selected');
-            $('#map-info-container').fadeIn(100);
-        }
-        return false;
-    });
-
-    $('#add-cast-button').click(function() {
+   
+    $('#add-cast-button').add('#add-cast-to-collection').click(function() {
         if (!TRAVELER_USER) {
             prompt_login();
         }
         else {
             activate_cast_add();
         }
+        
+        return false;
     });
 
     // activate login button at top
-    $('#login-link').add('#login-container-close').click(function() {
-        $('#login-container').toggleClass('hidden');
+    $('#login-link').click(function() {
+        //add chrome layer and login to visible elems
+        add_visible_elems(['chrome'],['login']);
+        return false;
+    });
+
+    $('#login-container-close').click(function() {
+        //remove chrome layer and login from visible elems         
+        remove_visible_elems(['chrome'],['login']);        
         return false;
     });
 
@@ -125,15 +105,15 @@ function activateDHTML(){
     });
 
     // Collection and user box draggable
-    $('#cast-add-container').draggable({containment:'#main-map'});
+    $('#cast-add_container').add('#change-location_container').draggable({containment:'#main-map'});
 
     // Collection and user box draggable
-    $('#edit-profile-container').draggable({containment:'#main-map'});
+    $('#edit-profile_container').draggable({containment:'#main-map'});
 
     $('#edit-profile-link').click(function() {
-        $('#edit-profile-container').fadeIn();
+        $('#edit-profile_container').fadeIn();
         $('#edit-profile-close').click(function() {
-            $('#edit-profile-container').fadeOut();
+            $('#edit-profile_container').fadeOut();
             return false;
         }); 
         return false;
@@ -143,276 +123,48 @@ function activateDHTML(){
     $('#cast-list-sort a').click(function() {
         $(this).siblings('.selected').removeClass('selected');
         $(this).addClass('selected');
-        map_cast_list_refresh();
+
+
+        //collection_cast_list_refresh();
     });
 
+    // layer switcher
+
+    $('#layer-switcher .btn').click(function(){
+        //if switcher is active
+        if( $('#layer-switcher').hasClass('inactive') == false){
+            $('#layer-switcher .btn').removeClass('active');
+            $(this).addClass('active');
+            set_visible_elems();
+        }
+    });
+
+
+   //browsebox
+   
+   $('#map-title_container').click(function(){
+       $('#browsebox-container').toggleClass('active'); 
+       if( $('#browsebox-container').hasClass('active')){
+            browsebox_list_refresh();
+       } 
+   }); 
+
+   //logo click
+   
+   $('#project-logo').click(function(){
+
+        //show cast view when logo is clicked
+        if( $('#layer-switch_media').hasClass('active') == false){
+            $('#layer-switcher .btn').removeClass('active');
+            $('#layer-switch_media').addClass('active');
+
+            set_visible_elems();
+        }
+
+   });
 }    
 
-/*******
- * MAP *
- *******/
-
-function setup_map() {
-    main_map = new Map(MAP_DEFAULTS);
-    main_map.init('main-map');
-    main_map.map.events.on({'moveend' : on_map_move });
-    
-    //checkbox for osm
-    $('#osm-checkbox').click(function(){
-        var is_checked = $(this).attr('checked');
-        if(is_checked == 'checked'){
-            main_map.osmLayerSwitcher(true);
-        }else{
-            main_map.osmLayerSwitcher(false);
-        } 
-    });
-}
-
-function reset_map() {
-    var center = MAP_DEFAULTS['center'];
-    main_map.setCenter(center[0], center[1]);
-    main_map.map.zoomTo(MAP_DEFAULTS['zoom']);
-}
-
-CAST_FADE_IN = false;
-function on_map_move() {
-    if ( CAST_FADE_IN ) {
-        // see: frontpage_views.cast_single_view
-        cast_fade_in();
-        CAST_FADE_IN = false;
-    }
-}
-
-// if the map itself is currently being refreshed
-MAP_REFRESH_ACTIVE = false;
-
-// If the cast list is currently being refreshed
-CAST_LIST_REFRESH_ACTIVE = false;
-
-function check_map_loader() {
-    if ( MAP_REFRESH_ACTIVE || CAST_LIST_REFRESH_ACTIVE ) {
-        $('#map-loader').fadeIn();
-    }
-    else {
-        $('#map-loader').fadeOut();
-    }
-}
-
-function map_refresh() {
-    main_map.clearPopups();    
-
-    var query = get_cast_filter_query();
-
-    MAP_REFRESH_ACTIVE = true;
-    check_map_loader();
-
-    // refresh the map
-    $.ajax({
-        async: true,
-        cache: false,
-        url: FEATURES_API_URL + query,
-        success: map_refresh_cb
-    })
-    
-    map_cast_list_refresh();
-}
-
-function map_refresh_cb(data) {
-    main_map.reloadFeatures(data);
-
-    if ( CAST_FILTER['collection'] ) {
-        highlightCollection( CAST_FILTER['collection'] );
-    }
-
-    MAP_REFRESH_ACTIVE = false;
-    check_map_loader();
-}
-
-var map_cast_list_page = 1;
-var pagesize = 9;
-
-function map_cast_list_refresh(maintain_page) {
-    if ( !maintain_page ) {
-        map_cast_list_page = 1;
-    }
-
-    var query = get_cast_filter_query();
-    var orderby = $('.selected', '#cast-list-sort')
-        .attr('id').split('_')[1];
-
-    if ( query ) { query += '&'; }
-    query += 'page=' + map_cast_list_page + '&pagesize=' + pagesize + '&orderby=' + orderby;
-
-    CAST_LIST_REFRESH_ACTIVE = true;
-    check_map_loader();
-   
-    var resp = $.ajax({
-        url: CAST_API_URL + query,
-        cache: false,
-        success: function(data) {
-            var page = resp.getResponseHeader('X-Page-Number');
-            var total = 
-                Math.ceil(resp.getResponseHeader('X-Object-Total')/pagesize);
-
-            map_cast_list_cb(data, page, total);
-        }
-    });
-}
-
-function map_cast_list_cb(data, page, total) {
-    var ca_data = {
-        casts: data
-    }
-
-    $('#map-cast-list-pager').pager({ 
-        pagenumber: page,
-        pagecount: total,
-        buttonClickCallback: function (pgnum) {
-            map_cast_list_page = pgnum;
-            map_cast_list_refresh(true);
-        }
-    });
-
-    var html = '<h3 class="alert">' + gettext('No Casts on Map') + '</h3>';
-    //if there are no casts then insert some html 
-    if( ca_data['casts'].length > 0 ) {
-        html = render_to_string('mapCastList.js.html', ca_data);
-    }
-
-    $('#map-cast-list .list-content').html(html);
-    map_cast_list_height();
-    $('#map-cast-list').hide().fadeIn(200);
-   
-    CAST_LIST_REFRESH_ACTIVE = false;
-    check_map_loader();
-}
-
-
-/**********
- * HEADER *
- **********/
-
-// called when something is done that requires login
-function prompt_login() {
-    $('#login-container').removeClass('hidden');
-    $('#login-alert').fadeIn(300);
-    $('#login-alert').delay(2000).fadeOut(300);
-}
-
-function collection_list_refresh() {
-    $.ajax({
-        url:  BASE_URL + '/api/collection/', 
-        success: collection_list_cb
-    });
-}
-
-function collection_list_cb(data) { 
-    var it_data={
-        collections: data    
-    } 
-
-    var html = render_to_string('collectionHeaderList.js.html', it_data);
-    $('#map-list').add('#intro-map-list').html(html); 
-
-    //map list reveal 
-    $('#current-map').add('#map-list').click(function(){
-        $('#map-list').slideToggle(100);
-        var right = $('#current-map .arrow').hasClass('right');
-        if(right){ 
-            $('#current-map .arrow').removeClass('right').addClass('down');
-        }else{
-             $('#current-map .arrow').removeClass('down').addClass('right');
-        }
-    }); 
-}
-
-/* SEARCH BAR */
-
-function activate_search_bar() {
-    var default_val = gettext('search for maps, casts or people');
-    var search_input = $('#search-input');
-    var search_results = $('#search-results');    
-   
-    // keep track if search is active
-    var search_active = false;
-
-    search_input.val(default_val);
-
-    var reset_search = function(){
-        search_input.val(default_val);
-        search_active = false;
-        search_results.fadeOut();
-    };
-   
-    //fade out results when they lose focus
-    search_results.attr('tabindex', -1).focusout( function(e){ 
-        search_results.fadeOut();
-    });
-    
-    //on keypress return focus to search input
-    search_results.keydown(function(e){
-         if(e.keyCode == 13 || e.keyCode == 8){
-            e.preventDefault();
-            return false;
-        } else{
-            search_input.focus();
-        }
-    });
- 
-    //set timeout to reset search input when it loses focus
-    search_input.focusout(function(e){ 
-        var reset = setTimeout(reset_search, 300);
-        $(search_input).data('timer', reset);
-    });
-
-    //remove timeout and clear search input when it gains focus
-    search_input.focusin(function() { 
-        clearTimeout($(search_input).data('timer'));
-        if(search_active == false){
-            $(this).val('');
-            search_active = true;
-        }
-    });
-
-    //execute search on pressing enter
-    search_input.keydown(function(e) {
-        if(e.keyCode == 13){
-            e.preventDefault();
-            universal_search(search_input.val());
-            return false;
-        }   
-    });
-
-    search_input.keyup(function() {
-        clearTimeout($(search_input).data('timer'));
-
-        var do_search = function() {
-            universal_search(search_input.val());
-        }
-
-        var wait = setTimeout(do_search, 500);
-        $(search_input).data('timer', wait);
-    });
-}
-
-var last_search = '';
-
-function universal_search(keyword) {
-    if ( keyword.length && !(keyword == last_search) ) {
-        last_search = keyword;
-        $.ajax({
-            url: SEARCH_API_URL,
-            data: {q:keyword},
-            type: 'GET',
-            success: function(result) { 
-                var html = render_to_string('searchResults.js.html', result);
-                $('#search-results').fadeIn(15).html(html);
-            }
-        });
-    }
-}
-
-/****************
+/***************
  * CAST FILTER *
  ***************/
 
@@ -470,14 +222,998 @@ function get_cast_filter_query() {
     return query;
 }
 
+
+/*******
+ * MAP *
+ *******/
+
+function setup_map() {
+
+    locast.main_map = locast.map('main-map', MAP_DEFAULTS);
+
+
+    //set map container to window size
+    //$('#main-map').height($(window).height()).width($(window).width());
+    
+    //main_map = new Map(MAP_DEFAULTS);
+    //main_map.init('main-map');
+    //main_map.map.events.on({'moveend' : on_map_move });
+    
+    $(window).resize(function(){
+        //hack: map goes blank on resize unless re-render is triggered
+        //main_map.map.zoomOut();
+        //main_map.map.zoomIn(); 
+    });  
+
+    //checkbox for osm
+    $('#osm-checkbox').click(function(){
+        var is_checked = $(this).attr('checked');
+        if(is_checked == 'checked'){
+            //main_map.osmLayerSwitcher(true);
+        }else{
+            //main_map.osmLayerSwitcher(false);
+        } 
+    }); 
+}
+
+function reset_map() {
+    var center = MAP_DEFAULTS['center'];
+    //main_map.setCenter(center[0], center[1]);
+    //main_map.map.zoomTo(MAP_DEFAULTS['zoom']);
+}
+
+
+
+CAST_FADE_IN = false;
+function on_map_move() {
+    
+    if ( CAST_FADE_IN ) {
+        // see: frontpage_views.cast_single_view
+        cast_fade_in();
+        CAST_FADE_IN = false;
+    }
+}
+
+function map_refresh() {
+    //main_map.clearPopups();    
+
+    var query = get_cast_filter_query();
+
+    $('#map-loader').addClass('active');
+
+    // refresh the map
+    $.ajax({
+        async: true,
+        cache: false,
+        url: FEATURES_API_URL + query,
+        success: map_refresh_cb
+    })
+}
+
+function map_refresh_cb(data) {
+    //main_map.clearFeatures();
+    //main_map.renderFeatures(data); 
+
+    locast.main_map.renderCasts(data.casts);
+
+    $('#map-loader').removeClass('active');
+
+}
+
+
+/*********
+ * LISTS * 
+ *********/
+
+function browsebox_list_refresh() {
+    $.ajax({
+        url:  BASE_URL + '/api/collection/', 
+        success: function(data){
+             var html = _.template($('#browsebox-list-templ').html(), {collections: data});
+            $('#browsebox-collection-list').html(html);
+        }
+    });
+}
+
+
+//load list of collections
+
+function collection_list_refresh() {
+    $.ajax({
+        url:  BASE_URL + '/api/collection/', 
+        success: collection_list_cb
+    });
+}
+
+//render list of collections and get preview of related casts
+
+function collection_list_cb(data) { 
+    var html = _.template($('#collection-list-templ').html(), {collections: data});
+    $('#collection-list').html(html); 
+   
+    //get and render preview of the collection's casts
+
+    
+    _.each(data, function(collection){
+            collection_preview_list(collection, '#collection-list-preview_', 10);
+    });
+}
+
+function collection_preview_list(collection, container, preview_num){
+    var preview_cast_num = preview_num; 
+    var collection_preview_query = '?collection='+collection.id+'&page='+1+'&pagesize='+preview_cast_num+'&orderby=-created';   
+            $.ajax({
+                url: CAST_API_URL+collection_preview_query,
+                cache: false,
+                success: function(data){
+                    var html = _.template($('#collection-preview-templ').html(),{casts:data});
+                    $(container+collection.id).hide();
+                    $(container+collection.id).html(html).fadeIn();
+                }       
+        })  
+}
+
+
+/* 
+ * CAST LISTS
+ * for showing lists of casts in tag, collection and user views
+ *
+ * expects following elements in markup with ids: 
+ * 
+ * #LISTCONTAINERID
+ *  + -indicator
+ *  + -sort
+ *      + <a> + -sort_ORDERBYARGUMENT
+ */
+
+
+function list_casts(list_container, pagesize, page) {
+  
+    //initialize list
+    if ( !page ) { 
+        page = 1;
+        $('#'+list_container).data('current-page', page);
+        $('#'+list_container).data('requests', []);
+        $('#'+list_container).data('rendered_html', []);
+    }
+
+    //default pagesize
+    if( !pagesize ){ pagesize = 10; }
+
+    //set pagesize
+    $('#'+list_container).data('pagesize', pagesize);
+
+    //activate cast sort control
+    if(page == 1){
+        //clear any previous event listeners
+        $('#'+list_container+'-sort a').unbind('click');
+
+        //bind a new one with this list's settings
+        $('#'+list_container+'-sort a').click(function(){
+             $(this).siblings('.selected').removeClass('selected');
+             $(this).addClass('selected');
+             list_casts(list_container, pagesize); 
+        });
+    }
+
+    //build the query
+    var query = get_cast_filter_query();
+    var orderby = $('.selected', '#'+list_container+'-sort').attr('id').split('_')[1];
+
+    if ( query ) { query += '&'; }
+    query += 'page=' + page + '&pagesize=' + pagesize + '&orderby=' + orderby;
+
+    //show loader
+    $('#'+list_container+'-loader').addClass('active');
+  
+    //previous requests
+    var requests = $('#'+list_container).data('requests');
+
+    // append new request
+    requests.push( $.ajax({
+        url: CAST_API_URL + query,
+        cache: false,
+        success: function(data, code, resp) {
+            var page = resp.getResponseHeader('X-Page-Number');
+            var total = Math.ceil(resp.getResponseHeader('X-Object-Total')/pagesize); 
+            var current_page = $('#'+list_container).data('current-page');
+            
+            //update total page value
+            $('#'+list_container).data('total-pages', total);
+
+            //render html and save with page as index (will use to order async response html)
+            var html = _.template($('#cast-list-templ').html(), {casts: data});
+            var rendered_html = $('#'+list_container).data('rendered_html');
+            rendered_html[page]= html ;
+
+            $('#'+list_container).data('rendered_html', rendered_html);
+        }
+    }));
+ 
+    render_casts(list_container);
+}
+
+var throttled_render_casts = _.throttle(render_casts, 800);
+
+function render_casts(list_container){
+
+    var requests = $('#'+list_container).data('requests');
+
+    //use jquery deferred method to render cast list when queued ajax requests finish
+    $.when.apply($, requests).done(function(data){
+        
+        //check total pages
+        var total_pages =  $('#'+list_container).data('total-pages');
+
+        //concatenate rendered html in correct page order
+        var rendered_html = $('#'+list_container).data('rendered_html');
+        
+        var html = '';
+        for(var i=1; i <= total_pages; i++){
+                var this_html = rendered_html[i];
+                if(this_html != undefined){
+                    html +=rendered_html[i];
+                }
+        }
+
+        //reset rendered html storage
+        $('#'+list_container).data('rendered_html', []); 
+
+        //render list
+        list_casts_cb(list_container, html); 
+    });
+}
+
+function list_casts_cb(list_container, html) { 
+
+    // get values from list element
+    var page = $('#'+list_container).data('current-page');
+    var total = $('#'+list_container).data('total-pages');
+    var pagesize = $('#'+list_container).data('pagesize');
+
+    //unbind infinite scrolling listener immeadiately
+    if(page == total){
+         $(window).unbind('scroll');
+    } 
+
+    //load first page and bind infinite scroll
+    if(page == 1){   
+        $('#'+list_container).html(html);
+
+        //add scroll indicator
+        var indicator = _.template($('#scroll-indicator-templ').html(), { pages: total, page:page});
+        $('#'+list_container+'-indicator').html(indicator);
+
+        //bind event listener to window scroll for infinite scrolling
+        $(window).bind('scroll', function(){
+            var scroll_position = $(this).scrollTop() + $(this).innerHeight();
+            var scroll_height = $('#'+list_container).closest('.layer-container')[0].scrollHeight;
+            var from_bottom = $(window).height()*.5;
+
+            //console.log('scroll position:'+ scroll_position + '  height: ' + scroll_height);
+            
+            if(scroll_position >= (scroll_height - from_bottom)){
+               throttled_next_cast_list_page(list_container); 
+            } 
+        });
+    }
+    
+    //append HTML if not the first or last page
+    if(page > 1 && page < total){
+        $('#'+list_container).append(html);
+    }
+
+    //last page
+    if(page == total){
+        if(page != 1){
+            $('#'+list_container).append(html);
+        }
+    }
+
+    //if loaded page of casts is not tall enough to enable scrolling then load the next page
+    if($('#'+list_container).closest('.layer-container')[0].scrollHeight <= $(window).height() && page < total){
+        next_cast_list_page(list_container) 
+    }
+
+    //hide loader
+    $('#'+list_container+'-loader').removeClass('active');
+}
+
+var throttled_next_cast_list_page = _.throttle(next_cast_list_page, 200);
+
+function next_cast_list_page(list_container){
+    
+    var pagesize = $('#'+list_container).data('pagesize');
+    var total = $('#'+list_container).data('total-pages');
+
+    //increment page counter
+    var this_page = $('#'+list_container).data('current-page');                
+    var next_page = this_page + 1;
+    $('#'+list_container).data('current-page', next_page);
+    
+    //update scroll indicator
+    var page_index = next_page - 1; 
+    $('#'+list_container+'-indicator .page').removeClass('active');
+    $('#'+list_container+'-indicator .page:eq(' + page_index + ')').addClass('active');
+    
+    //get the next page
+    list_casts(list_container, pagesize, next_page);
+    
+    if(next_page == total){
+        //unbind infinite scroll listener 
+        $(window).unbind('scroll');
+    }
+}
+
+
+/****************
+ * CAST EDITING *
+ ****************/
+
+
+function cast_comment_refresh(cast_id) {
+    // refresh the comments
+    $.ajax({
+        url: CAST_API_URL + cast_id + '/comments/', 
+        type: 'GET',
+        success: function(data) { 
+
+            var context = '#comments-cast_' + cast_id;
+
+            var html = _.template($('#cast-comments-templ').html(), {comments:data});
+            $(context).html(html)
+
+            format_date($('.date', context), true);
+
+            $('a.flag-comment', context).click(function() {
+                var _parent = $(this).parent();
+
+                var comment_id = _parent.attr('id').split('_')[1];
+                var url = CAST_API_URL + cast_id + '/comments/' + comment_id + '/flag/';
+
+                $.ajax({
+                    url: url,
+                    data: null,
+                    type: 'POST',
+                    success: function(data) {
+                        _parent.html('<p class="locast-help">' + gettext('flagged') + '</p>');
+                    }
+                });
+                
+                return false;
+            });
+        }
+    });
+}
+
+// This is a separate function in order to allow editing / comment posting
+// to refresh the "window"
+
+function cast_info_refresh(cast_id, callback) {
+$.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: function(cast_html) {
+    var cast_url = CAST_API_URL + cast_id + '/';
+    var media_url = cast_url + 'media/';
+    var context = '#open-cast_' + cast_id;
+
+
+    // refresh the html
+    $('#'+cast_container_id).html(cast_html);
+
+    // apply dimension calculations for layouts (delay to account for DOM reload)
+    var lazy_cast_layout = _.debounce(calculate_cast_layout, 800);
+    lazy_cast_layout('#'+cast_container_id);
+
+    $('.login-button', '#'+cast_container_id).click(function(){ 
+           prompt_login(); 
+    });
+
+    //add class based on number of media
+    var media_count = $('.media','#'+cast_container_id).length;
+    $('.media-list','#'+cast_container_id).addClass("mediacount_" + media_count);
+
+    //get previews of linked collections 
+    $('.collection-id', '#collections-cast_'+cast_id).each(function(){
+        var collection_id = $(this).text();
+        $.ajax({
+            url: COLLECTION_API_URL + collection_id + "/",
+            success: function(data){
+                collection_preview_list(data, '#collection-cast-preview_', 8);
+            }       
+        });
+    });
+
+
+    // refresh the comments.
+    cast_comment_refresh(cast_id);
+
+    // Urlize the description urls
+    //var desc = $('p', '#description-cast_' + cast_id);
+    //desc.urlize('');
+
+    // make dates pretty
+    format_date($('.cast-date', context), true);
+
+    activate_favorite_button('cast', cast_id, cast_url + 'favorite/');
+
+    // activate edit toggle button
+    $('#edit-activate_'+cast_id).click(function(){
+       
+        $('#edit-activate_'+cast_id).toggleClass('active'); 
+        $('.cast-media, #open-cast_'+cast_id ,'#'+cast_container_id).toggleClass('edit');
+        $('.media-list','#'+cast_container_id).toggleClass('offset1');
+        $('.media-list','#'+cast_container_id).toggleClass('offset2');
+    
+    
+    })
+
+    // activate flag button
+    if ( TRAVELER_USER ) {
+        $('#flag-cast_' + cast_id).click(function() {
+            var html = '<h4 class="locast-instruction">';
+            html += gettext('Are you sure you want to flag this cast as inappropriate ?') + '</h4>';
+            html += '<a id="flag-yes-cast_' + cast_id + '" class="locast-button" href="#">yes</a>';
+            html += '<a class="locast-button" id="flag-no-cast_' + cast_id + '" href="#">no</a>';
+
+            $('#flag-confirm-cast_' + cast_id).html(html);
+            
+            $('#flag-confirm-cast_' + cast_id).show();
+
+            $('#flag-yes-cast_' + cast_id).click(function() {
+                $.ajax({
+                    url: cast_url + 'flag/', 
+                    type: 'POST',
+                    success: function(result) { 
+                        $('#flag-cast_' + cast_id).parent().html('<h6 class="flagged">flagged</h6>');
+                         $('#flag-confirm-cast_' + cast_id).hide();
+                    }
+                });
+                return false;
+            });
+            
+            $('#flag-no-cast_' + cast_id).click(function() {
+                $('#flag-confirm-cast_' + cast_id).html('');
+                 $('#flag-confirm-cast_' + cast_id).hide();
+                return false;
+            });
+
+            return false;
+        });
+    }
+    else {
+        $('#flag-cast_' + cast_id).click(function() {
+            prompt_login();
+            return false;
+        });
+    }
+
+    // activate cast delete button
+    $('#delete-cast_' + cast_id).click(function() {
+        var delete_prompt = $(".cast-alerts");
+        delete_prompt.fadeIn();
+       
+        $('.delete', delete_prompt).click(function(){
+                $.ajax({
+                    url: cast_url,
+                    type: 'DELETE',
+                    success: function(cast) {
+                        frontpage_app.setLocation('#!');
+                        map_refresh();
+                    }
+                });
+                return false;
+        });
+        $('.cancel', delete_prompt).click(function(){
+               delete_prompt.fadeOut();
+               return false;
+        });
+
+        return false;
+    });
+
+    // activate commenting
+    var comment_form = $('#content-form-cast_' + cast_id)
+    comment_form.submit(function(event) {
+        var data = form_to_json(comment_form);
+        
+        $.ajax({
+            url: cast_url + 'comments/', 
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function(cast) { 
+                comment_form[0].reset();
+                cast_comment_refresh(cast_id);
+            }
+        });
+            
+        event.returnValue = false;
+        return false;
+    });
+    
+    //activate title updating
+    var title_form = $('#title-form-cast_' + cast_id);
+
+    /*$('.cast-info .edit-toggle', '#open-cast_' + cast_id).click(function (){
+        $('.cast-title',   '#open-cast_' + cast_id).fadeOut(0);   
+        title_form.fadeIn();
+        return false;
+    });*/
+
+    $('#cast-title-edit-button', '#open-cast_' + cast_id).click(function(){
+        $('.cast-header .title',   '#open-cast_' + cast_id).add('#cast-title-edit-button').fadeOut(0);
+        title_form.fadeIn();
+        return false;
+
+    });
+
+    title_form.submit(function(event) {
+        var data = form_to_json(title_form);
+
+        $.ajax({
+            url: cast_url,
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            type: 'PUT',
+            success: function(cast) {
+                title_form[0].reset();
+                cast_info_refresh(cast_id);
+            }
+        });
+
+        event.returnValue = false;
+        return false;
+    });
+        
+    //activate description updating
+    var desc_form = $('#description-form-cast_' + cast_id);
+
+    $('#cast-description-edit-button', '#open-cast_' + cast_id).click(function (){
+        $('#cast-description-edit-button', '#open-cast_' + cast_id).fadeOut(0);
+        desc_form.fadeIn();
+        return false;
+    });
+
+    desc_form.submit(function(event) {
+        var data = form_to_json(desc_form);
+
+        $.ajax({
+            url: cast_url,
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            type: 'PUT',
+            success: function(cast) {
+                desc_form[0].reset();
+                cast_info_refresh(cast_id);
+            }
+        });
+
+        event.returnValue = false;
+        return false;
+    });
+
+    // tag updating
+    var update_tags = function(event) {
+        var data = tag_form.serializeObject();
+
+        $('a.cast-tag', '#tag-list-cast_' + cast_id).each(function(index) {
+            data['tags'] = data['tags'] + ',' + $(this).html();
+        });
+
+        data['tags'] = data['tags'];
+
+        data = JSON.stringify(data,null,2);
+
+        $.ajax({
+            url: cast_url,
+            contentType: 'application/json; charset=utf-8',
+            data: data,
+            type: 'PUT',
+            success: function(cast) {
+                tag_form[0].reset();
+                cast_info_refresh(cast_id);
+            }
+        });
+
+        // if its called from a submit on a form
+        if ( event ) {
+            event.returnValue = false;
+        }
+        return false;
+    }
+
+    // activate tag updating
+    var tag_form = $('#tag-form-cast_' + cast_id)
+    tag_form.submit(update_tags);
+    
+    // dhtml
+    $('#cast-tags-edit-button', '#open-cast_' + cast_id ).click(function(){
+        $(this).fadeOut(0);
+        tag_form.fadeIn();
+    });  
+
+    $('.delete-tag', '#tag-list-cast_' + cast_id).click(function() {
+        $(this).parent().remove();
+        update_tags();
+    });
+
+    // activate location updating
+    $('#change-location-cast_' + cast_id).click(function() {
+ 
+        //change layer switcher control to select map
+        $('#layer-switcher .btn').removeClass('active');
+        $('#layer-switch_map').addClass('active');
+
+        set_visible_elems(['map'],['change-location']);
+
+        //main_map.addCastControl.activate();
+        locast.main_map.addCastPoint();
+
+        var html = _.template($('#cast-change-location-templ').html(), {cast_id: cast_id}); 
+
+        $('#change-location_container').html(html);       
+
+        // Click cancel
+        $('#change-location-cancel-cast_' + cast_id).click(function() {
+            main_map.addCastControl.deactivate();
+            
+            if ( main_map.addCastPoint ) {
+                main_map.addCastPoint.destroy();	
+                main_map.addCastPoint = null;
+            }
+            
+            set_visible_elems(['media','map'],['cast'],true);
+
+        });
+
+        // Click save new location
+        $('#change-location-finish-cast_' + cast_id).click(function() {
+             if (locast.main_map.getCastPoint()) {
+    
+                var ll = locast.main_map.getCastPoint();
+                
+                $('#change-location_container').fadeOut();
+
+                var data = JSON.stringify({'location': [ll.lng, ll.lat]}, null, 2);
+
+                frontpage_app.setLocation('#!');
+
+                $.ajax({
+                    url: cast_url,
+                    data: data,
+                    type: 'PUT',
+                    success: function(cast) {
+                        if (locast.main_map.getCastPoint() ) {
+                            locast.main_map.destroyCastPoint();
+                            $('#change-location_container').html('');
+                            map_refresh();
+                        }
+                        frontpage_app.setLocation('#!/cast/' + cast.id + '/');
+                    }
+                });
+            }
+            else {
+                alert(gettext('Select a new location!'));
+            }
+            
+            return false;
+        });
+        
+        return false; 
+    });
+
+    // active facebok like button, if facebook is enabled
+    // http://fbexchange.net/questions/19/how-can-i-use-jquery-to-dynamically-load-serverfbml-content-into-my-iframe-app-pa
+    var fb = $('#facebook-share-cast_' + cast_id)[0];
+    if ( fb ) {
+        FB.XFBML.parse(fb);
+    }
+
+    // activate the link poster 
+    var link_form = $('#link-post-form-cast_' + cast_id);
+    link_form.submit(function(event) {
+        var data = form_to_json(link_form);
+
+        $.ajax({
+            url: media_url, 
+            data: data,
+            contentType: 'application/json; charset=utf-8',
+            type: 'POST',
+            success: function(media) { 
+                link_form[0].reset();
+                cast_info_refresh(cast_id);
+            }
+        });
+            
+        event.returnValue = false;
+        return false;
+    });
+
+    var media_list_context = '#media-list-cast_' + cast_id;
+
+    // photos
+    $('.photo a.cast-photo', media_list_context).fancybox({titlePosition:'inside'});
+
+    // vimeo videos
+    $('a.vimeocom', media_list_context).click(function() {
+        $.fancybox({
+            'padding'       : 0,
+            'autoScale'     : false,
+            'title'         : this.title,
+            'width'         : 400,
+            'height'        : 265,
+            'href'          : this.href.replace(new RegExp("([0-9])","i"),'moogaloop.swf?clip_id=$1'),
+            'type'          : 'swf'
+        });
+        return false;
+    });
+
+    // youtube videos
+    $('a.youtubecom', media_list_context).click(function() {
+        $.fancybox({
+            'titleShow' : false,
+            'href'      : this.href.replace(new RegExp("watch\\?v=", "i"), 'v/'),
+            'type'      : 'swf',
+            'swf'       : {'wmode':'transparent','allowfullscreen':'true'}
+        });
+        return false;
+    });
+
+    // hosted videos
+    $('.web-stream-file', media_list_context).click(function() {
+        //$('#flowplayer-container').removeClass('hidden');
+
+        add_visible_elems([],['flowplayer']);
+
+        $f('flowplayer-player', FLOWPLAYER_SWF, {
+            clip: {
+                url: this.href,
+                autoPlay: true,
+                scaling:'fit'
+            }
+        });
+
+        return false;
+    });
+
+    $('.web-stream.file', media_list_context).flowplayer(FLOWPLAYER_SWF);
+
+    // activate the cast gallery
+    $(media_list_context).xfade({
+        speed:600,
+        interval:10000,
+        autoplay:false,
+        total_num:$('#total-media'),
+        index_num:$('#current-media'),
+        next_button:$('#media-next'),
+        prev_button:$('#media-last')
+    });
+
+    // activate media deleting
+    $('.delete-media', media_list_context).click(function() {
+        var delete_prompt = $('.delete-media-prompt');
+        var media_id = $(this).attr('id').split('_')[1];
+        var m_delete_url = media_url + media_id + '/'; 
+       
+        var media_preview = $(this).siblings('a').clone(); 
+        $('.media-preview', delete_prompt).html(media_preview);
+        delete_prompt.fadeIn();
+       
+         $('.delete' , delete_prompt).click(function(){
+                $.ajax({
+                    url: m_delete_url,
+                    type: 'DELETE',
+                    success: function(cast) {
+                        cast_info_refresh(cast_id);
+                    }
+                });
+                return false;
+        });
+            
+        $('.cancel', delete_prompt).click(function(){
+            delete_prompt.fadeOut();
+            media_id = '';
+            m_delete_url = '';
+            return false;
+        });
+    });
+
+    // media adding
+    $('#add-media-button-cast_' + cast_id).add('#add-media-menu-button-cast_' + cast_id).click(function() {
+        var add_media_window = $('#add-media-cast_' + cast_id);
+        add_media_window.fadeIn();
+
+        // close button
+        $('#add-media-close-cast_' + cast_id).click(function() {
+            cast_info_refresh(cast_id);
+            add_media_window.fadeOut();
+        });
+
+        // Pluploader for some reason can't activate choosers
+        // unless they are already visible
+        
+        // activate uploaders
+
+        var photo_uploader = create_uploader('photo-uploader-cast_' + cast_id, 'imagemedia', '',
+            function(){cast_info_refresh(cast_id)});
+
+        activate_upload_form('photo-upload-form-cast_' + cast_id, media_url, photo_uploader);
+
+        var vid_uploader = create_uploader('video-uploader-cast_' + cast_id, 'videomedia', '',
+            function(){cast_info_refresh(cast_id)});
+
+        activate_upload_form('video-upload-form-cast_' + cast_id, media_url, vid_uploader);
+
+        // link adding interaction
+
+        $('#link-video-cast_' + cast_id).click(function(){
+                $(this).add('.locast-upload-box').hide();
+                $(this).parent().find('.upload-info').removeClass('hidden');
+        });
+
+    });
+
+    // CALLBACK
+    if ( callback ) {
+        callback(cast_id, cast_html);
+    }
+}});
+}
+
 /***********
  * HELPERS *
  ***********/
 
+/* SEARCH BAR */
+
+function activate_search_bar() {
+    var default_val = gettext('search');
+    var search_input = $('#search-input');
+    var search_results = $('#search-results');    
+   
+    // keep track if search is active
+    var search_active = false;
+
+    search_input.val(default_val);
+
+    var reset_search = function(){
+        search_input.val(default_val);
+        search_active = false;
+        hide_search(); 
+    };
+   
+    //fade out results when they lose focus
+    search_results.attr('tabindex', -1).focusout( function(e){ 
+        hide_search();
+    });
+   
+
+    //on keypress return focus to search input
+    search_results.keydown(function(e){
+         if(e.keyCode == 13 || e.keyCode == 8){
+            e.preventDefault();
+            return false;
+        } else{
+            search_input.focus();
+        }
+    });
+ 
+    //set timeout to reset search when it loses focus
+    search_input.focusout(function(e){ 
+        var reset = setTimeout(reset_search, 300);
+        $(search_input).data('timer', reset);
+
+        //clear the timeout if the search results have focus
+        search_results.focusin(function(){
+            clearTimeout($(search_input).data('timer'));
+            search_results.unbind('focusin'); 
+            
+            //reset search on loss of focus
+            search_results.focusout(function(){
+                reset_search();
+                search_results.unbind('focusout');
+            });
+
+            //reset search on clicking child
+            search_results.children().click(function(){
+                reset_search();
+                search_results.children().unbind('click');
+            });
+        });
+    });
+
+    //remove timeout and clear search input when it gains focus
+    search_input.focusin(function() { 
+        clearTimeout($(search_input).data('timer'));
+        if(search_active == false){
+            $(this).val('');
+            search_active = true;
+        }
+    });
+
+    //execute search on pressing enter
+    search_input.keydown(function(e) {
+        if(e.keyCode == 13){
+            e.preventDefault();
+            universal_search(search_input.val());
+            return false;
+        }   
+    });
+
+    search_input.keyup(function() {
+        clearTimeout($(search_input).data('timer'));
+
+        var do_search = function() {
+            universal_search(search_input.val());
+        }
+
+        var wait = setTimeout(do_search, 100);
+        $(search_input).data('timer', wait);
+    });
+}
+
+//reveal search
+function show_search(){
+    $('#search-results').addClass('active');
+    $('#search-results-overlay').fadeIn();
+
+    //make sure only the search results are scrollable
+    $('body').css('overflow','hidden');
+}
+
+//hide search
+function hide_search(){
+    $('#search-results').removeClass('active');
+    $('#search-results-overlay').fadeOut();
+    $('body').css('overflow','auto');
+}
+
+var last_search = '';
+
+function universal_search(keyword) {
+
+    //remove space at beginning and end of keyword
+    keyword = jQuery.trim(keyword);
+
+    if ( keyword.length && !(keyword == last_search) ) {
+        last_search = keyword;
+        $.ajax({
+            url: SEARCH_API_URL,
+            data: {q:keyword},
+            type: 'GET',
+            success: function(data) { 
+                var html = _.template($('#search-results-templ').html(), {results:data});
+                $('#search-results').html(html);
+                show_search();
+
+                //search close button 
+                $('#close-search-results').click(function(){
+                    hide_search(); 
+                })
+            }
+        });
+    }
+}
+
+/* CAST ADD */
+
 function activate_cast_add() {
-    var cast_add_container = $('#cast-add-container');
-    var cast_add_html = render_to_string('castAddForm.js.html');
+    var cast_add_container = $('#cast-add_container');
+    var cast_add_html = _.template($('#cast-add-form-templ').html());
     cast_add_container.html(cast_add_html);
+
+    //change layer switcher control to select map
+    $('#layer-switcher .btn').removeClass('active');
+    $('#layer-switch_map').addClass('active');
+ 
+
+    //add cast add form container to active containers
+    add_visible_elems(undefined, ['cast-add'], true);
+    //make map layer visible    
+    set_visible_elems(['map'], undefined);
+
+    //disable map title cast add    
+    $('#add-cast-button').addClass('inactive'); 
+
 
     var action = CAST_API_URL;
 
@@ -495,49 +1231,41 @@ function activate_cast_add() {
 
     $('#cast-add-form').submit(cast_add_form_submit);
 
-    cast_add_container.fadeIn();
-
-    if ( CAST_FILTER['collection'] ) {
-        $('#add-cast-collection_' + CAST_FILTER['collection'])
-        .add('#close-collection_' + CAST_FILTER['collection'])
-        .add('.open-collection')
-            .fadeOut(0);
-    }
-
-    main_map.addCastControl.activate();
+    //main_map.addCastControl.activate();
+    
+    locast.main_map.addCastPoint();
 
     return false;
 }
 
 function cast_add_form_clear() {
-    var cast_add_container = $('#cast-add-container');
+    var cast_add_container = $('#cast-add_container');
     cast_add_container.fadeOut();
-    main_map.addCastControl.deactivate();
-    if ( main_map.addCastPoint ) {
+
+    locast.main_map.destroyCastPoint();
+
+    //main_map.addCastControl.deactivate();
+    /*if ( main_map.addCastPoint ) {
         main_map.addCastPoint.destroy();
         main_map.addCastPoint = null;
-    }
+    }*/
     cast_add_container.html('');
+    
+    //enable map title cast add    
+    $('#add-cast-button').removeClass('inactive'); 
 
-    if ( CAST_FILTER['collection'] ) {
-        $('.collection-add-cast') 
-        .add('#collection-info .locast-icon.close')
-        .add('.open-collection')
-            .fadeIn(200);
-    }
+    remove_visible_elems(undefined, ['cast-add'], true);
+    set_visible_elems();
 
-    if($('#view-switch-list').hasClass('selected')){
-        $('#map-info-container').fadeIn(200);
-    }   
 }
 
 function cast_add_form_submit(e) {
-    if ( main_map.addCastPoint ) {
+    
+    if (locast.main_map.getCastPoint()) {
+        
         var obj = $('#cast-add-form').serializeObject();
-        var x = main_map.addCastPoint.geometry.x;
-        var y = main_map.addCastPoint.geometry.y;
-        var ll = main_map.get_disp_ll(x,y);
-        obj['location'] = [ll.lon, ll.lat];
+        var ll = locast.main_map.getCastPoint();
+        obj['location'] = [ll.lng, ll.lat];
 
         var url = $('#cast-add-form').attr('action');
         var data = JSON.stringify(obj, null, 2);
@@ -556,7 +1284,11 @@ function cast_add_form_submit(e) {
                     $('#cast-add-error').text(gettext('Enter a Title for Your Cast')).fadeIn();
                 }
             },
-            success: cast_add_success,
+            success: function(cast) { 
+                cast_add_form_clear();
+                map_refresh();
+                frontpage_app.setLocation('#!/cast/' + cast.id + '/'); 
+            }
         });
     }
 
@@ -569,18 +1301,7 @@ function cast_add_form_submit(e) {
     return false;
 }
 
-function cast_add_success(cast) {
-    $.ajax({
-        url: CAST_API_URL + cast.id + '/geofeature/',
-        contentType: 'application/json; charset=utf-8',
-        type: 'GET',
-        success: function(data) {
-            main_map.addCastFeature(data);
-            cast_add_form_clear();
-            frontpage_app.setLocation('#!cast/' + cast.id + '/'); 
-        }
-    });
-}
+/* FAVORITE */
 
 function activate_favorite_button(type, id, url) {
     $('#favorite-' + type + '_' + id).click(function() {
@@ -621,6 +1342,8 @@ function activate_favorite_button(type, id, url) {
     });
 }
 
+/* MEDIA UPLOADING */
+
 function check_extension(filename, valid_extensions) {
     var ext = filename.split('.').pop().toLowerCase();;
     for ( i in valid_extensions ) {
@@ -644,14 +1367,14 @@ function create_uploader(container, content_type, url, callback) {
             title: 'Video file', 
             extensions: '3gp,mp4,mov,mpg,mpeg',
         }
-        max_file_size = MAX_VIDEO_SIZE;
+        max_file_size = '100mb';
     }
     else if ( content_type == 'imagemedia' ) {
         filters = { 
             title: 'Photo file', 
             extensions: 'jpg,jpeg,png' 
         }
-        max_file_size = MAX_PHOTO_SIZE;
+        max_file_size = '8mb';
     }
 
     var extensions_arr = filters['extensions'].split(',');
@@ -688,6 +1411,7 @@ function create_uploader(container, content_type, url, callback) {
                 html += '</h6>';
 
                 $('#' + file_list).append(html); 
+                $('.locast-upload-box, .add-link-form', '.add-media-cast').hide();
                 upload_info.removeClass('hidden');
 
             }
@@ -724,14 +1448,16 @@ function create_uploader(container, content_type, url, callback) {
         var msg = error.message;
         if ( error.code == -600 ) {
             //file size error
-            msg = gettext('File too large.');
+            msg = gettext('File too large. Max size is: ')+max_file_size;
         }
         if ( error.code == -601 ) {
             //file type error, this is checked before hand
-            msg = '';
+            msg = gettext('Invalid file');
         }
-        upload_info.addClass('hidden');
-        $('#' + file_list).append('<h6 class="upload-file">' + msg + '</h6>');
+        //upload_info.addClass('hidden');
+        $('#' + file_list).append('<h3 class="upload-file text-error">' + msg + '</h3>');
+        $('#' + file_list).parent().find('.upload-details').hide();        
+        //upload_info.removeClass('hidden');
     });
 
     uploader.init();
@@ -770,3 +1496,15 @@ function make_p (t){
         return;
     }
 }
+
+// called when something is done that requires login
+function prompt_login() {
+    
+    //add chrome layer and login to visible elems
+    add_visible_elems(['chrome'],['login']);
+
+    //$('#login-container').removeClass('hidden');
+    $('#login-alert').fadeIn(300);
+    $('#login-alert').delay(2000).fadeOut(300);
+}
+

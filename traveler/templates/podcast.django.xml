@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+
+<channel>
+    <title>{{ show.title }}</title>
+    <link>{{ show.link }}</link>
+    <description>{{ show.description }}</description>
+    {% if show.grouper.language %}<language>{{ show.grouper.language }}</language>{% endif %}
+    <copyright>&#x2117; &amp; &#xA9; {% now "Y" %} {{ show.grouper.organization }}. {{ show.grouper.copyright }}.</copyright>
+    <managingEditor></managingEditor>
+    <webMaster></webMaster>
+    <lastBuildDate></lastBuildDate>
+    <category></category>
+    <generator>Django Web Framework</generator>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <ttl>180</ttl>
+    <image>
+      <url></url>
+      <title></title>
+      <link></link>
+    </image>
+    <itunes:author></itunes:author>
+    <itunes:owner>
+        <itunes:name></itunes:name>
+        <itunes:email></itunes:email>
+    </itunes:owner>
+    <itunes:subtitle></itunes:subtitle>
+    <itunes:summary></itunes:summary>
+    <itunes:image href="{{ show.grouper.image.url }}" />
+    <itunes:category text="{{ category.parent.name }}" />
+    <itunes:explicit>{{ show.grouper.explicit|lower }}</itunes:explicit>
+    <itunes:block>yes</itunes:block>
+    <itunes:new-feed-url>{{ show.grouper.redirect }}</itunes:new-feed-url>
+    
+    {% for cast in show.list %}
+    <item>
+        <title>{{ video.title }}</title>
+        <link>{{ video.file.url }}</link>
+        <description>{{ video.description }}</description>
+        <author>{{ video.author }}</author>
+        {% if episode.category %}<category{% if episode.domain %} url="{{ episode.domain }}"{% endif %}>{{ episode.category }}</category>{% endif %}
+        <enclosure url="{{ episode.enclosure_set.all.0.file.url }}" length="{{ episode.enclosure_set.all.0.file.size }}" type="{{ episode.enclosure_set.all.0.mime }}" />
+        <guid isPermalink="true">{{ episode.enclosure_set.all.0.file.url }}</guid>
+        <pubDate>{{ episode.date|date:"r" }} GMT</pubDate>
+        <itunes:author></itunes:author>
+        <itunes:subtitle></itunes:subtitle>{% endif %}
+        <itunes:summary></itunes:summary>
+        <itunes:duration>{{ video.duration }}</itunes:duration>
+        <itunes:keywords>{{ video.tags }}</itunes:keywords>{% endif %}
+        {% if episode.explicit %}<itunes:explicit>{{ episode.explicit|lower }}</itunes:explicit>{% endif %}
+    </item>
+    {% endfor %}
+    
+</channel>
+</rss>

@@ -58,6 +58,7 @@ self.geojson_format = new OpenLayers.Format.GeoJSON({
 
 // Turn on the map
 self.init = function(div) {
+    OpenLayers.Tile.Image.useBlankTile = false;
     OpenLayers.Util.onImageLoadErrorColor = "transparent";
   
     var zoombar = new OpenLayers.Control.PanZoomBar(
@@ -111,19 +112,21 @@ self.init = function(div) {
     image_bounds.extend(new OpenLayers.LonLat(-map_center[0], -map_center[1]));
     image_bounds.extend(new OpenLayers.LonLat(map_center[0], map_center[1]));
 
-    self.gterrainLayer = new OpenLayers.Layer.Google('Google Physical', {
-        type: google.maps.MapTypeId.TERRAIN,
-        sphericalMercator: true,
-        maxZoomLevel: defaults['max_zoom'],
-        minZoomLevel: defaults['min_zoom']
-    });
+    if ( GOOGLE_API_KEY ) {
+        self.gterrainLayer = new OpenLayers.Layer.Google('Google Physical', {
+            type: google.maps.MapTypeId.TERRAIN,
+            sphericalMercator: true,
+            maxZoomLevel: 17,
+            minZoomLevel: 7,
+        });
 
-    self.gstreetLayer = new OpenLayers.Layer.Google('Google Streets', {
-        type: google.maps.MapTypeId.NORMAL,
-        sphericalMercator: true,
-        maxZoomLevel: defaults['max_zoom'],
-        minZoomLevel: defaults['min_zoom']
-    });
+        self.gstreetLayer = new OpenLayers.Layer.Google('Google Streets', {
+            type: google.maps.MapTypeId.NORMAL,
+            sphericalMercator: true,
+            maxZoomLevel: 17,
+            minZoomLevel: 7,
+        });
+    }
 
     self.osmLayer = new OpenLayers.Layer.OSM(
         "Open Street Map", 
@@ -148,14 +151,11 @@ self.init = function(div) {
         }
     });
     
-    // "hidden" style
+    // opened cast map marker style 
+    var cast_open_style = new OpenLayers.Style(CAST_OPEN_STYLE, {context : CAST_OPEN_CONTEXT});
+    
     self.openCastLayer= new OpenLayers.Layer.Vector('Open Cast', {
-        styleMap: new OpenLayers.StyleMap({
-            pointRadius: 5,
-            strokeOpacity: 0.0,
-            fillOpacity: 0.0,
-            strokeColor: '#000000'
-        }),
+        styleMap: new OpenLayers.StyleMap({'default':cast_open_style}),
         isBaseLayer: false
     });
 
@@ -206,12 +206,12 @@ self.init = function(div) {
                             'num_left' : num_features - 5,
                         }};
                         
-                        html = render_to_string('castClusterPopup.js.html', {
+                        html = _.template($('#cast-cluster-popup-templ').html(), {
                             'features' : short_features,
                         });
                     }
                     else {
-                        html = render_to_string('castClusterPopup.js.html', {
+                        html = _.template($('#cast-cluster-popup-templ').html(), {
                             'features': features });
                     }
                 }
@@ -219,13 +219,13 @@ self.init = function(div) {
                     var layer = evt.feature.layer.name; 
                     var obj = evt.feature.attributes; 
                     var tooltip_data = {
-                        body: obj,
+                        cast: obj,
                         tooltip: true
                     }                        
 
                     switch(layer) {
                         case 'Casts':
-                            html = render_to_string('castPopup.js.html',tooltip_data);
+                            html = _.template($('#cast-popup-templ').html(),tooltip_data);
                             break;
                         case 'Collections':
                             // tooltip for collection hover
@@ -235,6 +235,7 @@ self.init = function(div) {
                 }
 
                 $('#tooltip .body').html(html);                 
+                format_date($('.date', '#tooltip'), false);
             },
 
             featureunhighlighted: function(evt) {
@@ -268,7 +269,7 @@ self.init = function(div) {
                     var scrolling = false;
                }
                 
-                var html = render_to_string('castClusterPopup.js.html', {
+                var html = _.template($('#cast-cluster-popup-templ').html(),{
                     'features': features,
                     'scrolling': scrolling  
                 });
@@ -282,20 +283,7 @@ self.init = function(div) {
             else {
                 //open cast on click if it is a single cast
                 var cast = feature.attributes;
-                frontpage_app.setLocation('#!cast/'+cast.id+'/');
-               
-                //can delete
-                /* var cast = feature.attributes;
-                var cast_data = {
-                    body: cast
-                }
-                var html = render_to_string('castPopup.js.html', cast_data);
-
-                var lonlat = feature.geometry.getBounds().getCenterLonLat();
-                var popup = new OpenLayers.Popup.FramedCloud('cast_popup_' + cast.id, 
-                    lonlat, null, html, null, true, self.clearPopups);
-
-                self.map.addPopup(popup);*/
+                frontpage_app.setLocation('#!/cast/'+cast.id+'/'); 
             }
         }, 
         onUnselect: function(feature){
@@ -342,11 +330,7 @@ self.init = function(div) {
 		self.map.setBaseLayer(self.osmLayer);
     }
 
-    self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
-
-
-    self.map.addLayers([self.collectionLayer, self.castLayer, self.boundryLayer, self.addCastLayer, self.openCastLayer]);
-
+    self.map.addLayers([ self.collectionLayer, self.castLayer, self.boundryLayer, self.addCastLayer, self.openCastLayer]);
     self.map.addControls([self.addCastControl, self.highlightCtrl, self.selectCast, self.selectCollection]);
 
     self.highlightCtrl.activate();
@@ -383,27 +367,13 @@ self.baseLayerSwitcher = function(e) {
     }
 }
 
-self.castFeatures = null;
-
-self.collectionFeatures = null;
-
-self.reloadFeatures = function(data) {
-    self.castFeatures = self.geojson_format.read(data['casts']);
-    self.collectionFeatures = self.geojson_format.read(data['collections']);
-    self.renderFeatures();
-}
-
-self.addCastFeature = function(data) {
-    fc = {'type': 'FeatureCollection', 'features': [data]}
-    var cast = self.geojson_format.read(data); 
-    self.castFeatures.push(cast[0]);
-    self.renderFeatures();
-}
-
 self.renderFeatures = function(features) {
-    main_map.clearFeatures();
-    self.castLayer.addFeatures(self.castFeatures);
-    self.collectionLayer.addFeatures(self.collectionFeatures);
+    var casts = self.geojson_format.read(features['casts']);
+    self.castLayer.addFeatures(casts)
+    
+    //there are currently no collections being displayed on map    
+    //var colls = self.geojson_format.read(features['collections']);
+    //self.collectionLayer.addFeatures(colls)
 }
 
 self.clearFeatures = function() {
@@ -438,6 +408,7 @@ self.getCenter = function() {
 
 self.panTo = function(x, y) {
     var ll = self.get_proj_ll(x,y);
+    console.log(x);
     self.map.panTo(ll);
 }
 

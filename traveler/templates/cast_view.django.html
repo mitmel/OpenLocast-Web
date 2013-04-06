@@ -1,0 +1,17 @@
+{% extends "root.django.html" %}
+
+{% block title %}{{ cast.title }} &mdash; {% endblock %}
+
+{% block meta-description %}{% if cast.description %}{{ cast.description|slice:"155" }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block body %}
+{% if cast.preview_image %}
+    <img src="{{ cast.preview_image }}"></img>
+    <div id="description-static-cast_{{cast.id}}">
+        {% if cast.description %}
+            {{ cast.description }}
+        {% endif %}
+    </div>
+    {{ hashbang }}
+{% endif %}
+{% endblock %}

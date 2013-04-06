@@ -1,0 +1,301 @@
+{% load i18n %}
+
+<!-- COLLECTION LIST -->
+
+<script type="text/template" id="collection-list-templ">
+    <% _.each(collections, function(collection) { %>
+        <a href="#!/collection/<%= collection.id %>/">
+        <div id="collection-<%= collection.id %>" class="collection offset1 span10 row-fluid ">
+            <div class="collection-info info">
+                <h3 class="title" ><%= collection.title %></h3>
+                <h5 class="description"><%= collection.description %> </h5>
+            </div>
+                <div class="preview clearfix">
+                    <div id="collection-list-preview_<%= collection.id %>" class="cast-previews"></div>
+                    <div class="placeholder cast-count"> <h4><i class="icon-map-marker icon-white"></i> <%= collection.casts_count %> {% trans "Casts"%}</h4></div>
+                </div>
+        </div>
+        </a>
+      <% }); %>
+</script> 
+
+<!-- COLLECTION CAST PREVIEW -->
+
+<script type="text/template" id="collection-preview-templ">
+    <% _.each(casts, function(cast) { %>
+        <div class="cast-preview">
+         <% if(cast.preview_image != undefined){ %> 
+            <img src="<%= cast.preview_image %>"/> 
+        <% }else{ %>
+        <div class="placeholder"><i class="icon icon-map-marker icon-white"></i> <h4 class="title"><%= cast.title %></h4> </div>
+        <% } %>
+        </div>
+    <% }); %>
+</script> 
+
+<!-- CAST LIST -->
+
+<script type="text/template" id="cast-list-templ"> 
+    <% _.each(casts, function(cast) { %>
+    <a href="#!/cast/<%= cast.id %>/">
+        <div id="cast-<%= cast.id  %>" class="cast clearfix">
+        <% if(cast.preview_image != undefined){ %> 
+            <img src="<%= cast.preview_image %>" /> 
+        <% }else{ %>
+        <div class="placeholder"> <h4> {% trans "No Media"%}</h4></div>
+        <% } %>
+        <div class="cast-info info">
+            <h4 class="title"><%= cast.title %></h4>
+        </div>
+        <i class="open-icon icon-white icon-fullscreen"></i>
+        </div>
+    </a>
+    <% }); %>
+</script> 
+
+
+<!-- COLLECTION LIST HEADER -->
+
+<script type="text/template" id="collection-cast-list-info-templ">
+    <a href="#!/home/">{% trans "Back to Collection List" %}</a>
+    <h1 class="title"><%= collection.title %></h1>
+    <p class="description"><%= collection.description %></p> 
+</script>
+
+<!-- CAST POPUP/TOOLTIP -->
+
+<script type="text/template" id="cast-popup-templ">
+    <a href="#!/cast/<%= cast.id %>/">
+        <div id="cast-popup_<%= cast.id %>" class="cast-popup">
+             <% if(cast.preview_image != undefined){ %> 
+                <img src="<%= cast.preview_image %>" /> 
+            <% }else{ %>
+                <div class="placeholder"> <h4> {% trans "No Media"%}</h4></div>
+             <% } %>
+            <h4 class="title"><%= cast.title %></h4>
+            <h5 class="author"><%= cast.author.display_name %></h5>
+        </div>
+    </a>
+</script>
+
+<!-- CAST CLUSTER POPUP/TOOLTIP 
+     renders data from openlayers cluster feature
+-->
+
+<script type="text/template" id="cast-cluster-popup-templ">
+    <div class="cluster-popup" >
+        <% _.each(features, function(feature) { %>
+        <% if(feature.attributes.placeholder == undefined){ %>
+            
+        <!-- CAST PREVIEW -->
+
+        <a href="#!/cast/<%= feature.attributes.id %>/">
+        <div id="cluster-popup-cast_<%= feature.attributes.id %>" class="cast">
+            <% if(feature.attributes.preview_image != undefined){ %> 
+                <img src="<%= feature.attributes.preview_image %>" /> 
+            <% }else{ %>
+                <div class="placeholder"> <h4> {% trans "No Media"%}</h4></div>
+             <% } %>
+            <h4 class="title"><%= feature.attributes.title %></h4>
+            <h5 class="author"><%= feature.attributes.author.display_name %></h5>
+        </div>
+        </a>
+        
+        <%}else{%>
+            
+            <!-- PLACEHOLDER TO INDICATE MORE CASTS -->
+            
+            <div class="cast">
+                <div class="placeholder"> <h4><%= feature.attributes.num_left %> {% trans "More Casts"%}</h4></div>
+            </div>
+        <%}%>
+    <% }); %>
+    </div>
+</script>
+
+<!-- CAST ADD FORM -->
+
+<script type="text/template" id="cast-add-form-templ">
+    <div id="cast-add-pattern">
+         
+            <h4 class="locast-instruction"><strong> {% trans "Click The Map To Set Your Cast's Location" %}</strong></h4>
+    
+        <h4 id="cast-add-error" class="error text-error">
+           <i class="icon-hand-right"/> <p  id="location-error" class="text-error">{% trans 'Select a Location for Your Cast by Clicking the Map.' %}</p>
+        </h4>
+        <form id="cast-add-form" class="cleared" action=""> 
+            <label for="id_title">{% trans 'Name Your Cast' %}</label>
+            <input id="id_title" type="text" maxlength="160" name="title" class="locast-textfield"></input>
+            <!--<label for="id_description">{% trans 'Brief Description' %}</label>
+            <textarea id="id_description" name="description" class="locast-textfield" cols="40" rows="10"></textarea>
+
+            <label for="id_tags">{% trans 'Tags' %}</label>
+            <input id="id_tags" type="text" maxlength="200" name="tags" class="locast-textfield"></input>
+            <p class="locast-help">{% trans 'comma-seperated list' %}</p>-->
+           <button href="#" class="btn-danger" id="cancel-cast-add">{% trans "Cancel" %}</button>  <input id="cast-add-submit" type="submit" value="{% trans 'Create Cast' %}" class="btn"></input>
+            <p class="next-steps">{% trans 'Up Next: Add Media and Details' %}</p>
+        </form>
+    </div><!-- cast-add-pattern -->
+</script>
+
+<!-- BROWSEBOX LIST -->
+
+<script type="text/template" id="browsebox-list-templ">
+    <ul class="collections">
+        <a href="#!">
+        <li class="collection">
+            <h4 class="title" >{% trans "All Casts" %}</h4>
+            <h5 class="description">{% trans "View all mapped content" %}</h5>
+        </li>
+        </a>
+    <% _.each(collections, function(collection) { %>
+        <a href="#!/collection/<%= collection.id %>/">
+        <li class="collection">
+            <h4 class="title" ><%= collection.title %></h4>
+            <h5 class="description"><%= collection.description %></h5>
+        </li>
+        </a>
+    <% }); %>
+    </ul>
+</script>
+
+<!-- CAST COMMENTS -->
+
+<script type="text/template" id="cast-comments-templ">
+    <% _.each(comments, function(comment) { %>
+        <div class="comment">
+            <a href="#!/user/<%= comment.author.id %>/">
+            <div class="comment-meta clearfix">
+                <%if(comment.author.profile.user_image_small){ %><img class="author-image" src="<%= comment.author.profile.user_image_small %>"/><% }else{ %><div class="author-image placeholder"><i class="icon icon-user icon-white"></i></div> <%}%>
+                <h4 class="name"><%= comment.author.display_name %></h4>
+                <h6 class="date" title="<%= comment.created %>"><%= comment.created %></h6>
+            </div>
+            </a>
+
+            <div class="comment-content"><%= comment.content %></div>
+        </div>
+    <% }); %>
+</script> 
+
+<!-- SEARCH RESULTS -->
+
+<script type="text/template" id="search-results-templ">
+
+    <!-- COLLECTION RESULTS -->
+
+    <ul class="collections result span4">    
+        <h4 class="type-title" ><%= results.collections.length %> {% trans "Collections" %}</h4>
+
+    <% if(results.collections.length ==  0){ %>
+        <h4 class="empty-result"> {% trans "No Matching Collections" %}</h4>
+    <% }else{ %>
+
+
+
+    <% _.each(results.collections, function(collection){ %>
+         <a href="#!/collection/<%= collection.id %>/">
+        <li class="collection clearfix">
+        <div class="collection-info">
+            <h4 class="title"><%= collection.title %></h4>
+        </div>
+        </li>
+        </a>
+    <% }); } %>
+    </ul>
+
+    <!-- CAST RESULTS -->
+
+    <ul class="casts result span6 clearfix">    
+        <h4 class="type-title" ><%= results.casts.length %>  {% trans "Casts" %}</h4>
+
+    <% if(results.casts.length ==  0){ %>
+        <h4 class="empty-result"> {% trans "No Matching Casts" %}</h4>
+     <% }else{ %>
+
+
+    <% _.each(results.casts, function(cast){ %>
+        <a href="#!/cast/<%= cast.id %>/">
+        <li id="cast-<%= cast.id  %>" class="cast clearfix">
+        <% if(cast.preview_image != undefined){ %> 
+            <img src="<%= cast.preview_image %>" /> 
+        <% }else{ %>
+        <div class="placeholder"><i class="icon icon-map-marker icon-white"></i></div>
+        <% } %>
+        <div class="cast-info info">
+            <h4 class="title"><%= cast.title %></h4>
+        </div>
+        <i class="open-icon icon-white icon-fullscreen"></i>
+        </li>
+        </a>        
+    <% }); }%>
+    </ul>
+
+    <!-- USER RESULTS -->
+
+    <ul class="users result span2">    
+        <h4 class="type-title" ><%= results.users.length %> 
+            <% if (results.users.length > 1 || results.users.length == 0){%> 
+                {% trans "People" %}
+            <%}else{%> 
+                {% trans "Person" %} 
+            <%}%>
+        </h4>
+
+    <% if(results.users.length ==  0){ %>
+        <h4 class="empty-result"> {% trans "No Matching People" %}</h4>
+    <% }else{ %>
+
+    <% _.each(results.users, function(user){ %>
+         <a href="#!/user/<%= user.id %>/">
+        <li class="user clearfix">
+        <%if(user.profile != undefined){ %>
+            <img class="user-image" src="<%= user.profile.user_image_small %>"/>
+        <% }else{ %>
+            <div class="user-image placeholder"><i class="icon icon-user icon-white"></i></div> 
+        <%}%>
+        <div class="user-info">
+            <h4 class="name"><%= user.display_name %></h4>
+        </div>
+        </li>
+        </a>
+     <% }); } %>  
+    </ul>
+    <button class="btn" id="close-search-results"><i class="icon-chevron-up"></i> {% trans "Close Search Results" %} <i class="icon-chevron-up"></i></button>
+</script> 
+
+<!-- USER INFO -->
+
+<script type="text/template" id="user-info-templ">
+    <a href="#!/home/">{% trans "Back to Collection List" %}</a>
+     <%if(user.profile.user_image){ %><img class="author-image" src="<%= user.profile.user_image %>"/><% }else{ %><div class="author-image placeholder"><i class="icon icon-user icon-white"></i></div> <%}%> 
+    <h4 class="name"><%= user.display_name %></h4>
+    <h4 class="hometown"><%= user.profile.hometown %></h4>
+</script> 
+
+<!-- TAG INFO -->
+
+<script type="text/template" id="tag-info-templ">
+    <a href="#!/home/">{% trans "Back to Collection List" %}</a>
+    <h4 class="title">{% trans "Casts Tagged"%} <br /> <span class="tag"> <%= tag %> </span></h4>
+</script> 
+
+<!-- CHANGE LOCATION BOX -->
+
+<script type="text/template" id="cast-change-location-templ">
+    <h4> {% trans "Choose a New Location for This Cast by Clicking the Map" %}</h4> 
+    <button id="change-location-cancel-cast_<%= cast_id %>" class="btn-danger" > {% trans "Cancel"%}</button>
+    <button id="change-location-finish-cast_<%= cast_id %>" class="btn" > {% trans "Save New Location"%}</button>
+</script>
+
+<!-- CHANGE LOCATION BOX -->
+
+<script type="text/template" id="scroll-indicator-templ">
+    <%for(var i=1; i<=pages; i++){%> 
+        <%if(i == page){%>
+            <li class="page active"></li>    
+        <%}else{%>
+            <li class="page"></li>
+        <%}%>
+    <%}%>
+</script>
+

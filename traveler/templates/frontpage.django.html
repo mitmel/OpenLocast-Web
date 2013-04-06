@@ -14,39 +14,48 @@
 
 {% block login %}
 {% if not request.user.is_authenticated %}
-    <div class="logins">
+    <div class="login-info">
         <a id="login-link" class="locast-login locast-button">{% trans "Login / Register" %}</a>
     </div>   
 {% else %}
-    <div id="login-info">
-        <div class="login-info-item">
-            <a href="#!user/{{request.user.id}}/">
-            {% if request.user.user_image %}
-                <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
-            {% endif %}
-                <span class="message">{% trans "logged in as "%}</span>
-            {% if request.user.display_name %}
-                <span class="name ">{{ request.user.display_name }}</span>
-            {% endif %}
-            </a>
-        </div>
+    <div class="login-info">
+        <a href="#!/user/{{request.user.id}}/">
+        {% if request.user.user_image %}
+            <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
+        {% endif %}
+        {%comment%}<span class="message">{% trans "logged in as "%}</span>{%endcomment%}
+        {% if request.user.display_name %}
+            <span class="name ">{{ request.user.display_name }}</span>
+        {% endif %}
+        </a>
+    </div>
+    <div id="login-menu">
         <div class="login-info-item"><a id="edit-profile-link" href="#">Edit Profile</a></div>
-        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url "logout" %}?next={{request.path}}">Logout</a></div>
+        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url 'logout' %}?next={{request.path}}">Logout</a></div>
     </div>
 {% endif %}
 {% endblock login %}
 
-{% block main-content %}
-<div id="content-details" class="ui-overlay locast-content-details"></div>
 
-<div id="flowplayer-container" class="hidden" onClick="$('#flowplayer-container').addClass('hidden')" >
-    <div id="flowplayer-wrapper">
-     <a id="flowplayer-close" href="#" >[X]</a> 
-     <div id="flowplayer-player" style="width: 320px; height: 240px;"></div>
-    </div>
-</div>
+{% block chrome-content %}
 
-<div id="login-alert"><h3 class="alert content-card">{% trans "You Must Login" %}</h3></div>  
+<div id="map-list"></div>    
+
+<div id="login-alert" class="layer-container"><h3 class="alert content-card">{% trans "You Must Login" %}</h3></div>  
+
+<div id="login_container" class="layer-container">
+    <h4 class="title">{% trans "Login to Your Account" %}</h4> <button id="login-container-close" class="btn-danger">{% trans "Close" %}</button>
+    <form id="login-form" method="post" action="" class="clearfix">
+        <label for="id_username">{% trans "Email" %}</label>
+        {{ login_form.username }}
+        {{ login_form.password.label_tag }}
+        {{ login_form.password }}
+        <input type="submit" value="login" class="btn" /> 
+        <input type="hidden" name="next" value="{{ next }}" /> 
+    </form> 
+    <p class="muted"><a href="{% url 'register' %}">{% trans "Register</a> a new account if you don't have one" %}</p> 
+</div><!-- end login-container -->
+
 
 <div class="content-card ui-draggable closed" id="edit-profile-container">
 {% if request.user.is_authenticated %}
@@ -57,7 +66,7 @@
         <p class="locast-help">{% trans "Edit your password and other information using the form below" %}</p>
     </div>
     <div>  
-        <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url "edit_profile" %}">
+        <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
         {% for field in edit_profile_form %}
             {{ field.label_tag }}<br/>{{ field }}<br/>
         {% endfor %}
@@ -68,57 +77,114 @@
 {% endif %}
 </div> <!-- edit-profile-container -->
 
-<div id="map-title-container" >
-    <div id="map-title" class="ui-overlay clear primary-color">
-        <div id="current-map">
-            <div id="map-list-dropdown" class="cleared"><h4>{% trans "All Casts" %}</h4>
-                <div class="arrow right"></div>
-            </div>
-        </div>
-        <div id="add-cast-button" class="locast-button cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></div>
-        <div id="view-switcher">
-            <a href="" id="view-switch-map" class="map selected ">{% trans "Map" %}</a>
-            <a href="" id="view-switch-list" class="list ">{% trans "List" %}</a>
-        </div> 
+{% endblock chrome-content %}
+
+
+
+{% block media-content %}
+
+
+<div id="flowplayer_container" class="layer-container" onClick="remove_visible_elems([],['flowplayer']);" >
+    <div id="flowplayer-wrapper">
+     <a id="flowplayer-close" href="#" >[fdsfX]</a> 
+     <div id="flowplayer-player" ></div>
     </div>
-</div> <!-- map-title-container -->
-
-<div id="map-list"></div>    
-
-<div id="intro-page-container" class="ui-overlay">
-    <div id="intro-page-content" class="content-card">
-        <h1 class="intro-message">{% trans "Welcome to "%}{{SITE_NAME}}</h1>
-        <h2 class="map-list-header">{% trans "Collections"%}</h2>
-        <div id="intro-map-list"></div>
-    </div>   
 </div>
 
-<div id="change-location-container" class="ui-overlay"></div>
+<!--CAST CONTAINER-->
+<div id="cast_container" class="layer-container"></div>
 
-<div id="map-info-container" class="ui-overlay cleared">
-    <div id="map-cast-list-title" class="content-card">
-        <h4 class="list-title">
-            <div id="cast-list-sort">
-                <a id="cast-list-sort_-created" class="selected">{% trans "Most Recent"%}</a>
-                <a id="cast-list-sort_popularity">{% trans "Most Popular"%}</a>
-                <div id="map-cast-list-pager"></div>  
-            </div>
-        </h4>
-    </div> 
-    <div id="map-cast-list">
-        <span class="list-content"><h3>{% trans "No Casts On Map" %}</h3></span>
+<!--COLLECTION LIST CONTAINER-->
+<div id="collection-list_container" class="layer-container">
+    <h1 id="intro-message">{% trans "Welcome to the Open Locast Project"%}</h1>
+    <!--<h2 class="map-list-header">{% trans "Collections" %}</h2>-->
+    <div id="collection-list" class="row-fluid"></div>   
+</div>
+
+<!--COLLECTION CONTAINER-->
+<div id="collection_container" class=" layer-container row-fluid">
+    <div id="collection-header" class="cast-list-header offset1 span10">
+        <div id="collection-info"></div>
+        <div id="collection-cast-list-sort" class="cast-list-sort">
+            <a id="collection-cast-list-sort_-created" class="selected"><i class="icon-time"></i> {% trans "Most Recent"%}</a>
+            <a id="collection-cast-list-sort_popularity"><i class="icon-heart"></i> {% trans "Most Popular"%}</a>
+        </div>
+    </div>  
+    <button id="add-cast-to-collection" class="btn offset1">{% trans "Add Cast to This Collection" %}</button>
+    <div id="collection-cast-list-loader" class="cast-list-loader"><h3 class="loader-message" >{% trans "Loading" %}</h3></div>
+    <ul id="collection-cast-list-indicator" class="scroll-indicator" ></ul>
+    <div id="collection-cast-list" class="offset1 span10 cast-list">
+        <span class="list-content"><h3>{% trans "No Casts" %}</h3></span>
     </div>
-</div> <!-- map-info-container -->
+</div>
 
-<div id="map-controls-container" class="ui-overlay dynamic">
+<!--USER CONTAINER-->
+<div id="user_container" class="layer-container row-fluid">
+    <div id="user-header" class="cast-list-header offset1 span10"> 
+        <div id="user-info"></div>
+        <div id="user-cast-list-sort" class="cast-list-sort">
+            <a id="user-cast-list-sort_-created" class="selected"><i class="icon-time"></i> {% trans "Most Recent"%}</a>
+            <a id="user-cast-list-sort_popularity"><i class="icon-heart"></i> {% trans "Most Popular"%}</a>
+        </div>
+    </div>    
+    <div id="user-cast-list-loader" class="cast-list-loader"><h3 class="loader-message" >{% trans "Loading" %}</h3></div>
+    <ul id="user-cast-list-indicator" class="scroll-indicator" ></ul>
+    <div id="user-cast-list" class="offset1 span10 cast-list"></div>
+</div>
+
+
+<!--TAG CONTAINER-->
+<div id="tag_container" class="layer-container row-fluid">
+    <div id="tag-header" class="cast-list-header offset1 span10"> 
+        <div id="tag-info"></div>
+        <div id="tag-cast-list-sort" class="cast-list-sort">
+            <a id="tag-cast-list-sort_-created" class="selected"><i class="icon-time"></i> {% trans "Most Recent"%}</a>
+            <a id="tag-cast-list-sort_popularity"><i class="icon-heart"></i> {% trans "Most Popular"%}</a>
+        </div>
+    </div>    
+    <div id="tag-cast-list-loader" class="cast-list-loader"><h3 class="loader-message" >{% trans "Loading" %}</h3></div>
+    <ul id="tag-cast-list-indicator" class="scroll-indicator" ></ul>
+    <div id="tag-cast-list" class="offset1 span10 cast-list"></div>
+</div>
+
+{% endblock media-content %}
+
+
+{% block map-content %}
+
+<!--MAP TITLE-->
+<div id="map-title_container" class="layer-container" >
+    <div id="map-title" class="clearfix">
+        <h4 id="show-browsebox"><i class="icon-chevron-down"></i> </h4>
+        <h4 id="current-map">{% trans "All Casts" %}</h4>
+        <a id="add-cast-button" class="btn cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></a> 
+    </div>
+    <div id="browsebox-container">
+             <div id="browsebox-collection-list"></div>
+             <div id="browsebox-tag-list"></div>
+
+         </div>
+</div> <!-- map-title-container -->
+
+<!--LOCATION CHANGE-->
+
+<div id="change-location_container" class="layer-container"></div>
+
+<!--ADD CAST-->
+
+<div id="cast-add_container" class="layer-container"></div>
+
+<!--MAP CONTROLS-->
+<div id="map-controls_container" class="layer-container dynamic">
     <div id="map-controls"></div>
     <a id="map-reset" href="#">{% trans "Reset"%}</a>
 </div>
 
-<div id="cast-add-container" class="closed content-card"></div>
+<!--MAP-->
+<div style="height:200px; width:100px;" id="main-map"></div>
 
-<div style="height: 480px; width: 640px;" id="main-map"></div>
+<!--MAP LOADING INDICATOR-->
+<div id="map-loader" class="cast-list-loader"><h3 class="loader-message" >{% trans "Loading" %}</h3></div>
 
-<div id="map-loader"><h3 id="loader-message" >{% trans "Loading" %}</h3></div>
-{% endblock main-content %}
+{% endblock map-content %}
 
