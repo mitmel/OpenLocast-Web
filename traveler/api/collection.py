@@ -1,7 +1,10 @@
 from django.views.decorators.csrf import csrf_exempt
 
-from locast.api import *
-from locast.api import rest, qstranslate, exceptions
+from locast.api import APIResponseOK, api_serialize, get_object, get_param, paginate
+from locast.api.decorators import jsonp_support
+from locast.api.exceptions import APIBadRequest
+from locast.api.qstranslate import QueryTranslator, InvalidParameterException
+from locast.api.rest import ResourceView
 from locast.auth.decorators import require_http_auth, optional_http_auth
 
 from traveler.models import Collection
@@ -22,8 +25,9 @@ ruleset = {
 }
 
 @csrf_exempt
-class CollectionAPI(rest.ResourceView):
+class CollectionAPI(ResourceView):
 
+    @jsonp_support()
     @optional_http_auth
     def get(request, coll_id = None):
 
@@ -35,11 +39,11 @@ class CollectionAPI(rest.ResourceView):
 
         else:
             query = request.GET.copy()
-            q = qstranslate.QueryTranslator(Collection, ruleset)
+            q = QueryTranslator(Collection, ruleset)
             try:
                 objs = q.filter(query)
-            except qstranslate.InvalidParameterException, e:
-                raise exceptions.APIBadRequest(e)
+            except InvalidParameterException, e:
+                raise APIBadRequest(e)
 
             objs, total, pg = paginate(objs, query)
 

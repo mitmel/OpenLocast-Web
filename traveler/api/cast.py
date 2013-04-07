@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, favorite as favorite_api, exceptions, form_validate, \
     geojson_serialize, get_json, get_object, get_param, paginate, rest, qstranslate
+from locast.api.decorators import jsonp_support
 from locast.auth.decorators import require_http_auth, optional_http_auth
 
 from traveler import models, forms
@@ -41,6 +42,7 @@ ruleset = {
 @csrf_exempt
 class CastAPI(rest.ResourceView):
 
+    @jsonp_support()
     @optional_http_auth
     def get(request, cast_id=None, coll_id=None, format='.json'):
 
@@ -305,8 +307,6 @@ class CastAPI(rest.ResourceView):
     @require_http_auth
     def post_favorite(request, cast_id):
         cast = get_object(models.Cast, id=cast_id)
-        favorite = get_param(request.POST, 'favorite')
-
         return favorite_api.post_favorite(request, cast)
 
 
