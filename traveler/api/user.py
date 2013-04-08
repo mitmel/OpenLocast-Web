@@ -9,14 +9,14 @@ from locast.auth.decorators import optional_http_auth, require_http_auth
 
 from traveler.models import LocastUser
 
+ruleset = {
+    # Authorable
+    'display_name'  :    { 'type' : 'string' },
+    'joined'        :    { 'type' : 'datetime', 'alias' : 'date_joined' },
+}
+
 @csrf_exempt
 class UserAPI(ResourceView):
-
-    ruleset = {
-        # Authorable
-        'display_name'  :    { 'type' : 'string' },
-        'joined'        :    { 'type' : 'datetime', 'alias' : 'date_joined' },
-    }
 
     @jsonp_support()
     @optional_http_auth
@@ -30,7 +30,7 @@ class UserAPI(ResourceView):
         
         # Multiple users
         else:
-            q = QueryTranslator(LocastUser, UserAPI.ruleset)
+            q = QueryTranslator(LocastUser, ruleset)
             query = request.GET.copy()
 
             objs = total = pg = None
