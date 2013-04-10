@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.utils import translation
 from django.views.decorators.csrf import csrf_exempt
 
-from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api,  exceptions, form_validate, \
+from locast.api import APIResponseOK, APIResponseCreated, api_serialize, comment as comment_api, favorite as favorite_api, exceptions, form_validate, \
     geojson_serialize, get_json, get_object, get_param, paginate, rest, qstranslate
 from locast.auth.decorators import require_http_auth, optional_http_auth
 
