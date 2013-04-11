@@ -3,7 +3,7 @@ var locast = locast || {};
 
 (function(locast, L, _, $){
 
-    locast.map = function(id, defaults) {
+    locast.Map = function(id, defaults) {
         
         var method = {};
 
@@ -127,5 +127,9 @@ var locast = locast || {};
         //return public methods 
         return method;
     };
+
+    locast.map = function(id, defaults) {
+        return new locast.Map(id, defaults);
+    }
 
 }(locast, L, _, $))

@@ -228,32 +228,8 @@ function get_cast_filter_query() {
  *******/
 
 function setup_map() {
-
     locast.main_map = locast.map('main-map', MAP_DEFAULTS);
-
-
-    //set map container to window size
-    //$('#main-map').height($(window).height()).width($(window).width());
-    
-    //main_map = new Map(MAP_DEFAULTS);
-    //main_map.init('main-map');
-    //main_map.map.events.on({'moveend' : on_map_move });
-    
-    $(window).resize(function(){
-        //hack: map goes blank on resize unless re-render is triggered
-        //main_map.map.zoomOut();
-        //main_map.map.zoomIn(); 
-    });  
-
-    //checkbox for osm
-    $('#osm-checkbox').click(function(){
-        var is_checked = $(this).attr('checked');
-        if(is_checked == 'checked'){
-            //main_map.osmLayerSwitcher(true);
-        }else{
-            //main_map.osmLayerSwitcher(false);
-        } 
-    }); 
+    map_refresh();
 }
 
 function reset_map() {
@@ -262,11 +238,8 @@ function reset_map() {
     //main_map.map.zoomTo(MAP_DEFAULTS['zoom']);
 }
 
-
-
 CAST_FADE_IN = false;
 function on_map_move() {
-    
     if ( CAST_FADE_IN ) {
         // see: frontpage_views.cast_single_view
         cast_fade_in();
@@ -275,13 +248,8 @@ function on_map_move() {
 }
 
 function map_refresh() {
-    //main_map.clearPopups();    
-
     var query = get_cast_filter_query();
-
     $('#map-loader').addClass('active');
-
-    // refresh the map
     $.ajax({
         async: true,
         cache: false,
@@ -291,13 +259,8 @@ function map_refresh() {
 }
 
 function map_refresh_cb(data) {
-    //main_map.clearFeatures();
-    //main_map.renderFeatures(data); 
-
     locast.main_map.renderCasts(data.casts);
-
     $('#map-loader').removeClass('active');
-
 }
 
 
@@ -330,10 +293,6 @@ function collection_list_refresh() {
 function collection_list_cb(data) { 
     var html = _.template($('#collection-list-templ').html(), {collections: data});
     $('#collection-list').html(html); 
-   
-    //get and render preview of the collection's casts
-
-    
     _.each(data, function(collection){
             collection_preview_list(collection, '#collection-list-preview_', 10);
     });
@@ -366,7 +325,6 @@ function collection_preview_list(collection, container, preview_num){
  *      + <a> + -sort_ORDERBYARGUMENT
  */
 
-
 function list_casts(list_container, pagesize, page) {
   
     //initialize list
@@ -376,14 +334,8 @@ function list_casts(list_container, pagesize, page) {
         $('#'+list_container).data('requests', []);
         $('#'+list_container).data('rendered_html', []);
     }
-
-    //default pagesize
     if( !pagesize ){ pagesize = 10; }
-
-    //set pagesize
     $('#'+list_container).data('pagesize', pagesize);
-
-    //activate cast sort control
     if(page == 1){
         //clear any previous event listeners
         $('#'+list_container+'-sort a').unbind('click');
@@ -396,10 +348,8 @@ function list_casts(list_container, pagesize, page) {
         });
     }
 
-    //build the query
     var query = get_cast_filter_query();
     var orderby = $('.selected', '#'+list_container+'-sort').attr('id').split('_')[1];
-
     if ( query ) { query += '&'; }
     query += 'page=' + page + '&pagesize=' + pagesize + '&orderby=' + orderby;
 
@@ -465,8 +415,6 @@ function render_casts(list_container){
 }
 
 function list_casts_cb(list_container, html) { 
-
-    // get values from list element
     var page = $('#'+list_container).data('current-page');
     var total = $('#'+list_container).data('total-pages');
     var pagesize = $('#'+list_container).data('pagesize');
@@ -522,7 +470,6 @@ function list_casts_cb(list_container, html) {
 var throttled_next_cast_list_page = _.throttle(next_cast_list_page, 200);
 
 function next_cast_list_page(list_container){
-    
     var pagesize = $('#'+list_container).data('pagesize');
     var total = $('#'+list_container).data('total-pages');
 
