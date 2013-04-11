@@ -45,7 +45,8 @@
 
 <div id="login_container" class="layer-container">
     <h4 class="title">{% trans "Login to Your Account" %}</h4> <button id="login-container-close" class="btn-danger">{% trans "Close" %}</button>
-    <form id="login-form" method="post" action="" class="clearfix">
+    <form id="login-form" method="post" action="{% url "django.contrib.auth.views.login" %}" class="clearfix">
+        {% csrf_token %}
         <label for="id_username">{% trans "Email" %}</label>
         {{ login_form.username }}
         {{ login_form.password.label_tag }}

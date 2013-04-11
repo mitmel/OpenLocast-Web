@@ -14,7 +14,7 @@ $(function() {
 
     // dhtml
     activateDHTML();
-    fix_openlayers_zoombar();
+    //fix_openlayers_zoombar();
 
     // from frontpage_views.js
     frontpage_app.run(); 
