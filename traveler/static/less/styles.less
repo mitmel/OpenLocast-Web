@@ -211,7 +211,7 @@ header{
                      border-left: @gray 1px solid;
                 }
                 &.inactive{
-                    opacity:.2;
+                    opacity:0;
                 }
                 .btn{ 
                     .minimal-push-btn;
@@ -711,6 +711,17 @@ header{
 //Landscape phone to desktop/tablet
 
 @media (max-width: 767px) {
+
+    #media_layer{
+        #cast_container{ 
+            .cast{
+                .cast-content {
+                    .cast-layout-style(centered);
+             }
+         }
+    }
+
+}
 
 }
 
