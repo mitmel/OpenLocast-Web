@@ -87,7 +87,8 @@
 
 <div id="intro-page-container" class="ui-overlay">
     <div id="intro-page-content" class="content-card">
-        <h1 class="intro-message">{% trans "Welcome to "%}{{SITE_NAME}}</h1>
+        {% include "welcome_message.django.html" %}
+        <br/>
         <h2 class="map-list-header">{% trans "Collections"%}</h2>
         <div id="intro-map-list"></div>
     </div>   
