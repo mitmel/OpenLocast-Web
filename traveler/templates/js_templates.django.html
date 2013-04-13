@@ -78,9 +78,23 @@
     </a>
 </script>
 
-<!-- CAST CLUSTER POPUP/TOOLTIP 
-     renders data from openlayers cluster feature
--->
+
+<!-- CAST IMAGE CLUSTER -->
+
+<script type="text/template" id="cast-image-cluster-templ">
+        <div class="cast-cluster-image">
+             <% if(cast.thumbnail != undefined){ %> 
+                <img src="<%= cast.thumbnail %>" /> 
+            <% }else{ %>
+                <div class="placeholder"></div>
+             <% } %>
+        </div>
+</script>
+
+
+
+<!-- CAST IMAGE CLUSTER 
+     renders data from openlayers cluster feature -->
 
 <script type="text/template" id="cast-cluster-popup-templ">
     <div class="cluster-popup" >

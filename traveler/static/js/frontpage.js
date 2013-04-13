@@ -142,12 +142,24 @@ function activateDHTML(){
 
    //browsebox
    
-   $('#map-title_container').click(function(){
-       $('#browsebox-container').toggleClass('active'); 
-       if( $('#browsebox-container').hasClass('active')){
+  $('#map-title_container').mouseenter(
+        function() {
+            $('#browsebox-container').addClass('active'); 
             browsebox_list_refresh();
-       } 
-   }); 
+        }
+    ).mouseleave(
+        function() { 
+            $('#browsebox-container').removeClass('active'); 
+        }
+   );
+   
+   $('#map-title_container').click(function() {
+         $('#browsebox-container').toggleClass('active'); 
+            if( $('#browsebox-container').hasClass('active')){
+                browsebox_list_refresh();
+            }
+
+     }); 
 
    //logo click
    
@@ -156,7 +168,7 @@ function activateDHTML(){
         //show cast view when logo is clicked
         if( $('#layer-switch_media').hasClass('active') == false){
             $('#layer-switcher .btn').removeClass('active');
-            $('#layer-switch_media').addClass('active');
+            $('#layer-switch_map').addClass('active');
 
             set_visible_elems();
         }

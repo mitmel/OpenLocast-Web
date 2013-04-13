@@ -579,24 +579,27 @@ header{
         position:fixed;
         cursor:pointer;
         z-index:@zindexChrome;
-        width:100%;
+        width:20%;
         background-color:@bodyBackground;
-        top:46px;
+        bottom:46px;
         left:0;
         .default-shadow;
+        .border-radius(0 4px 4px 0);
+
         box-sizing:border-box;
         
         #show-browsebox{
+           display:none;
            position:absolute;
-           left:48%;
-           top:7px; 
-           opacity:0;
-           .transition(opacity 0.2s ease);
+           right:8px;
+           top:-22px; 
+           opacity:1;
+           .transition(opacity 0.5s ease);
         }        
 
         &:hover{
             #show-browsebox{
-                opacity:1;
+                opacity:0;
             }
         }
         #map-title{
@@ -618,10 +621,13 @@ header{
         }
         #browsebox-container{
             max-height:500px;
+            height:0;
             overflow:auto;    
-            display:none;
+            opacity:0;
+            .transition(opacity 0.5s ease);
             &.active{
-                display:block;
+                height: auto;
+                opacity:1;
             }
             #browsebox-collection-list{
                 .collections{
@@ -682,9 +688,9 @@ header{
         height:100% !important;
         
         .cast-cluster{
-            .cast-cluster-style(circles);
-
+            .cast-cluster-style(image);
         }
+
     } 
 }
 

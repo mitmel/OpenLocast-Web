@@ -154,18 +154,20 @@
 {% block map-content %}
 
 <!--MAP TITLE-->
-<div id="map-title_container" class="layer-container" >
-    <div id="map-title" class="clearfix">
-        <h4 id="show-browsebox"><i class="icon-chevron-down"></i> </h4>
-        <h4 id="current-map">{% trans "All Casts" %}</h4>
-        <a id="add-cast-button" class="btn cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></a> 
-    </div>
-    <div id="browsebox-container">
+<div id="map-title_container" class="layer-container" >  
+     <div id="browsebox-container">
              <div id="browsebox-collection-list"></div>
              <div id="browsebox-tag-list"></div>
+    </div>
 
-         </div>
-</div> <!-- map-title-container -->
+    <div id="map-title" class="clearfix"> 
+        <h4 id="current-map">{% trans "All Casts" %}</h4>
+        <h4 id="show-browsebox"><i class="icon-chevron-up"></i> </h4> 
+        {% if request.user.is_authenticated %}
+            <a id="add-cast-button" class="btn cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></a> 
+        {% endif %}
+    </div>
+ </div> <!-- map-title-container -->
 
 <!--LOCATION CHANGE-->
 
