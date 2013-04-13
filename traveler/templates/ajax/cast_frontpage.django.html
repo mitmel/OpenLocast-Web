@@ -89,12 +89,12 @@
                 <div class="cast-edit-tools">
                     <button href="#" class="btn delete-cast" id="delete-cast_{{cast.id}}"><i class="icon-trash"></i> {% trans "Delete Cast" %}</button>   
                     <button href="#" class="btn change-location" id="change-location-cast_{{cast.id}}"><i class="icon-map-marker"></i> {% trans "Change Cast Location" %}</button>
+                    <button  id="add-media-menu-button-cast_{{cast.id}}" class="btn add-media-btn" href="#!"><i class="icon-plus"></i> {% trans "Add Media" %}</button>
                 </div>
                 {% endif %}
 
                  {% if allowed_edit %}
            
-                <button  id="add-media-menu-button-cast_{{cast.id}}" class="btn add-media-btn edit-toggle" href="#!"><i class="icon-plus"></i> {% trans "Add Media" %}</button>
             {% endif %}
 
         </div>

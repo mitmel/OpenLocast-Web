@@ -472,7 +472,7 @@ header{
             }
 
             &.edit{
-                .edit-toggle, .cast-edit-tools{
+                .edit-toggle{
                     opacity:1;
                     left:inherit !important;
                 }
@@ -482,7 +482,7 @@ header{
                 }
             }
 
-            .edit-toggle, .cast-edit-tools{
+            .edit-toggle{
                 opacity:0;
                 left:-9999px !important;
                 .transition(~"opacity .2s ease");
@@ -614,6 +614,7 @@ header{
             float:right;
             display:block;
             margin-top:6px;
+            margin-bottom:6px;
             cursor:pointer;
             &.inactive{
                 display:none;

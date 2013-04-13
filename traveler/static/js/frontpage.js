@@ -1000,6 +1000,9 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     if ( callback ) {
         callback(cast_id, cast_html);
     }
+    else {
+        cast_loaded(cast_id);
+    }
 }});
 }
 
