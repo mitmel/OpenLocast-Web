@@ -610,8 +610,8 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         $('#flag-cast_' + cast_id).click(function() {
             var html = '<h4 class="locast-instruction">';
             html += gettext('Are you sure you want to flag this cast as inappropriate ?') + '</h4>';
-            html += '<a id="flag-yes-cast_' + cast_id + '" class="locast-button" href="#">yes</a>';
-            html += '<a class="locast-button" id="flag-no-cast_' + cast_id + '" href="#">no</a>';
+            html += '<a id="flag-yes-cast_' + cast_id + '" class="btn btn-small" href="#">yes</a>';
+            html += '<a class="btn btn-small" id="flag-no-cast_' + cast_id + '" href="#">no</a>';
 
             $('#flag-confirm-cast_' + cast_id).html(html);
             
