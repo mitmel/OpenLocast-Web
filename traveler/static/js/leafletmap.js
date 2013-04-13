@@ -83,12 +83,20 @@ var locast = locast || {};
 
         var _castLayer = L.geoJson;
         var _castMarkerOptions = {
-            icon: L.divIcon()
+            icon: L.divIcon({
+                iconSize: L.point(30,30),
+                className:'locast-div-icon' ,    
+                html: '<div class="locast-map-marker"><div class="top"></div><div class="arrow"></div></div>'    
+            })
         };
 
         var _addPointLayer = L.marker;
         var _addPointOptions = {
-            icon: L.divIcon()
+            icon: L.divIcon({
+                iconSize: L.point(30,30),
+                className:'locast-div-icon' ,    
+                html: '<div class="locast-map-marker"><div class="top"></div><div class="arrow"></div></div>'    
+            })
         };
                 
         var _mapDefaults = {
@@ -118,7 +126,7 @@ var locast = locast || {};
 
         
         method.markCast = function (lat, lon) {
-            _map.setView([lat, lon] , 8);
+            _map.setView([lat, lon] , 12);
             L.marker([lat, lon], _castMarkerOptions).addTo(_map);
         };
 

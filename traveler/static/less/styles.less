@@ -694,6 +694,48 @@ header{
     } 
 }
 
+// misc styles
+
+#fancybox-overlay {
+    opacity: .8 !important;
+}
+
+.locast-div-icon {
+    background-color: transparent;
+    border: none;
+    .locast-map-marker {
+        width: 100%;
+        height: 100%;
+        position:relative;
+  
+
+        .top{
+            position:absolute;
+            top:-19px;
+            left:5px;
+            width:20px;
+            height:20px;
+            background-color: @primaryAccent;
+            .border-radius(9999px);
+            .default-shadow;
+            border: 2px solid @white;
+            z-index:2;
+        }
+
+        .arrow{
+            position:absolute;
+            top:-2px;
+            left:7px;
+            width:0;
+            height:0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 18px solid @primaryAccent;
+            z-index:1
+        }
+    }
+}
+
 
 /* Responsive Bootstrap */
 
