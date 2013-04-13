@@ -46,6 +46,7 @@
         <% } %>
         <div class="cast-info info">
             <h4 class="title"><%= cast.title %></h4>
+            <h5 class="author"><%= cast.author.display_name %></h5> 
         </div>
         <i class="open-icon icon-white icon-fullscreen"></i>
         </div>
@@ -195,6 +196,8 @@
 
 <script type="text/template" id="search-results-templ">
 
+    <% if(results.collections){ %>
+
     <!-- COLLECTION RESULTS -->
 
     <ul class="collections result span4">    
@@ -274,7 +277,11 @@
         </a>
      <% }); } %>  
     </ul>
+
+    <% } %>
+
     <button class="btn" id="close-search-results"><i class="icon-chevron-up"></i> {% trans "Close Search Results" %} <i class="icon-chevron-up"></i></button>
+
 </script> 
 
 <!-- USER INFO -->

@@ -32,6 +32,7 @@
 .collection-preview-style(@width:@collectionListWidth , @height:@collectionListHeight, @spacing:@collectionListSpacing, @layout) when ( @layout = block ) {
     border-bottom:solid @linesColor 1px;
     cursor:pointer;
+    max-width: 600px;
     .collection-info{
         width:100%;
         color:@textColor;
@@ -170,7 +171,8 @@
                 margin-right:auto;
                 img{
                     width:100%;
-                    height:auto; 
+                    height:auto;
+                    padding: 0; 
                 }
             }
         } 
@@ -379,7 +381,8 @@
                 margin:0;
                 img{
                     position:static;
-                    //width:auto !important;
+                    width:auto;
+                    height: @castSingleMediaHeight;
                 }
             }
         }  
@@ -600,15 +603,15 @@
         }
     }
     .info{
-        opacity:1;
+        opacity:0;
     }
 
     &:hover{
         .info{
-            opacity:0;
+            opacity:1;
         }
         .open-icon{
-            opacity:1;
+            opacity:0;
         }
     }
 
@@ -649,6 +652,14 @@
         top:10px;
         left:10px;
         opacity:0;
+    }
+
+    .info{
+        .title{
+            
+            font-size: 2em;
+            line-height:1.2;
+        }
     }
 
     &:hover{
@@ -870,6 +881,13 @@
             font-size: @baseFontSize;
             font-weight:300;
             text-transform:Capitalize;
+        }
+        .author{
+             .center-text-vert(@height);
+            width:100%;
+            padding:0 8px;
+            top:60%;
+
         }
     }
 }

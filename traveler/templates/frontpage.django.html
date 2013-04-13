@@ -19,7 +19,7 @@
     </div>   
 {% else %}
     <div class="login-info">
-        <a href="#!/user/{{request.user.id}}/">
+        <a id="login-menu-link" href="#">
         {% if request.user.user_image %}
             <div class="image-frame user-image"><img src="{{MEDIA_URL}}{{request.user.user_image}}" /></div>
         {% endif %}
@@ -30,8 +30,9 @@
         </a>
     </div>
     <div id="login-menu">
-        <div class="login-info-item"><a id="edit-profile-link" href="#">Edit Profile</a></div>
-        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url 'logout' %}?next={{request.path}}">Logout</a></div>
+        <div class="login-info-item"><a href="#!/user/{{request.user.id}}/">{% trans "View Casts" %}</a></div>
+        <div class="login-info-item"><a id="edit-profile-link" href="#">{% trans "Edit Profile" %}</a></div>
+        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url 'logout' %}?next={{request.path}}">{% trans "Logout" %}</a></div>
     </div>
 {% endif %}
 {% endblock login %}
@@ -58,21 +59,18 @@
 </div><!-- end login-container -->
 
 
-<div class="content-card ui-draggable closed" id="edit-profile-container">
+<div  id="profile_container" class="layer-container">
 {% if request.user.is_authenticated %}
-    <div id="edit-profile-header">
-        <a href="#" class="locast-icon close locast-button" id="edit-profile-close">Cancel</a> 
-        <h4 class="locast-instruction"><strong>{% trans "Edit Your Profile" %}</strong></h4>
-        <div id="user-name"><h4>{{ request.user.display_name }}</h4></div>
-        <p class="locast-help">{% trans "Edit your password and other information using the form below" %}</p>
-    </div>
-    <div>  
+    <div class="editing-form">
+        <h4 class="locast-instruction">{% trans "Edit Your Profile " %}<strong>{{ request.user.display_name }}</strong></h4>
+        <p class="locast-help">{% trans "Change your password" %}</p>
         <form id="edit-profile-form" method="POST" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
         {% for field in edit_profile_form %}
-            {{ field.label_tag }}<br/>{{ field }}<br/>
+            {{ field.label_tag }}{{ field }}
         {% endfor %}
-            <br/>
-            <input type="submit" class="locast-button" value="Edit Profile" />
+        <br />
+        <a href="#" class="btn btn-danger" id="edit-profile-close">{% trans "Cancel" %}</a> 
+         <input type="submit" class="btn" value="{% trans "Change Password" %}" />
         </form>
     </div>
 {% endif %}
@@ -97,7 +95,9 @@
 
 <!--COLLECTION LIST CONTAINER-->
 <div id="collection-list_container" class="layer-container">
-    <h1 id="intro-message">{% trans "Welcome to the Open Locast Project"%}</h1>
+    <div class="row-fluid">
+        <h1 id="intro-message" class="offset1 span10">{{SITE_NAME}} {% trans " project collections" %}</h1>
+    </div>
     <!--<h2 class="map-list-header">{% trans "Collections" %}</h2>-->
     <div id="collection-list" class="row-fluid"></div>   
 </div>

@@ -57,16 +57,6 @@ function activateDHTML(){
 
     activate_search_bar();
 
-    // tooltip
-    $('#main-map').tooltip({
-        track: true,
-        delay: 0,
-        showURL: false, 
-        bodyHandler:function() {
-            return '<br />';
-        }
-    });
-
     // map reset button
     $('#map-reset').click(function() {
         reset_map();
@@ -84,10 +74,19 @@ function activateDHTML(){
         return false;
     });
 
+    $('#login-menu-link').click(function() {
+        $("#login-menu").toggleClass('visible');
+        return false;    
+    });
+
+    $('#login-menu-link').mouseleave(function() {
+        $("#login-menu").removeClass('visible');
+    });
+
     // activate login button at top
     $('#login-link').click(function() {
         //add chrome layer and login to visible elems
-        add_visible_elems(['chrome'],['login']);
+        add_visible_elems(['chrome'],['login'], undefined);
         return false;
     });
 
@@ -104,20 +103,18 @@ function activateDHTML(){
         return false;
     });
 
-    // Collection and user box draggable
     $('#cast-add_container').add('#change-location_container').draggable({containment:'#main-map'});
 
-    // Collection and user box draggable
-    $('#edit-profile_container').draggable({containment:'#main-map'});
-
     $('#edit-profile-link').click(function() {
-        $('#edit-profile_container').fadeIn();
-        $('#edit-profile-close').click(function() {
-            $('#edit-profile_container').fadeOut();
-            return false;
-        }); 
+        add_visible_elems(['chrome'],['profile']);
         return false;
     });
+
+
+    $('#edit-profile-close').click(function() {
+        remove_visible_elems(['chrome'],['profile']);        
+        return false;
+    }); 
 
     // orderby switchers
     $('#cast-list-sort a').click(function() {

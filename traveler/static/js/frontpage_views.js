@@ -64,7 +64,7 @@ var visible_elems = {};
 visible_elems['layers'] = [];
 visible_elems['containers'] = [];
     
-var set_visible_elems = function(active_layers, active_containers, override_switcher){ 
+var set_visible_elems = function(active_layers, active_containers, override_switcher, ignore_switcher){ 
  
     //update visible_elems object
     if(active_layers != undefined){
@@ -76,10 +76,11 @@ var set_visible_elems = function(active_layers, active_containers, override_swit
     }
 
     //respect layer switcher control unless overridden
-    if(override_switcher == undefined){
+    if(override_switcher === undefined && ignore_switcher == undefined){
         activate_layer_switcher();
         check_layer_switcher();
     }
+    console.log(override_switcher);
     if(override_switcher == true){
         deactivate_layer_switcher();
     }
@@ -195,7 +196,7 @@ var add_visible_elems = function(adding_layers, adding_containers, refresh){
  
     if(refresh == undefined){
         //refresh element visibility and ignore switcher
-        set_visible_elems(undefined, undefined, true);        
+        set_visible_elems(undefined, undefined, undefined, true);        
     }
 }
 
@@ -211,7 +212,7 @@ var remove_visible_elems = function(removing_layers, removing_containers, refres
    
     if(refresh == undefined){
         //refresh element visibility and ignore switcher
-        set_visible_elems(undefined, undefined, true);
+        set_visible_elems(undefined, undefined, undefined, true);
     }
 }
 
