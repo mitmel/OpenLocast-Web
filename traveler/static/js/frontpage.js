@@ -246,17 +246,6 @@ function setup_map() {
 
 function reset_map() {
     var center = MAP_DEFAULTS['center'];
-    //main_map.setCenter(center[0], center[1]);
-    //main_map.map.zoomTo(MAP_DEFAULTS['zoom']);
-}
-
-CAST_FADE_IN = false;
-function on_map_move() {
-    if ( CAST_FADE_IN ) {
-        // see: frontpage_views.cast_single_view
-        cast_fade_in();
-        CAST_FADE_IN = false;
-    }
 }
 
 function map_refresh() {
@@ -804,7 +793,6 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
 
         set_visible_elems(['map'],['change-location']);
 
-        //main_map.addCastControl.activate();
         locast.main_map.addCastPoint();
 
         var html = _.template($('#cast-change-location-templ').html(), {cast_id: cast_id}); 
@@ -813,39 +801,36 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
 
         // Click cancel
         $('#change-location-cancel-cast_' + cast_id).click(function() {
-            main_map.addCastControl.deactivate();
-            
-            if ( main_map.addCastPoint ) {
-                main_map.addCastPoint.destroy();	
-                main_map.addCastPoint = null;
+
+            if (locast.main_map.getCastPoint() ) {
+                locast.main_map.destroyCastPoint();
             }
-            
+        
             set_visible_elems(['media','map'],['cast'],true);
+    });
 
-        });
+    // Click save new location
+    $('#change-location-finish-cast_' + cast_id).click(function() {
+         if (locast.main_map.getCastPoint()) {
 
-        // Click save new location
-        $('#change-location-finish-cast_' + cast_id).click(function() {
-             if (locast.main_map.getCastPoint()) {
-    
-                var ll = locast.main_map.getCastPoint();
-                
-                $('#change-location_container').fadeOut();
+            var ll = locast.main_map.getCastPoint();
+            
+            $('#change-location_container').fadeOut();
 
-                var data = JSON.stringify({'location': [ll.lng, ll.lat]}, null, 2);
+            var data = JSON.stringify({'location': [ll.lng, ll.lat]}, null, 2);
 
-                frontpage_app.setLocation('#!');
+            frontpage_app.setLocation('#!');
 
-                $.ajax({
-                    url: cast_url,
-                    data: data,
-                    type: 'PUT',
-                    success: function(cast) {
-                        if (locast.main_map.getCastPoint() ) {
-                            locast.main_map.destroyCastPoint();
-                            $('#change-location_container').html('');
-                            map_refresh();
-                        }
+            $.ajax({
+                url: cast_url,
+                data: data,
+                type: 'PUT',
+                success: function(cast) {
+                    if (locast.main_map.getCastPoint() ) {
+                        locast.main_map.destroyCastPoint();
+                        $('#change-location_container').html('');
+                        map_refresh();
+                    }
                         frontpage_app.setLocation('#!/cast/' + cast.id + '/');
                     }
                 });

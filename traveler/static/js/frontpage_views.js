@@ -239,10 +239,17 @@ var home_view = {
  ********/
 
 
-function cast_fade_in() {
-   //delay cast visibility so map panning is not interrupted
-   //called in frontpage.js 
-   set_visible_elems(undefined, ['cast'], true);
+function cast_loaded(cast_id) {
+    set_visible_elems(undefined, ['cast'], true);
+
+    //make sure main map redraws
+    locast.main_map.redrawBase();
+
+    //intialize map showing cast location
+    var map = locast.map('cast-map', MAP_DEFAULTS);
+    map.redrawBase();
+    var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
+    map.markCast(loc_arr[1], loc_arr[0]);
 }
 
 var cast_single_view = {};
@@ -262,66 +269,10 @@ cast_single_view['activate'] = function(context) {
        
         //don't refresh or move map if map layer is not visible
         if(map_is_visible != undefined){ 
-            
-            //update features on map
-            map_refresh();
-
-            //get location of cast
-            var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
-
-            //create new feature
-            //var pnt = new OpenLayers.Geometry.Point(parseFloat(loc_arr[0]), parseFloat(loc_arr[1]));
-            //pnt.transform(main_map.displayProjection, main_map.projection);
-            //var feature = new OpenLayers.Feature.Vector(pnt);
-
-            //main_map.openCastLayer.addFeatures([feature]);
-
-            //var ll = main_map.get_ll(feature.geometry.x, feature.geometry.y);
-            //var bounds = main_map.map.calculateBounds();
-
-            //if ( !bounds.containsLonLat(ll) ) {
-              //  main_map.map.setCenter(ll);
-            //}
-     
-            //main_map.clearPopups();
-
-            // deselect the cast
-            //main_map.selectCast.unselectAll();
-
-            //main_map.map.panTo(ll);
-
-            /*cast_marker_id = feature.geometry.id;
-
-            var elem = $(document.getElementById(feature.geometry.id));
-            var dx = 0;
-            var dy = 0;
-
-            // randomly sometimes elem doesn't exist
-           if ( elem && elem.offset() ) {
-                // offset from left of window
-                var xpad = ($(window).width()*.5);
-
-                // offset from top of window 
-                var ypad = 150;
-
-                var dx = elem.offset().left - xpad;
-                var dy = elem.offset().top - ypad;
-
-            }*/
-
-            //if ( dx != 0 && dy != 0 ) {
-                // pan the map, and then fade the cast in.
-
-                // (hackish) this will actually fade in the cast in the moveend map listener
-                // this is because its slow as hell to fade in and pan simultaneously
-                // This boolean is checked in onmap move or something.
-                //CAST_FADE_IN = true;
-                //main_map.map.pan(dx, dy);
-            //}
-            //else { 
-                cast_fade_in();
-            //}
+            map_refresh(); 
         }
+
+        cast_loaded(cast_id);
 
         // set up close button to go back to previous app location
         $('#close-cast_' + cast_id).click(function() {
