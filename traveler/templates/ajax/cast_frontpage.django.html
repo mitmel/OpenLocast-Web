@@ -60,7 +60,7 @@
             
             <a href="#!/user/{{cast.author.id}}/" class="author cast-author"><h4 class="author">{{cast.author.display_name}}</h4></a>
             
-            <h5 class="cast-date date" title="{{cast.created|date:"Y-m-d\TH:i:s\Z"}}">{{cast.created|date:"Y-m-d\TH:i:s\Z"}}</h5> 
+            <h5 class="cast-date date" title="{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}">{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}</h5> 
         </div>
 
         <!-- CAST MAP -->

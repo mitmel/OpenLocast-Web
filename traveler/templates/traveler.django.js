@@ -110,7 +110,7 @@ function format_date(jq_obj) {
             out_str = datetime.fromNow();
         }
         else {
-            out_str = datetime.format('D MMM YY @ h:mm a');
+            out_str = datetime.format('MMMM,D YYYY @ h:mm a');
         }
             
         _this.html(out_str);
