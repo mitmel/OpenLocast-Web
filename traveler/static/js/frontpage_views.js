@@ -227,7 +227,8 @@ var remove_visible_elems = function(removing_layers, removing_containers, refres
 var home_view = {
     activate: function(context) {
         clear_cast_filter();
-        $('#current-map').html(gettext('All Casts'));        
+        $('#current-map').html(gettext('All <span class="cast-name-plural">Casts</span>'));
+        replace_names();        
         set_visible_elems(['media'],['collection-list']);
     },
     deactivate: function() {

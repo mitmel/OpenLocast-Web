@@ -140,15 +140,24 @@ function activateDHTML(){
    //browsebox
    
   $('#map-title_container').mouseenter(
-        function() {
-            $('#browsebox-container').addClass('active'); 
-            browsebox_list_refresh();
+        function(e) {
+            if(e.srcElement != $('#add-cast-button')[0]){
+                $('#browsebox-container').addClass('active'); 
+                browsebox_list_refresh();
+            }
         }
     ).mouseleave(
         function() { 
             $('#browsebox-container').removeClass('active'); 
         }
    );
+    
+   $('#add-cast-button').mouseleave(function(e) {
+        if($(this).offset().left >= e.pageX){
+            $('#map-title_container').trigger('mouseenter');
+        }
+    });
+
    
    $('#map-title_container').click(function() {
          $('#browsebox-container').toggleClass('active'); 

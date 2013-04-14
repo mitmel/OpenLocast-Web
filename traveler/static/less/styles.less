@@ -654,17 +654,26 @@ header{
         }
         #map-title{
             padding:0 @baseLineHeight*.8;
+            position:relative;
         }
 
         #current-map{
             float:left;
+            margin-right:100px;
         }
         #add-cast-button{
-            float:right;
-            display:block;
-            margin-top:6px;
-            margin-bottom:6px;
-            cursor:pointer;
+            width:100px;
+            height:100%;
+            padding:0;
+            position:absolute;
+            right: 0px;
+            cursor:pointer; 
+            z-index:@zindexChrome -1;
+            .minimal-btn;
+            .border-radius(0 4px 4px 0);
+            border-left: @linesColor 1px solid;
+            line-height:3;
+            font-weight:normal;
             &.inactive{
                 display:none;
             }
@@ -676,7 +685,7 @@ header{
             opacity:0;
             .transition(opacity 0.5s ease);
             &.active{
-                height: auto;
+                height: 300px;
                 opacity:1;
             }
             #browsebox-collection-list{
