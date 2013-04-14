@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load tz %}
+{% load markup %}
 
 <a href="#!" id="close-cast_{{cast.id}}" class="cast-close"></a>
 
@@ -98,11 +99,6 @@
             {% endif %}
 
         </div>
-    <ul class="cast-collections cleared">
-        {% for coll in cast.collection_set.all %}
-            <li><a href="#!collection/{{coll.id}}/">{{coll.title}}</a></li>
-        {% endfor %}
-    </ul>
 
         </div><!-- end cast-column1 -->
         <div class="cast-column2">
@@ -117,8 +113,6 @@
             {% endif %} 
              
             <ul class="media-list  clearfix {% if cast.imagemedia %}image_{{cast.imagemedia|length}}{% endif %} {% if cast.videomedia %}video_{{cast.videomedia|length}}{% endif %} {% if cast.linkedmedia %}linked_{{cast.linkedmedia|length}}{% endif %} " id="media-list-cast_{{cast.id}}">
-
-          
 
 
             {% if allowed_edit %}
@@ -273,14 +267,6 @@
                     <a class="login-button" >{% trans 'Login to comment' %}</a>
                     {% endif %}
             </div>
-            {% if allowed_edit %}
-                <form id="description-form-cast_{{cast.id}}" class="cast-description-edit" method="post"> 
-                <label for="id_description">{% trans "Edit Description" %}</label>
-                <textarea id="id_description" type="text" name="description" class="locast-textfield">{% if cast.description %}{{cast.description}}{% endif %}</textarea>
-                <input type="submit" value="{% trans "update" %}" class="locast-button" />
-            </form> 
-            {% endif %}
-                </div>
 
 
             <!-- RELATED COLLECTIONS --> 
@@ -304,7 +290,7 @@
           </div><!-- end cast-column2 -->
 
    
-    </div>
+  
 
     <!-- ADD MEDIA --> 
 

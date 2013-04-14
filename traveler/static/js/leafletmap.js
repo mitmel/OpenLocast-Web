@@ -112,7 +112,6 @@ var locast = locast || {};
         });
 
         var _init = function () {
-            console.log(_id);
             _map = L.map(_id, _mapDefaults);
             L.control.zoom({position: 'bottomright'}).addTo(_map);
             _map.addLayer(_cloudmadeLayer); 

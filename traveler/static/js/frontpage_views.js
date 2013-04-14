@@ -80,7 +80,6 @@ var set_visible_elems = function(active_layers, active_containers, override_swit
         activate_layer_switcher();
         check_layer_switcher();
     }
-    console.log(override_switcher);
     if(override_switcher == true){
         deactivate_layer_switcher();
     }
