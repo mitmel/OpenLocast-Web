@@ -279,7 +279,7 @@ cast_single_view['activate'] = function(context) {
         cast_loaded(cast_id);
 
         // set up close button to go back to previous app location
-        $('#close-cast_' + cast_id).click(function() {
+        $('.cast-close').click(function() {
             
             //change layer switcher control to select map
             $('#layer-switcher .btn').removeClass('active');

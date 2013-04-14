@@ -2,13 +2,17 @@
 {% load tz %}
 {% load markup %}
 
-<a href="#!" id="close-cast_{{cast.id}}" class="cast-close"></a>
+<a href="#!" id="close-cast_{{cast.id}}" class="cast-close map-close"></a>
+
 
 <div id="location-cast_{{cast.id}}" class="cast-location">{{cast.location.x}},{{cast.location.y}}</div>
 
  <!-- CAST CONTAINER -->
 
 <div id="open-cast_{{cast.id}}" class="clearfix cast official-{{cast.author.is_staff|lower}}">
+
+    <a href="#!" class="cast-close close-link btn"><i class="icon-remove"></i> </a>
+    
     {% if allowed_edit %}
         <button id="edit-activate_{{cast.id}}" class="btn edit-activate"><i class="icon-pencil icon-white"></i> {% trans "Edit This <span class='cast-name'>Cast</span> "%}</button>
     {% endif %}
