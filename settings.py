@@ -243,7 +243,7 @@ CONTEXT_VARIABLES = (
     'HOST',
     'BASE_URL',
     'FULL_BASE_URL',
-    'THEME_URL',
+    'THEME_STATIC_URL',
     'GOOGLE_API_KEY',
     'GOOGLE_ANALYTICS_ID',
     'FACEBOOK_APP_ID',
@@ -265,10 +265,10 @@ except ImportError: raise 'Cannot find settings_local.py!'
 
 # Sets up the URL to load theme resources. Only needs to be overriden
 # if the theme is not in the default location
-THEME_URL = STATIC_URL + 'themes/' + THEME + '/'
+THEME_STATIC_URL = STATIC_URL + 'themes/' + THEME + '/'
 
 TEMPLATE_DIRS = (
-    '%s/traveler/static/themes/' % BASE_PATH + THEME + '/templates',
+    STATIC_ROOT + 'themes/' + THEME + '/templates/',
 )
 
 LOGIN_REDIRECT_URL = BASE_URL + '/'

@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load markup %}
+{% load tz %}
 
 <a href="#!" id="close-cast_{{cast.id}}" class="cast-close"></a>
 
@@ -98,6 +98,11 @@
             {% endif %}
 
         </div>
+    <ul class="cast-collections cleared">
+        {% for coll in cast.collection_set.all %}
+            <li><a href="#!collection/{{coll.id}}/">{{coll.title}}</a></li>
+        {% endfor %}
+    </ul>
 
         </div><!-- end cast-column1 -->
         <div class="cast-column2">
@@ -268,6 +273,14 @@
                     <a class="login-button" >{% trans 'Login to comment' %}</a>
                     {% endif %}
             </div>
+            {% if allowed_edit %}
+                <form id="description-form-cast_{{cast.id}}" class="cast-description-edit" method="post"> 
+                <label for="id_description">{% trans "Edit Description" %}</label>
+                <textarea id="id_description" type="text" name="description" class="locast-textfield">{% if cast.description %}{{cast.description}}{% endif %}</textarea>
+                <input type="submit" value="{% trans "update" %}" class="locast-button" />
+            </form> 
+            {% endif %}
+                </div>
 
 
             <!-- RELATED COLLECTIONS --> 
@@ -308,7 +321,7 @@
             </div>
             <div class="upload-info hidden">
             <label for="id_caption">{% trans "caption (optional)" %}</label>
-            <input id="id_caption" type="text" value="untitled" maxlength="160" name="caption" class="locast-textfield">
+            <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
             <input type="hidden" name="content_type" value="imagemedia"></input>
             <input type="submit" value="Upload" class="locast-button" />
         </div>
@@ -323,7 +336,7 @@
             </div>
             <div class="upload-info hidden">
                 <label for="id_caption">{% trans "caption (optional)" %}</label>
-                <input id="id_caption" type="text" value="untitled" maxlength="160" name="caption" class="locast-textfield">
+                <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
                 <input type="hidden" name="content_type" value="videomedia"></input>
                 <button type="submit"  value="Upload" class="btn" > {% trans "Upload" %}</button>
             </div>  

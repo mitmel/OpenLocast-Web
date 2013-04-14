@@ -37,6 +37,8 @@
 {% endif %}
 {% endblock login %}
 
+{% block main-content %}
+<div id="content-details" class="ui-overlay locast-content-details"></div>
 
 {% block chrome-content %}
 
@@ -159,6 +161,7 @@
              <div id="browsebox-collection-list"></div>
              <div id="browsebox-tag-list"></div>
     </div>
+</div> <!-- map-info-container -->
 
     <div id="map-title" class="clearfix"> 
         <h4 id="current-map">{% trans "All Casts" %}</h4>

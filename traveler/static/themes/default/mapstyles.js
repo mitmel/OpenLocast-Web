@@ -66,10 +66,10 @@ CALC_CLUSTER_ICON = function(c_length) {
 CAST_CONTEXT = {
     getIcon: function(feature) {
         if ( feature.cluster ) {
-            return THEME_URL + 'img/castCluster.png';
+            return THEME_STATIC_URL + 'img/castCluster.png';
         }
         else {
-            return THEME_URL + 'img/castMarker.png';
+            return THEME_STATIC_URL + 'img/castMarker.png';
         }
     },
 
@@ -188,10 +188,10 @@ CAST_OPEN_CONTEXT['getIcon'] = function(feature) {
 CAST_HOVER_CONTEXT = {
     getIcon: function(feature) { 
         if ( feature.cluster ) {
-            return THEME_URL + 'img/castClusterHover.png';
+            return THEME_STATIC_URL + 'img/castClusterHover.png';
         }
         else {
-            return THEME_URL + 'img/castMarkerHover.png';
+            return THEME_STATIC_URL + 'img/castMarkerHover.png';
         }
     },
     getBackground: function(feature) {

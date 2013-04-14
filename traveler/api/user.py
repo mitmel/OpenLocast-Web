@@ -1,20 +1,24 @@
 from django.views.decorators.csrf import csrf_exempt
 
-from locast.api import *
-from locast.api import rest, qstranslate, exceptions
+from locast.api import APIResponseOK, api_serialize, get_object, paginate
+from locast.api.exceptions import APIBadRequest
+from locast.api.qstranslate import QueryTranslator, InvalidParameterException
+from locast.api.rest import ResourceView
+from locast.api.decorators import jsonp_support
 from locast.auth.decorators import optional_http_auth, require_http_auth
 
 from traveler.models import LocastUser
 
+ruleset = {
+    # Authorable
+    'display_name'  :    { 'type' : 'string' },
+    'joined'        :    { 'type' : 'datetime', 'alias' : 'date_joined' },
+}
+
 @csrf_exempt
-class UserAPI(rest.ResourceView):
+class UserAPI(ResourceView):
 
-    ruleset = {
-        # Authorable
-        'display_name'  :    { 'type' : 'string' },
-        'joined'        :    { 'type' : 'datetime', 'alias' : 'date_joined' },
-    }
-
+    @jsonp_support()
     @optional_http_auth
     def get(request, user_id=None):
 
@@ -26,15 +30,15 @@ class UserAPI(rest.ResourceView):
         
         # Multiple users
         else:
-            q = qstranslate.QueryTranslator(LocastUser, UserAPI.ruleset)
+            q = QueryTranslator(LocastUser, ruleset)
             query = request.GET.copy()
 
             objs = total = pg = None
             try:
                 objs = q.filter(query)
                 objs, total, pg = paginate(objs, request.GET)
-            except qstranslate.InvalidParameterException, e:
-                raise exceptions.APIBadRequest(e.message)
+            except InvalidParameterException, e:
+                raise APIBadRequest(e.message)
 
             user_arr = []
             for m in objs:

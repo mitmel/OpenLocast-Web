@@ -633,9 +633,13 @@ a.locast-icon.large.favorite:hover{background-position:0px -18px;}
     margin-right:auto;
 }
 
-#intro-page-content ul li{
-   padding-top: 10px; 
-}
+#intro-page-content h2 { text-decoration: underline; }
+
+#intro-page-content ul li { padding-top: 10px; }
+
+#intro-page-content ul li a { font-size: 1.3em; }
+
+#intro-page-content ul li a .extra-info { color: #000; font-size: 12px; }
 
 /*
  * MAP TITLE

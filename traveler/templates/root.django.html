@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>{% block title %}{% endblock %}The Open Locast Project by MIT Mobile Experience Lab</title>
+    <title>{% block title %}{% endblock %}{{SITE_NAME}}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta http-equiv="content-language" content="EN" />
-    <meta name="description" content="{% block meta-description %}{% trans "The Open Locast Project" %}{% endblock %}" />
+    <meta name="description" content="{% block meta-description %}{% endblock %}{{SITE_NAME}}" />
     <meta name="keywords" content="locast, mit" />
     <meta name="author" content="MIT Mobile Experience Lab" />
     <meta name="robots" content="index,follow" />
@@ -47,6 +47,7 @@
 
     <script type="text/javascript" src="{{STATIC_URL}}js/OpenLayers.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/fancybox/jquery.fancybox.pack.js?v=2.0.5"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/plugins.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.html5.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.flash.js"></script>
