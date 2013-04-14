@@ -821,6 +821,33 @@ header{
 
 @media (max-width: 767px) {
 
+    header{
+        #header-content{
+            #search-bar{
+                display:none;
+            }
+            #header-nav {
+                width:265px;
+                margin:0;
+            }
+            .title-content{
+                margin-right:0;
+                width:180px;
+            }
+        }
+    }
+
+    #map_layer {
+        #map-title_container{
+            width:100%;
+            .border-radius(0);
+            bottom:0;
+        }
+        .leaflet-control-zoom{
+            margin-top: -100px;
+        }
+    }
+
     #media_layer{
         #cast_container{ 
             .cast{
