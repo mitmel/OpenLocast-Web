@@ -43,7 +43,8 @@
 @import "alerts.less"; // Note: alerts share common CSS with buttons and thus have styles in buttons.less
 
 // Open Locast Variables
-@import "locast-variables.less";
+// (basis for theme.less, which should be used to import this styles.less file)
+// @import "locast-variables.less";
 
 // Open Locast Mixins
 @import "locast-mixins.less";
@@ -180,6 +181,11 @@ header{
                 .cast{
                     float:left;
                     .cast-media-format(@searchResultsWidth, @searchResultsHeight, @searchResultSpacing, cast-preview-centered);
+                    .info{
+                        .title {
+                            font-size: 14px;
+                        }
+                    }
                 }
             } 
         
@@ -722,7 +728,7 @@ header{
         height:100% !important;
         
         .cast-cluster{
-            .cast-cluster-style(image);
+            .cast-cluster-style(@mapClusterStyle);
         }
 
     } 
@@ -798,7 +804,7 @@ header{
         #cast_container{ 
             .cast{
                 .cast-content {
-                    .cast-layout-style(centered);
+                    .cast-layout-style(@castLayoutStyleMobile);
              }
          }
     }

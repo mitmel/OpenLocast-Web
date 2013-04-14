@@ -120,3 +120,28 @@ function format_date(jq_obj) {
 function mapValue(value, istart, istop, ostart, ostop) {
        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
+
+// this is dumb, but expedient
+function replace_names() {
+    $('.cast-name').each(function() {
+        if(locast.CAST_NAME) {
+            $(this).text(locast.CAST_NAME);    
+        }
+    });
+    $('.collection-name').each(function() {
+        if(locast.COLLECTION_NAME) {
+            $(this).text(locast.COLLECTION_NAME);    
+        }
+    });
+    $('.cast-name-plural').each(function() {
+        if(locast.CAST_NAME_PLURAL) {
+            $(this).text(locast.CAST_NAME_PLURAL);    
+        }
+    });
+    $('.collection-name-plural').each(function() {
+        if(locast.COLLECTION_NAME_PLURAL) {
+            $(this).text(locast.COLLECTION_NAME_PLURAL);    
+        }
+    });
+}
+

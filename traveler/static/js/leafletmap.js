@@ -78,7 +78,15 @@ var locast = locast || {};
         var _castClusterLayer = new L.MarkerClusterGroup(); 
         var _castClusterLayerOptions = {
             singleMarkerMode: true,
-            iconCreateFunction: imageCluster      
+            iconCreateFunction: function(cluster) { 
+                // set in CURRENT_THEME/settings.js
+                if(locast.MAP_CLUSTER_STYLE === 'circles') {
+                    return numberedCluster(cluster); 
+                }
+                else { 
+                    return imageCluster(cluster); 
+                }
+            }     
         };
 
         var _castLayer = L.geoJson;

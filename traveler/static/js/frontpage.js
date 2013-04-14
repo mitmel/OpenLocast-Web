@@ -793,9 +793,9 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         locast.main_map.addCastPoint();
 
         var html = _.template($('#cast-change-location-templ').html(), {cast_id: cast_id}); 
-
         $('#change-location_container').html(html);       
-
+        replace_names();
+        
         // Click cancel
         $('#change-location-cancel-cast_' + cast_id).click(function() {
 
@@ -1127,6 +1127,7 @@ function universal_search(keyword) {
             success: function(data) { 
                 var html = _.template($('#search-results-templ').html(), {results:data});
                 $('#search-results').html(html);
+                replace_names();
                 show_search();
 
                 //search close button 
@@ -1144,6 +1145,7 @@ function activate_cast_add() {
     var cast_add_container = $('#cast-add_container');
     var cast_add_html = _.template($('#cast-add-form-templ').html());
     cast_add_container.html(cast_add_html);
+    replace_names();
 
     //change layer switcher control to select map
     $('#layer-switcher .btn').removeClass('active');

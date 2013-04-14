@@ -1,5 +1,22 @@
-@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Nunito:400,300");
+// Theme style settings
+//
+// Edit the following .less variables to customize the colors, typography and layouts
+// of your site. These will be combined with the core openlocast styles in "static/less/"
+//
+// By default, .less styles are compiled client-side using less.js -- 
+// In a production environment, you'll want to compile the .less styles manually using a 
+// desktop compiler or with a server-side tool for best performance.
+//
+// (coming soon) Simply compile your styles to a "theme.css" file placed in this directory 
+// and your site will use that file instead of compiling the .less files
+//
+// --------------------------------------------------
 
+
+
+// Import fonts
+// --------------------------------------------------
+@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Nunito:400,300");
 
 // Site typography
 // --------------------------------------------------
@@ -53,6 +70,10 @@
 // Map Markers
 // --------------------------------------------------
 
+// image markers "image" or the more traditional colored dots "circles"
+// you'll also need to change the MAP_CLUSTER_STYLE setting in your "settings.js"
+
+@mapClusterStyle:           image; 
 
 
 // Collection Preview Style 
@@ -74,6 +95,7 @@
 
 // layouts: centered, columns, description-emphasis-(centered or columns), media-emphasis-(centered or columns)
 @castLayoutStyle:               columns;
+@castLayoutStyleMobile:         centered;
 
 // cast media styles: (cast-media or cast-preview) + (centered, bottom or card) + fixed
 @castMediaStyle:                 cast-media-bottom;
@@ -157,5 +179,7 @@
 @userImageWidthLarge:           80px;
 
 
+// Import core openlocast styles
+// --------------------------------------------------
 
-
+@import "../../less/styles.less";

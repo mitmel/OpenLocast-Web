@@ -10,13 +10,13 @@
 
 <div id="open-cast_{{cast.id}}" class="clearfix cast official-{{cast.author.is_staff|lower}}">
     {% if allowed_edit %}
-        <button id="edit-activate_{{cast.id}}" class="btn edit-activate"><i class="icon-pencil icon-white"></i> {% trans "Edit This Cast "%}</button>
+        <button id="edit-activate_{{cast.id}}" class="btn edit-activate"><i class="icon-pencil icon-white"></i> {% trans "Edit This <span class='cast-name'>Cast</span> "%}</button>
     {% endif %}
 
     <div class="cast-alerts ">
                 {% if cast.privacy == 3 %}
                 <div class="cast-status alert">
-                    <h4><em>{% trans "Your Cast is Waiting to be Approved by a Moderator and is Not Visible to the Public" %}</em></h4>
+                    <h4><em>{% trans "Your <span class='cast-name'>Cast</span> is Waiting to be Approved by a Moderator and is Not Visible to the Public" %}</em></h4>
                 </div> 
                 {% endif %}   
                 {% if allowed_edit %}    
@@ -88,8 +88,8 @@
 
             {% if allowed_edit %} 
                 <div class="cast-edit-tools">
-                    <button href="#" class="btn delete-cast" id="delete-cast_{{cast.id}}"><i class="icon-trash"></i> {% trans "Delete Cast" %}</button>   
-                    <button href="#" class="btn change-location" id="change-location-cast_{{cast.id}}"><i class="icon-map-marker"></i> {% trans "Change Cast Location" %}</button>
+                    <button href="#" class="btn delete-cast" id="delete-cast_{{cast.id}}"><i class="icon-trash"></i> {% trans "Delete <span class='cast-name'>Cast</span>" %}</button>   
+                    <button href="#" class="btn change-location" id="change-location-cast_{{cast.id}}"><i class="icon-map-marker"></i> {% trans "Change <span class='cast-name'>Cast</span> Location" %}</button>
                     <button  id="add-media-menu-button-cast_{{cast.id}}" class="btn add-media-btn" href="#!"><i class="icon-plus"></i> {% trans "Add Media" %}</button>
                 </div>
                 {% endif %}
@@ -272,7 +272,7 @@
             <!-- RELATED COLLECTIONS --> 
 
             <div class="cast-collections span4" id="collections-cast_{{cast.id}}">
-            <h4 class="sub-head"> {% trans "Related Collections" %} </h4>
+            <h4 class="sub-head"> {% trans "Related <span class='collection-name-plural'>Collections</span>" %} </h4>
             {% for coll in cast.collection_set.all %}
                  <a href="#!/collection/{{coll.id}}/">
                 <div class="collection ">
@@ -297,7 +297,7 @@
     {% if allowed_edit %}
     <div id="add-media-cast_{{cast.id}}" class="add-media-cast">
         <button id="add-media-close-cast_{{cast.id}}" class="btn-danger btn-small">{% trans 'Cancel'%}</button>
-        <h4 class="title">{% trans "Add Media to Cast" %}</h4>
+        <h4 class="title">{% trans "Add Media to <span class='cast-name'>Cast</span>" %}</h4>
 
          <!-- PHOTO --> 
 

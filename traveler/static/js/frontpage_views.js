@@ -21,6 +21,7 @@ function activate_view(context, view) {
 
     // In traveler.js 
     update_auth_redirects();
+    replace_names();
     if ( 'activate' in view ) {
         view.activate(context);
     }
@@ -250,6 +251,9 @@ function cast_loaded(cast_id) {
     map.redrawBase();
     var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
     map.markCast(loc_arr[1], loc_arr[0]);
+
+    // replace cast and collection terms (in traveler.js)
+    replace_names();
 }
 
 var cast_single_view = {};
@@ -362,6 +366,7 @@ collection_single_view['activate'] = function(context) {
         //update collection cast list header
         var collection_html = _.template($('#collection-cast-list-info-templ').html(), {collection:coll});
         $('#collection-info').html(collection_html);
+        replace_names();
 
         // DHTML
         activate_favorite_button('collection', coll.id, COLLECTION_API_URL + coll.id + '/favorite/');
@@ -399,7 +404,8 @@ activate : function(context) {
         $('#user-info').html(user_html);
 
         //update map title
-        $('#current-map').html(gettext('Casts Created by') + ' ' + user.display_name);
+        $('#current-map').html(gettext('<span class="cast-name-plural">Casts</span> Created by') + ' ' + user.display_name);
+        replace_names();
 
         //check which layers are visible
         var media_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'media'})
@@ -458,8 +464,8 @@ tag_view = {
         $('#tag-info').html(tag_html);
 
         //update map title
-        $('#current-map').html(gettext('Casts Tagged') + ' "' + context.params['tag'] + '" ');
-
+        $('#current-map').html(gettext('<span class="cast-name-plural">Casts</span> Tagged') + ' "' + context.params['tag'] + '" ');
+        replace_names();
 
         //check which layers are visible
         var media_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'media'})

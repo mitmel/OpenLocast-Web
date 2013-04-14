@@ -30,7 +30,7 @@
         </a>
     </div>
     <div id="login-menu">
-        <div class="login-info-item"><a href="#!/user/{{request.user.id}}/">{% trans "View Casts" %}</a></div>
+        <div class="login-info-item"><a href="#!/user/{{request.user.id}}/">{% trans "View <span class='cast-name-plural'>Casts</span>" %}</a></div>
         <div class="login-info-item"><a id="edit-profile-link" href="#">{% trans "Edit Profile" %}</a></div>
         <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url 'logout' %}?next={{request.path}}">{% trans "Logout" %}</a></div>
     </div>
@@ -96,9 +96,8 @@
 <!--COLLECTION LIST CONTAINER-->
 <div id="collection-list_container" class="layer-container">
     <div class="row-fluid">
-        <h1 id="intro-message" class="offset1 span10">{{SITE_NAME}} {% trans " project collections" %}</h1>
+        <h1 id="intro-message" class="offset1 span10">{{SITE_NAME}} {% trans "all <span class='collection-name-plural'>collections</span>" %} </h1>
     </div>
-    <!--<h2 class="map-list-header">{% trans "Collections" %}</h2>-->
     <div id="collection-list" class="row-fluid"></div>   
 </div>
 
@@ -111,11 +110,11 @@
             <a id="collection-cast-list-sort_popularity"><i class="icon-heart"></i> {% trans "Most Popular"%}</a>
         </div>
     </div>  
-    <button id="add-cast-to-collection" class="btn offset1">{% trans "Add Cast to This Collection" %}</button>
+    <button id="add-cast-to-collection" class="btn offset1">{% trans "Add a <span class='cast-name'>cast</span> to This <span class='collection-name'>Collection</span>" %}</button>
     <div id="collection-cast-list-loader" class="cast-list-loader"><h3 class="loader-message" >{% trans "Loading" %}</h3></div>
     <ul id="collection-cast-list-indicator" class="scroll-indicator" ></ul>
     <div id="collection-cast-list" class="offset1 span10 cast-list">
-        <span class="list-content"><h3>{% trans "No Casts" %}</h3></span>
+        <span class="list-content"><h3>{% trans "No <span class='cast-name-plural'>Casts</span>" %}</h3></span>
     </div>
 </div>
 
@@ -161,10 +160,10 @@
     </div>
 
     <div id="map-title" class="clearfix"> 
-        <h4 id="current-map">{% trans "All Casts" %}</h4>
+        <h4 id="current-map">{% trans "All <span class='cast-name-plural'>Casts</span>" %}</h4>
         <h4 id="show-browsebox"><i class="icon-chevron-up"></i> </h4> 
         {% if request.user.is_authenticated %}
-            <a id="add-cast-button" class="btn cast-add-button">+ {% trans "Add Cast" %}<span id="add-cast-coll"></span></a> 
+            <a id="add-cast-button" class="btn cast-add-button">+ {% trans "Add <span class='cast-name'>Cast</span>" %}<span id="add-cast-coll"></span></a> 
         {% endif %}
     </div>
  </div> <!-- map-title-container -->
