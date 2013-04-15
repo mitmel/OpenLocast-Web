@@ -12,7 +12,7 @@ locast.MAP_CLUSTER_STYLE = "image";
 
 // terminology
 
-locast.CAST_NAME = "Fart";
-locast.CAST_NAME_PLURAL = "Farts";
-locast.COLLECTION_NAME = "Butt";
-locast.COLLECTION_NAME_PLURAL = "Butts";
+locast.CAST_NAME = "Cast";
+locast.CAST_NAME_PLURAL = "Casts";
+locast.COLLECTION_NAME = "Collection";
+locast.COLLECTION_NAME_PLURAL = "Collections";
