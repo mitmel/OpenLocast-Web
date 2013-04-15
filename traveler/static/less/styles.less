@@ -246,7 +246,8 @@ header{
                     position:absolute;
                     padding:@baseLineHeight*.5 0 @baseLineHeight 0;
                     background-color:@bodyBackground;
-                    .default-shadow;
+                    .box-shadow(~'inset 0px 3px 10px -3px rgba(35,22,57,0.55)');
+                    .border-radius(0 0 4px 4px);
                     width:100%;
                     &:hover,
                     &.visible {
@@ -475,7 +476,7 @@ header{
     #cast_container{
        
         width:90%;
-        margin-left:5%;
+        margin-left:5%; 
         
         .cast-close{ 
             display:block;
@@ -503,14 +504,20 @@ header{
         }
 
         .cast{
-        
+            .transition(~'top .3s ease,opacity .8s ease');
             .default-shadow;
             background-color:@bodyBackground;
-            top:300px;
+            top:1000px;
             position:relative;
             overflow:hidden;
             padding: @baseLineHeight*2 @baseLineHeight @baseLineHeight*4 @baseLineHeight;
             border-top: 1px fadeout(@linesColor, 60%) solid;
+            opacity:0;
+
+            &.active{
+                top:300px;
+                opacity:1;
+            }
            
             //buttons
             .edit-activate{
@@ -671,9 +678,10 @@ header{
             z-index:@zindexChrome -1;
             .minimal-btn;
             .border-radius(0 4px 4px 0);
-            border-left: @linesColor 1px solid;
+            border-left: lighten(@linesColor, 40%) 1px solid;
             line-height:3;
             font-weight:normal;
+            .box-shadow(~'inset 3px 0px 10px -3px rgba(35,22,57,0.35)');
             &.inactive{
                 display:none;
             }
@@ -683,10 +691,12 @@ header{
             height:0;
             overflow:auto;    
             opacity:0;
-            .transition(opacity 0.5s ease);
+            border-bottom: none;
+            .transition(~'height 0.2s ease, opacity 1s ease');
             &.active{
                 height: 300px;
                 opacity:1;
+                border-bottom: @linesColor 1px solid;
             }
             #browsebox-collection-list{
                 .collections{

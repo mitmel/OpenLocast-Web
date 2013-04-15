@@ -255,6 +255,8 @@ function cast_loaded(cast_id) {
 
     // replace cast and collection terms (in traveler.js)
     replace_names();
+
+    $('#cast_container .cast').addClass('active');
 }
 
 var cast_single_view = {};
@@ -282,6 +284,7 @@ cast_single_view['activate'] = function(context) {
         // set up close button to go back to previous app location
         $('.cast-close').click(function() {
             
+            $('#cast_container .cast').removeClass('active');
             //change layer switcher control to select map
             $('#layer-switcher .btn').removeClass('active');
             $('#layer-switch_map').addClass('active');
@@ -305,17 +308,8 @@ cast_single_view['activate'] = function(context) {
 }
 
 cast_single_view['deactivate'] = function() {
-   
-    // this clears the invisible feature that was added
-    //main_map.openCastLayer.removeAllFeatures();
-
-    //hack to address bug: after panning map on cast open the first user drag will cause all visible baselayer tiles to disappear
-    //zoom in and out to cause baselayer to reload tiles
-    /*$('#main-map').bind('click', function(){
-        main_map.map.zoomOut();
-        main_map.map.zoomIn(); 
-        $('#main-map').unbind('click');
-    })*/
+  
+    $('#cast_container .cast').removeClass('active');
 
 } // end deactivate
  
