@@ -233,7 +233,7 @@ COLLECTION_CONTEXT = {
     }
 }
 
-BOUNDRY_STYLE = {
+BOUNDARY_STYLE = {
     fillOpacity: 0.0,
     strokeWidth: 6,
     strokeOpacity: .8,

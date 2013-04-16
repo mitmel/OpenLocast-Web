@@ -45,7 +45,7 @@ self.gstreetLayer = null;
 self.castLayer = null;
 self.collectionLayer = null;
 
-self.boundryLayer = null;
+self.boundaryLayer = null;
 
 self.highlightCtrl = null;
 
@@ -171,8 +171,8 @@ self.init = function(div) {
         isBaseLayer: false
     });
 
-    self.boundryLayer = new OpenLayers.Layer.Vector('Boundry', {
-        styleMap: new OpenLayers.StyleMap(BOUNDRY_STYLE),   
+    self.boundaryLayer = new OpenLayers.Layer.Vector('Boundary', {
+        styleMap: new OpenLayers.StyleMap(BOUNDARY_STYLE),   
         isBaseLayer: false 
     });
 
@@ -345,7 +345,7 @@ self.init = function(div) {
     self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
 
 
-    self.map.addLayers([self.collectionLayer, self.castLayer, self.boundryLayer, self.addCastLayer, self.openCastLayer]);
+    self.map.addLayers([self.collectionLayer, self.castLayer, self.boundaryLayer, self.addCastLayer, self.openCastLayer]);
 
     self.map.addControls([self.addCastControl, self.highlightCtrl, self.selectCast, self.selectCollection]);
 
@@ -359,10 +359,10 @@ self.init = function(div) {
 
     fix_openlayers_zoombar();
 
-    // draw the boundry
-    if ( MAP_BOUNDRY ) {
-        var boundry = self.geojson_format.read(MAP_BOUNDRY);
-        self.boundryLayer.addFeatures(boundry);
+    // draw the boundary
+    if ( MAP_BOUNDARY ) {
+        var boundary = self.geojson_format.read(MAP_BOUNDARY);
+        self.boundaryLayer.addFeatures(boundary);
     }
 }
 // END INIT
