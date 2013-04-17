@@ -381,9 +381,9 @@ def cast_from_post(request, cast = None):
         location = data['location']
 
         # check to make sure its within
-        boundry = models.Boundry.objects.get_default_boundry()
-        if boundry and (not Point(location[0], location[1]).within(boundry.bounds)):
-            raise exceptions.APIBadRequest('{"location":"outside default boundry"}')
+        boundary = models.Boundary.objects.get_default_boundary()
+        if boundary and (not Point(location[0], location[1]).within(boundary.bounds)):
+            raise exceptions.APIBadRequest('{"location":"outside default boundary"}')
 
         del data['location']
 

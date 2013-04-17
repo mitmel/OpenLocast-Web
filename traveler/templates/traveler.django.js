@@ -19,9 +19,11 @@ MAP_DEFAULTS = {
     center: [{{ DEFAULT_LON }}, {{ DEFAULT_LAT }}],
     max_zoom: {{MAX_ZOOM}},
     min_zoom: {{MIN_ZOOM}},
-}
+};
 
-MAP_BOUNDRY = {{boundry|safe}};
+MAP_PLACES = {{map_place_json|safe}};
+
+MAP_BOUNDARY = {{boundary|safe}};
 
 // this is set right above the close body tag. Used for UI login prompt only.
 TRAVELER_USER = null;

@@ -144,7 +144,8 @@ if 'locast.userconfirmation' in settings.INSTALLED_APPS:
     from locast.userconfirmation.admin import UserConfirmationAdmin
     admin.site.register(UserConfirmation, UserConfirmationAdmin)
 
-admin.site.register(models.Boundry, MapAdmin)
+admin.site.register(models.Boundary, MapAdmin)
+admin.site.register(models.MapPlace, MapAdmin)
 
 admin.site.register(models.Comment, CommentAdmin)
 
