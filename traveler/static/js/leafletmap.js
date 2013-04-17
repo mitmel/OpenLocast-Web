@@ -137,6 +137,9 @@ var locast = locast || {};
             L.marker([lat, lon], _castMarkerOptions).addTo(_map);
         };
 
+        method.goTo = function (loc, zoom) {
+            _map.setView([loc[1], loc[0]], zoom);
+        };
 
         method.renderCasts = function (data) {        
             _clearLayer(_castClusterLayer);
