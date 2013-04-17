@@ -1,4 +1,5 @@
 import codecs
+import json
 import settings
 import StringIO
 
@@ -11,9 +12,10 @@ from django.template import RequestContext
 from django.utils import simplejson
 
 from locast import get_model
+from locast.api import api_serialize
 
 from traveler.forms import EditProfileForm, RegisterForm, RegisterProfileForm
-from traveler.models import Cast, UserActivity, Boundry
+from traveler.models import Boundary, Cast, MapPlace, UserActivity
 
 def frontpage(request):
     fragment = request.GET.get('_escaped_fragment_')
@@ -113,11 +115,18 @@ def edit_profile(request):
 
 
 def traveler_js(request):
-    boundry_obj = Boundry.objects.get_default_boundry()
-    boundry = 'null';
+    boundary_obj = Boundary.objects.get_default_boundary()
+    boundary = 'null';
 
-    if boundry_obj:
-        boundry = boundry_obj.bounds.geojson
+    mp_list = []
+    # The default one should go first
+    for mp in MapPlace.objects.order_by('-default'):
+        mp_list.append(api_serialize(mp))
+        
+    map_place_json = json.dumps(mp_list)
+
+    if boundary_obj:
+        boundary = boundary_obj.bounds.geojson
 
     return render_to_response('traveler.django.js', locals(), 
         context_instance = RequestContext(request), mimetype='text/javascript')

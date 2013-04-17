@@ -47,7 +47,9 @@ class Flag(modelbases.Flag): pass
 
 class UserActivity(modelbases.UserActivity): pass
 
-class Boundry(modelbases.Boundry): pass
+class Boundary(modelbases.Boundary): pass
+
+class MapPlace(modelbases.MapPlace): pass
 
 # MAIN MODELS
 

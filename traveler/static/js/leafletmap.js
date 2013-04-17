@@ -1,6 +1,5 @@
 var locast = locast || {};
 
-
 (function(locast, L, _, $){
 
     locast.Map = function(id, defaults) {
