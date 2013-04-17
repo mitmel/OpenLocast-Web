@@ -1,5 +1,20 @@
 {% load i18n %}
 
+
+<!-- PLACE LIST -->
+
+<script type="text/template" id="place-list-templ">
+
+<ul class="unstyled clearfix" id="places-list">
+<% _.each(places, function(place) { %>
+    <li>
+        <a href="#" data-id="<%= place.id %>" id="map-place_<%= place.id %>"><%= place.title %></a>
+    </li>
+<% }); %>
+</ul>
+
+</script>
+
 <!-- COLLECTION LIST -->
 
 <script type="text/template" id="collection-list-templ">

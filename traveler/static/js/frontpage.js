@@ -24,6 +24,7 @@ $(function() {
         mode:'overlay'
     });
 
+
     // If no URL is specified, redirect to home
     if (location.hash == '') { frontpage_app.setLocation('#!/home/'); }
 });
@@ -254,6 +255,21 @@ function reset_map() {
     var center = MAP_DEFAULTS['center'];
 }
 
+function refresh_map_places() {
+    var html = _.template($('#place-list-templ').html(), {places:MAP_PLACES});
+    $('#map-places-container').html(html);
+    $('#map-places-container li a').click(function() {
+        var id = $(this).attr('data-id');
+        _.each(MAP_PLACES, function(place) {
+            if (place.id === +id) {
+                locast.main_map.goTo(place.location, place.zoom_level);   
+            }
+        });
+          
+        return false;  
+    });
+}
+
 function map_refresh() {
     var query = get_cast_filter_query();
     $('#map-loader').addClass('active');
@@ -266,6 +282,7 @@ function map_refresh() {
 }
 
 function map_refresh_cb(data) {
+    refresh_map_places();
     locast.main_map.renderCasts(data.casts);
     $('#map-loader').removeClass('active');
 }

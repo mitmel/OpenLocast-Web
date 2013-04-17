@@ -631,6 +631,41 @@ header{
             .border-radius(4px);
         }   
     }
+    
+    #map-places-container{
+        width:auto;
+        height:0;
+        position: fixed;
+        z-index:@zindexChrome - 1;
+        bottom: 77px;
+        right: 53px;
+        text-align:right;
+
+        ul{
+           width: 100%;
+
+            li{
+                text-align:center;
+                margin: 0 10px 0 0;
+                padding:6px;
+                display:inline-block;
+                background-color: rgba(0,0,0,.23);
+                .border-radius(6px);
+                a{
+                    display:inline-block;
+                    padding:8px;
+                    .border-radius(6px);
+                    color: @textColor;
+                    font-size:12px;
+                    background-color: darken(@bodyBackground, 10%);
+                    &:hover {
+                        background-color:@bodyBackground;
+                        text-decoration:none;
+                    }
+                }
+            }
+       }
+    }
 
     #map-title_container{
         position:fixed;
@@ -853,6 +888,11 @@ header{
             .border-radius(0);
             bottom:0;
         }
+
+        #map-places-container{
+            bottom:114px;
+        }
+
         .leaflet-control-zoom{
             margin-top: -100px;
         }
