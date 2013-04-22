@@ -1269,6 +1269,9 @@
 
        &.image-cluster-small {
             margin-left: -12px;
+            .cast-title{
+                display:none;
+            }
             .cast-cluster-image{
                 float:left;
                 height:15px;
@@ -1280,6 +1283,9 @@
 
        &.image-cluster-medium, &.image-cluster-large {
             margin-left: -12px;
+            .cast-title{
+                display:none;
+            }
             .cast-cluster-image{
                 float:left;
                 height:15px;
@@ -1300,7 +1306,25 @@
        }
        
        &.single-image{
+           z-index: inherit;
            .title { display:none; }
+           .cast-title{
+                width:140px;
+                margin-left:-50px;
+                text-align:center;
+                font-family:@displayFontFamily;
+                .border-radius(9999px);
+                background-color:@bodyBackground;
+                padding:5px;
+                text-transform:uppercase;
+                display:none;
+            }
+            &:hover{
+                 z-index:@zindexChrome !important;
+                 .cast-title{
+                        display:block;
+                    }
+            }
            .border-radius(9999px);
             .cast-cluster-image{
                 width:40px;
@@ -1313,6 +1337,7 @@
                     img{
                         height:130%; 
                     }
+                   
                 }
             }
        }
