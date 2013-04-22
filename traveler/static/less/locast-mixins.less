@@ -1260,9 +1260,10 @@
              img {
                 .transition(~'left,height .2s ease');
                 height:110%;
+                min-width:140%;  
                 position:absolute;
                 top:-5%;
-                left:-30%;   
+                left:-30%; 
              }
             
        }
@@ -1320,7 +1321,7 @@
                 display:none;
             }
             &:hover{
-                 z-index:@zindexChrome !important;
+                 z-index:@zindexChrome*3 !important;
                  .cast-title{
                         display:block;
                     }
