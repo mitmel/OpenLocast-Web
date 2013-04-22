@@ -357,8 +357,8 @@ header{
         background-color:rgba(100,100,100,.5);
         #flowplayer-player{
             position:relative;
-            width:50%;
-            height:50%;  
+            width: 640px;
+            height: 480px;  
             margin:0 auto;
             margin-top:0;
             background-color:@bodyBackground;
@@ -633,33 +633,28 @@ header{
     }
     
     #map-places-container{
-        width:auto;
-        height:0;
+        width:100%;
         position: fixed;
         z-index:@zindexChrome - 1;
-        bottom: 77px;
-        right: 53px;
-        text-align:right;
+        top: 30px;
 
         ul{
            width: 100%;
-
+           padding:8px;
+            background-color: rgba(0,0,0,.23);
+            text-align:left;
             li{
-                text-align:center;
-                margin: 0 10px 0 0;
-                padding:6px;
                 display:inline-block;
-                background-color: rgba(0,0,0,.23);
-                .border-radius(6px);
+                &:after{
+                    content:' / ';
+                }
                 a{
-                    display:inline-block;
-                    padding:8px;
-                    .border-radius(6px);
                     color: @textColor;
-                    font-size:12px;
-                    background-color: darken(@bodyBackground, 10%);
+                    font-size:14px;
+                    font-family:@displayFontFamily;
+                    text-transform: uppercase;
                     &:hover {
-                        background-color:@bodyBackground;
+                        color:@white;
                         text-decoration:none;
                     }
                 }
@@ -672,8 +667,9 @@ header{
         cursor:pointer;
         z-index:@zindexChrome;
         width:20%;
+        min-width:300px;
         background-color:@bodyBackground;
-        bottom:46px;
+        bottom:35px;
         left:0;
         .default-shadow;
         .border-radius(0 4px 4px 0);
@@ -785,7 +781,11 @@ header{
             margin-top:@baseLineHeight;
         }
     }    
- 
+    
+    .leaflet-control-zoom{
+        margin-top: 70px;
+    }
+
     #main-map{
         position:fixed;
         top:0;
@@ -891,11 +891,7 @@ header{
 
         #map-places-container{
             bottom:114px;
-        }
-
-        .leaflet-control-zoom{
-            margin-top: -100px;
-        }
+        } 
     }
 
     #media_layer{

@@ -1,6 +1,5 @@
 var locast = locast || {};
 
-
 (function(locast, L, _, $){
 
     locast.Map = function(id, defaults) {
@@ -121,7 +120,7 @@ var locast = locast || {};
 
         var _init = function () {
             _map = L.map(_id, _mapDefaults);
-            L.control.zoom({position: 'bottomright'}).addTo(_map);
+            L.control.zoom({position: 'topleft'}).addTo(_map);
             _map.addLayer(_cloudmadeLayer); 
         };
 

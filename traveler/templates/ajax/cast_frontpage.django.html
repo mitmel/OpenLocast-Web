@@ -1,13 +1,11 @@
 {% load i18n %}
 {% load tz %}
-{% load markup %}
 
 <a href="#!" id="close-cast_{{cast.id}}" class="cast-close map-close"></a>
 
-
 <div id="location-cast_{{cast.id}}" class="cast-location">{{cast.location.x}},{{cast.location.y}}</div>
 
- <!-- CAST CONTAINER -->
+<!-- CAST CONTAINER -->
 
 <div id="open-cast_{{cast.id}}" class="clearfix cast official-{{cast.author.is_staff|lower}}">
 
@@ -36,7 +34,6 @@
     <!-- CAST CONTENT -->
 
     <div class="cast-content ">
-
 
         <div class="cast-column1">
 
@@ -73,11 +70,10 @@
 
             <div id="actions-cast_{{cast.id}}" class="cast-actions">
                 <button id="favorite-cast_{{cast.id}}" class="btn favorite-cast {% if is_favorited %}favorited{% endif %}">
-                     <span id="favorite-count-cast_{{cast.id}}" class="favorite-count">
+                    <span id="favorite-count-cast_{{cast.id}}" class="favorite-count">
                         {{ cast.favorited_by.count }}
                     </span>
                     {% if is_favorited %}<i class="icon-heart">{% else %}<i class="icon-heart">{% endif %}</i> {% trans "favorite" %} 
-                    
                 </button>
 
                 <button id="flag-cast_{{cast.id}}" class="btn">
@@ -106,22 +102,19 @@
 
         </div><!-- end cast-column1 -->
         <div class="cast-column2">
-
-
          <!-- CAST MEDIA -->
 
-         <div class="cast-media section">
+        <div class="cast-media section">
             
             {% if not cast.imagemedia and not cast.linkedmedia and not cast.videomedia %}
             <!--<h5 class="media placeholder" id="no-media-message">{% trans "there are no media" %} </h5>-->
             {% endif %} 
              
-            <ul class="media-list  clearfix {% if cast.imagemedia %}image_{{cast.imagemedia|length}}{% endif %} {% if cast.videomedia %}video_{{cast.videomedia|length}}{% endif %} {% if cast.linkedmedia %}linked_{{cast.linkedmedia|length}}{% endif %} " id="media-list-cast_{{cast.id}}">
+            <ul class="media-list clearfix {% if cast.imagemedia %}image_{{cast.imagemedia|length}}{% endif %} {% if cast.videomedia %}video_{{cast.videomedia|length}}{% endif %} {% if cast.linkedmedia %}linked_{{cast.linkedmedia|length}}{% endif %} " id="media-list-cast_{{cast.id}}">
 
 
             {% if allowed_edit %}
-           
-                <button  id="add-media-button-cast_{{cast.id}}" class="btn add-media-btn edit-toggle side" href="#!"><i class="icon-plus icon-white"></i> {% trans "Add Media" %}</button>
+                <button id="add-media-button-cast_{{cast.id}}" class="btn add-media-btn edit-toggle side" href="#!"><i class="icon-plus icon-white"></i> {% trans "Add Media" %}</button>
             {% endif %} 
 
             <!-- VIDEO --> 
@@ -165,7 +158,6 @@
 
                 {% endif %}
                     <a class="{{l.content.content_provider|cut:'.'}}" href="{{l.content.url}}">
-                        
                         <div class="video-icon">
                             <i class="icon-play icon-white"></i>
                         </div>
@@ -195,20 +187,13 @@
                 </li>
             {% endif %}{% endfor %}
         </ul> 
-      
-
-
         </div>
- 
-
-
-       
 
         <!-- DESCRIPTION -->
 
         <div class="cast-description section  {% if not cast.description %}none {% endif%}" id="description-cast_{{cast.id}}">
              
-            {% if cast.description %}{{cast.description|markdown }}{% else %} {% if allowed_edit %}<p>{% trans "no description"%}</p>{% endif %}{% endif %}
+            {% if cast.description %}{{cast.description|linebreaksbr}}{% else %} {% if allowed_edit %}<p>{% trans "no description"%}</p>{% endif %}{% endif %}
            
             <!-- DESCRIPTION EDIT -->
             {% if allowed_edit %}
