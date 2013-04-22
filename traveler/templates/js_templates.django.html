@@ -98,13 +98,14 @@
 <!-- CAST IMAGE CLUSTER -->
 
 <script type="text/template" id="cast-image-cluster-templ">
-        <div class="cast-cluster-image">
+        <div class="cast-cluster-image"> 
              <% if(cast.thumbnail != undefined){ %> 
                 <img src="<%= cast.thumbnail %>" /> 
             <% }else{ %>
                 <div class="placeholder"></div>
              <% } %>
         </div>
+        <h4 class="cast-title"> <%= cast.title %> </h4>
 </script>
 
 
