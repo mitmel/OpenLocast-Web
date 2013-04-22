@@ -360,7 +360,7 @@ header{
             width: 640px;
             height: 480px;  
             margin:0 auto;
-            margin-top:0;
+            margin-top:55px;
             background-color:@bodyBackground;
             .default-shadow;
             padding:@baseLineHeight;
@@ -640,8 +640,8 @@ header{
 
         ul{
            width: 100%;
-           padding:8px;
-            background-color: rgba(0,0,0,.23);
+           padding:8px @baseLineHeight*.8;
+            background-color: rgba(0,0,0,.35);
             text-align:left;
             li{
                 display:inline-block;
@@ -649,13 +649,13 @@ header{
                     content:' / ';
                 }
                 a{
-                    color: @textColor;
+                    color: @white;
                     font-size:14px;
                     font-family:@displayFontFamily;
                     text-transform: uppercase;
                     &:hover {
                         color:@white;
-                        text-decoration:none;
+                        text-decoration:underline;
                     }
                 }
             }
