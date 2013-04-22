@@ -633,19 +633,21 @@ header{
     }
     
     #map-places-container{
-        width:auto;
+        width:100%;
         position: fixed;
         z-index:@zindexChrome - 1;
-        bottom: 20px;
-        right: 25px;
+        top: 30px;
 
         ul{
            width: 100%;
-           padding:0 5px;
+           padding:8px;
             background-color: rgba(0,0,0,.23);
-            .border-radius(6px);
+            text-align:left;
             li{
-                text-align:center;
+                display:inline-block;
+                &:after{
+                    content:' / ';
+                }
                 a{
                     color: @textColor;
                     font-size:14px;
