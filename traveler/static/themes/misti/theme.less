@@ -16,12 +16,12 @@
 
 // Import fonts
 // --------------------------------------------------
-//@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Nunito:400,300");
+@import url("http://fonts.googleapis.com/css?family=Oswald");
 
 // Site typography
 // --------------------------------------------------
-@sansFontFamily:        Calibri, Arial, sans-serif;
-@displayFontFamily:     Verdana, Arial, sans-serif;
+@sansFontFamily:        Helvetica, Arial, sans-serif;
+@displayFontFamily:     'Oswald', Verdana, Arial, sans-serif;
 @serifFontFamily:       Georgia, "Times New Roman", Times, serif;
 @monoFontFamily:        Monaco, Menlo, Consolas, "Courier New", monospace;
 
@@ -184,14 +184,48 @@
 
 @import "../../less/styles.less";
 
+
+
+// Special theme styles
+// --------------------------------------------------
+
 header{
     #header-content{
         .logo{
             text-indent:-9999px;
+            width:125px;
+            height:55px;
             background-image:url('img/MISTI_nobox_orange.png');
-            background-position: 14px -15px;
+            background-position: -4px -10px;
             background-repeat:no-repeat;
             line-height: 1.8;
         }
+        #search-bar{
+             margin-top:5px;
+        }
+        #header-nav{
+            .btn{
+                min-height:55px;
+            } 
+            #login-bar{
+                margin-top:10px;
+                .login-info{
+                    .name{
+                        margin-top:9px;
+                    }
+                }
+            }
+        }
+      
     }
 }
+
+.cast{
+    .cast-header{
+        .title{
+            text-transform:uppercase;
+            letter-spacing:1.8px;
+        }
+    }
+}
+

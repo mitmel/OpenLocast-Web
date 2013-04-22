@@ -14,5 +14,5 @@ locast.MAP_CLUSTER_STYLE = "image";
 
 locast.CAST_NAME = "Cast";
 locast.CAST_NAME_PLURAL = "Casts";
-locast.COLLECTION_NAME = "Collection";
-locast.COLLECTION_NAME_PLURAL = "Collections";
+locast.COLLECTION_NAME = "Prompt";
+locast.COLLECTION_NAME_PLURAL = "Prompts";
