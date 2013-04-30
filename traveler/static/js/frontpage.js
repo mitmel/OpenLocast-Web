@@ -137,6 +137,15 @@ function activateDHTML(){
         }
     });
 
+    // intro map button
+   
+   $('#intro-map-btn').click(function() {
+      $('#layer-switch_map').addClass('active'); 
+      $('#layer-switch_media').removeClass('active');
+      set_visible_elems(); 
+      return false;
+   });
+
 
    //browsebox
    
