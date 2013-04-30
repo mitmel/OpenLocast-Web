@@ -11,12 +11,11 @@
     {% endif %}
 {% endif %}
 
-<form method="post" action="{% url "django.contrib.auth.views.login" %}">
-    {% csrf_token %}
+<form method="post" action="{% url locast.auth.views.login %}">
     <table>
         <tr>
             <td>{% trans "Email" %}</td>
-            <td><input id="id_username" type="text" maxlength="254" name="username"></td>
+            <td>{{ form.username }}</td>
         </tr>
         <tr>
             <td>{{ form.password.label_tag }}</td>
@@ -29,7 +28,7 @@
 </form>
 
 <br />
-<p class="login-help"><a href="{% url "register" %}">{% trans "Register</a> a new account if you don't have one" %}</p>
+<p class="login-help"><a href="{% url register %}">{% trans "Register</a> a new account if you don't have one" %}</p>
 </div>
 {% endblock %}
 

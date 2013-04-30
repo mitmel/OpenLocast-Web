@@ -8,8 +8,7 @@
     <p>{% trans "Follow the link in the email when it arrives. Click " %}<a href="{{BASE_URL}}">{%trans "here" %}</a>{% trans " to be redirected to the home page." %}</p>
 {% else %}
     <h2>{% trans "Register an Account on " %}{{SITE_NAME}}</h2>  
-    <form method="post" enctype="multipart/form-data" action="{% url "register" %}" class="cleared">
-        {% csrf_token %}
+    <form method="post" enctype="multipart/form-data" action="{% url register %}" class="cleared">
         <h6 style="color:red;">{% trans "REQUIRED" %}</h6>
         {{ form.as_p }}
         <br/>

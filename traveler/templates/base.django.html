@@ -2,52 +2,75 @@
 {% load i18n %}
 
 {% block body %}
-<div id="search-results" class="ui-overlay"></div>
 
-<div id="login-container" class="hidden content-card">
-    <h4 class="title">{% trans "Login to Your Account" %}</h4> <h4 id="login-container-close">{% trans "Close" %}</h4>
-    <form id="login-form" method="post" action="{% url "django.contrib.auth.views.login" %}">
-        {% csrf_token %}
-        {% trans "Email" %}
-        <input id="id_username" type="text" maxlength="254" name="username">
-        {{ login_form.password.label_tag }}
-        {{ login_form.password }}
-        <input type="submit" value="login" class="locast-button" /> 
-        <input type="hidden" name="next" value="{{ next }}" /> 
-    </form> 
-    <p class="locast-help"><a href="{% url "register" %}">{% trans "Register</a> a new account if you don't have one" %}</p> 
-</div><!-- end login-container -->
+<header>
 
-<div id="main-content">
-    {% block main-content %}{% endblock %}
+    <!-- HEADER -->
+
+    <div id="header-content" class="row-fluid">
+
+        <div class="title-content span6"> 
+            <a href="{{FULL_BASE_URL}}/#!/home/"><h1 class="logo" id="project-logo">{{SITE_NAME}}</h1></a>  
+            
+            <div id="search-bar">
+                    {% block search %}{% endblock %}
+            </div>
+
+            {% get_available_languages as languages %}
+            {% if languages.length > 1 %}
+                <div id="language-selector">    
+                    {% for lang in languages %}
+                    <a href="{% url set_language %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
+                        {{lang.1}} 
+                        {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
+                    </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!--<a id="home-link" href="{{FULL_BASE_URL}}/#!home">{% trans "Home" %}</a>-->
+
+        <div id="header-nav" class="offset1 span5">
+            <!--<button id="browsebox-btn" class="btn span3">{% trans "List" %}</button>-->
+            <div id="layer-switcher" class=" span8" >
+                <button id="layer-switch_map" class="btn map span6"><i class="icon-map-marker"></i> {% trans "Map" %}</button>
+                <button id="layer-switch_media" class="btn active  media span6"><i class="icon-camera"></i>  {% trans "Gallery" %}</button>
+            </div> 
+
+           
+            
+            <!--<a id="locast-credit" href="http://locast.mit.edu" target="_blank">Built with Locast</a>-->
+
+            <div id="login-bar" class="span4">
+                    {% block login %}{% endblock %}
+            </div>
+        </div>
+ 
+
+        <div id="search-results" class="span10 offset1 row-fluid"></div>
+        
+
+    </div>
+     <div id="search-results-overlay">
+    </div> 
+</header>
+
+
+
+<div id="chrome_layer" class="layer">
+    {% block chrome-content %}{% endblock %}
+</div>    
+
+<div id="media_layer" class="layer">
+    {% block media-content %}{% endblock %}
 </div>
 
-<div id="footer" class="ui-overlay primary-color">
+<div id="map_layer" class="layer">
+    {% block map-content %}{% endblock %}
+</div>    
 
-<div id="search-bar" class="content-card primary-color">
-        {% block search %}{% endblock %}
-</div>
 
-<div id="login-bar" class="cleared">
-
-        {% block login %}{% endblock %}
-</div>
-<a href="{{FULL_BASE_URL}}/#!" target="_blank"><div class="logo" id="project-logo">{{SITE_NAME}}</div></a>    
-
-<a id="home-link" href="{{FULL_BASE_URL}}/#!home">{% trans "Home" %}</a>
-
-<div id="language-selector">
-    {% get_available_languages as languages %}
-    {% for lang in languages %}
-    <a href="{% url "set_language" %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
-        {{lang.1}} 
-        {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
-    </a>
-    {% endfor %}
-</div>
-<a id="locast-credit" href="http://locast.mit.edu" target="_blank">Built with Locast</a>
-
-</div><!-- end footer -->
 {% endblock body %}
 
 

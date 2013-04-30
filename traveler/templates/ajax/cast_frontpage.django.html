@@ -1,199 +1,298 @@
 {% load i18n %}
 {% load tz %}
 
-<a href="#!" id="close-cast_{{cast.id}}" class="content-details-close locast-icon close"></a>
+<a href="#!" id="close-cast_{{cast.id}}" class="cast-close map-close"></a>
 
 <div id="location-cast_{{cast.id}}" class="cast-location">{{cast.location.x}},{{cast.location.y}}</div>
-<div class="indicator"></div>
-<div id="casts" class="casts">
-    <div id="open-cast_{{cast.id}}" class="locast-open-cast official-{{cast.author.is_staff|lower}} content-card cleared">
-    
-    <div class="cast-header">
-    {% if cast.privacy == 3 %}
-    <div class="cast-status">
-        <h4><em>{% trans "Your Cast is Waiting to be Approved by a Moderator and is Not Visible to the Public" %}</em></h4>
-    </div> 
-    {% endif %}   
-    {% if allowed_edit %}    
-     <div class="delete-cast-prompt">
-        <div class="delete-alert cleared">
-            <h4>"{{cast.title}} " {% trans "Will Be Deleted! This Cannot be Undone!" %}</h4><br />
-        <a href="#!" class="cancel locast-button">{% trans "Cancel"%}</a><a href="#!" class="delete locast-button">{% trans "Delete"%}</a>
-        </div>
-    </div>  
-    {% endif %} 
-    {% if allowed_edit %} 
-        <div class="cast-edit-tools cleared secondary-color">
-            <a href="#" class="delete-cast" id="delete-cast_{{cast.id}}">{% trans "Delete Cast" %}</a>   
-            <a href="#" class="change-location" id="change-location-cast_{{cast.id}}">{% trans "Change Cast Location" %}</a>
-        </div>
-    {% endif %}
-        <div id="actions-cast_{{cast.id}}" class="cast-actions secondary-color">
-            <div id="favorite-cast_{{cast.id}}" class="favorite-cast {% if is_favorited %}favorited{% endif %}">
-                <p>{% trans "favorite" %}</p>
-                <a href="#" class="locast-icon large favorite grey action"></a> 
-                 <div id="favorite-count-cast_{{cast.id}}" class="favorite-count">
-                    {{ cast.favorited_by.count }}
-                </div>
-            </div>
-            <div>
-            {% if is_flagged %}
-                <h6 class="flagged">{% trans "flagged" %}</h6>
-            {% else %}
-                <p>{% trans "flag" %}</p>
-                <a id="flag-cast_{{cast.id}}" href="#" class="locast-icon large flag grey action"></a>
-                <div id="flag-confirm-cast_{{cast.id}}" class="flag-confirm content-card"></div>
-            {% endif %}
-            </div>
-        </div>
-    <ul class="cast-collections cleared">
-        {% for coll in cast.collection_set.all %}
-            <li><a href="#!collection/{{coll.id}}/">{{coll.title}}</a></li>
-        {% endfor %}
-    </ul>
 
-    <h3 class="cast-info" ><span class="title cast-title" >{{cast.title}}{% if allowed_edit %} <a class="edit-toggle locast-button" href="#!">{% trans "Edit Title" %}</a>{% endif %}
-            </span>
-          {% if allowed_edit %}
-            <form id="title-form-cast_{{cast.id}}" class="cast-title-edit" method="post"> 
-                <label for="id_title">{% trans "Edit Cast Title" %}</label>
-                <input id="id_title" class="title-input" type="text" name="title" class="locast-textfield" value="{{cast.title}}" />
-                <input type="submit" value="{% trans "update" %}" class="locast-button" />
-            </form> 
-            {% endif %}
-            <br /><a href="#!user/{{cast.author.id}}/" class="author cast-author">{{cast.author.display_name}}</a></h3>
-        <p class="cast-date date" title="{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}">{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}</p>
+<!-- CAST CONTAINER -->
+
+<div id="open-cast_{{cast.id}}" class="clearfix cast official-{{cast.author.is_staff|lower}}">
+
+    <a href="#!" class="cast-close close-link btn"><i class="icon-remove"></i> </a>
+    
+    {% if allowed_edit %}
+        <button id="edit-activate_{{cast.id}}" class="btn edit-activate"><i class="icon-pencil icon-white"></i> {% trans "Edit This <span class='cast-name'>Cast</span> "%}</button>
+    {% endif %}
+
+    <div class="cast-alerts ">
+                {% if cast.privacy == 3 %}
+                <div class="cast-status alert">
+                    <h4><em>{% trans "Your <span class='cast-name'>Cast</span> is Waiting to be Approved by a Moderator and is Not Visible to the Public" %}</em></h4>
+                </div> 
+                {% endif %}   
+                {% if allowed_edit %}    
+                 <div class="delete-cast-prompt">
+                    <div class="delete-alert">
+                        <h4><span class="title">{{cast.title}}</span><br /> {% trans "Will Be Deleted! This Cannot be Undone!" %}</h4><br />
+                    <button class="btn-danger cancel">{% trans "Cancel"%}</button><button class="delete btn">{% trans "Delete"%}</button>
+                    </div>
+                </div>  
+                {% endif %}  
+  </div>
+
+    <!-- CAST CONTENT -->
+
+    <div class="cast-content ">
+
+        <div class="cast-column1">
+
+         <!-- CAST HEADER -->
+
+         <div class="cast-header section">  
         
-    </div>
-    {% comment %}
-    <div class="cast-sharing-tools locast-sharing-tools">        
-    </div>
-    {% endcomment %}
-    <div class="cast-content">
-        <div class="content cast-media">
-        {% if not cast.imagemedia and not cast.linkedmedia and not cast.videomedia %}
-            <h5 class="locast-instruction secondary-color" id="no-media-message">there are no media </h5>
-        {% else %}
-            <a id="media-last" class="media-nav secondary-color"> &lsaquo; </a> <a id="media-next" class="media-nav secondary-color"> &rsaquo; </a>
-            <h4 id="cast-media-count" class="secondary-color">
-                <span id="current-media"> 1 </span> {% trans "of" %} <span id="total-media"> 1 </span></p> 
-            </h4> 
-        {% endif %}
-        {% if allowed_edit %}
-            <a class="locast-button" id="add-media-button-cast_{{cast.id}}">{% trans "+ add media" %}</a>
-        {% endif %}
-            <ul class="media-list" id="media-list-cast_{{cast.id}}">
+ 
+             <h2 class="title" >
+                 {{cast.title}}                   
+                 {% if allowed_edit %} <button id="cast-title-edit-button" class="btn side edit-toggle" href="#!"><i class="icon-pencil icon-white"></i> {% trans "Edit Title" %}</button>{% endif %}
+            </h2>
+
+                       {% if allowed_edit %}
+                <form id="title-form-cast_{{cast.id}}" class="cast-edit cast-title-edit" method="post"> 
+                    <label for="id_title">{% trans "Edit Cast Title" %}</label>
+                    <input id="id_title" class="title-input" type="text" name="title" class="locast-textfield" value="{{cast.title}}" />
+                    <input type="submit" value="{% trans "update" %}" class="btn" />
+                </form> 
+            {% endif %}
+            
+            <a href="#!/user/{{cast.author.id}}/" class="author cast-author"><h4 class="author">{{cast.author.display_name}}</h4></a>
+            
+            <h5 class="cast-date date" title="{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}">{{cast.datetime|utc|date:"Y-m-d\TH:i:s\Z"}}</h5> 
+        </div>
+
+        <!-- CAST MAP -->
+
+        <div id="cast-map" class="cast-map"></div>
+
+        <!-- CAST OPTIONS -->
+
+        <div class="cast-options clearfix section">
+
+            <div id="actions-cast_{{cast.id}}" class="cast-actions">
+                <button id="favorite-cast_{{cast.id}}" class="btn favorite-cast {% if is_favorited %}favorited{% endif %}">
+                    <span id="favorite-count-cast_{{cast.id}}" class="favorite-count">
+                        {{ cast.favorited_by.count }}
+                    </span>
+                    {% if is_favorited %}<i class="icon-heart">{% else %}<i class="icon-heart">{% endif %}</i> {% trans "favorite" %} 
+                </button>
+
+                <button id="flag-cast_{{cast.id}}" class="btn">
+                {% if is_flagged %}
+                    <{% trans "flagged" %}
+                {% else %}
+                     <i class="icon-flag"></i> {% trans "flag" %}
+                    <div id="flag-confirm-cast_{{cast.id}}" class="flag-confirm content-card"></div>
+                {% endif %}
+                </button>
+            </div>
+
+            {% if allowed_edit %} 
+                <div class="cast-edit-tools">
+                    <button href="#" class="btn delete-cast" id="delete-cast_{{cast.id}}"><i class="icon-trash"></i> {% trans "Delete <span class='cast-name'>Cast</span>" %}</button>   
+                    <button href="#" class="btn change-location" id="change-location-cast_{{cast.id}}"><i class="icon-map-marker"></i> {% trans "Change <span class='cast-name'>Cast</span> Location" %}</button>
+                    <button  id="add-media-menu-button-cast_{{cast.id}}" class="btn add-media-btn" href="#!"><i class="icon-plus"></i> {% trans "Add Media" %}</button>
+                </div>
+                {% endif %}
+
+                 {% if allowed_edit %}
+           
+            {% endif %}
+
+        </div>
+
+        </div><!-- end cast-column1 -->
+        <div class="cast-column2">
+         <!-- CAST MEDIA -->
+
+        <div class="cast-media section">
+            
+            {% if not cast.imagemedia and not cast.linkedmedia and not cast.videomedia %}
+            <!--<h5 class="media placeholder" id="no-media-message">{% trans "there are no media" %} </h5>-->
+            {% endif %} 
+             
+            <ul class="media-list clearfix {% if cast.imagemedia %}image_{{cast.imagemedia|length}}{% endif %} {% if cast.videomedia %}video_{{cast.videomedia|length}}{% endif %} {% if cast.linkedmedia %}linked_{{cast.linkedmedia|length}}{% endif %} " id="media-list-cast_{{cast.id}}">
+
+
+            {% if allowed_edit %}
+                <button id="add-media-button-cast_{{cast.id}}" class="btn add-media-btn edit-toggle side" href="#!"><i class="icon-plus icon-white"></i> {% trans "Add Media" %}</button>
+            {% endif %} 
+
+            <!-- VIDEO --> 
+
             {% for v in cast.videomedia %}{% if v.content.file %}
                 {% if v.content.web_stream_file %}
-                    <li class="video cleared">
+                    <li class="video media">
                     {% if allowed_edit %}
-                        <a id="delete-media_{{v.content.id}}" class="delete-media secondary-color">delete</a>
+                    <!--<a id="delete-media_{{v.content.id}}" class="delete-media">delete</a>-->
+                    <button id="delete-media_{{v.content.id}}" class="btn edit-toggle delete-media" href="#!"><i class="icon-trash icon-white"></i> {% trans "Delete Video" %}</button>
                     {% endif %}
-                        <a class="web-stream-file" href="{{v.content.web_stream_file.url}}"><div class="image-frame">
-                            {% if v.content.caption %}
-                                <h6 class="title">{{v.content.caption}}</h6>
-                            {% endif %}
-                            <div class="video-icon"></div>
-                            <img src="{{v.content.screenshot.url}}"></img>
-                        </div></a>
+                        <a class="web-stream-file" href="{{v.content.web_stream_file.url}}">
+                           
+                             <div class="video-icon">
+                                <i class="icon-play icon-white"></i>
+                            </div>
+                            <img src="{{v.content.screenshot.url}}" />
+                            <div class="info media-info">
+                                 <h6 class="title">
+                                    <i class="icon-film icon-white"></i> {{v.content.caption}}
+                                </h6>
+                            </div>
+                        </a>
                     </li>
                 {% else %}
-                    <li class="video cleared">
-                        <div class="image-frame no-media">
-                            <h6 class="title">{% if v.content.caption %}"{{v.content.caption}}" {% endif %}{% trans "Video is Processing" %}</h6>
+                    <li class="video media">
+                        <div class="video placeholder">
+                            <h6 class="title"><i class="icon-cog icon-white"></i> {% trans "Video is Processing" %}</h6>
                         </div>
                     </li>
                 {% endif %}
             {% endif %}{% endfor %}
 
+            <!-- LINKED VIDEO --> 
+
             {% for l in cast.linkedmedia %}{% if l.content.screenshot %}
-                <li class="linked-video cleared">
+                <li class="linked-video media">
                 {% if allowed_edit %}
-                    <a id="delete-media_{{l.content.id}}" class="delete-media secondary-color">delete</a>
+                <!--<a id="delete-media_{{l.content.id}}" class="delete-media">delete</a>-->
+                <button id="delete-media_{{l.content.id}}" class="btn edit-toggle delete-media" href="#!"><i class="icon-trash icon-white"></i> {% trans "Delete Video" %}</button>
+
                 {% endif %}
                     <a class="{{l.content.content_provider|cut:'.'}}" href="{{l.content.url}}">
-                        <div class="image-frame">
-                        {% if l.content.caption %}
-                            <h6 class="title">{{l.content.caption}}</h6>
-                        {% endif %}
-                        <div class="video-icon"></div>
-                        <img src="{{ l.content.screenshot }}"></img>
+                        <div class="video-icon">
+                            <i class="icon-play icon-white"></i>
+                        </div>
+                        
+                        <img src="{{ l.content.screenshot }}" />
+                        <div class="info media-info">
+                            <h6 class="title"><i class="icon-globe icon-white"></i> {{l.content.caption}}</h6>
                         </div>
                     </a>                
                 </li>
             {% endif %}{% endfor %} 
 
+             <!-- PHOTO --> 
+
             {% for i in cast.imagemedia %}{% if i.content.file %}
-                <li class="photo cleared">
+                <li class="photo media">
                 {% if allowed_edit %}
-                    <a id="delete-media_{{i.content.id}}" class="delete-media secondary-color">delete</a>
+                <!--<a id="delete-media_{{i.content.id}}" class="delete-media">delete</a>-->
+                    <button id="delete-media_{{i.content.id}}" class="btn edit-toggle delete-media" href="#!"><i class="icon-trash icon-white"></i> {% trans "Delete Photo" %}</button>
                 {% endif %}
-                <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="{% if i.content.caption %}<h4> {{i.content.caption}} </h4>{% endif %}">
-                        <div class="image-frame">
-                            {% if i.content.caption %}<h6 class="title">{{i.content.caption}}</h6>{% endif %}
-                            <img src="{{i.content.medium_file.url}}" />
+                    <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="<h4> {{i.content.caption}} </h4> <p> {{i.content.description}} </p> ">
+                        <img src="{{i.content.medium_file.url}}" />
+                        <div class="info media-info">
+                            <h6 class="title"><i class="icon-camera icon-white"></i> {{i.content.caption}}</h6>
                         </div>
                     </a> 
                 </li>
             {% endif %}{% endfor %}
-            </ul> 
+        </ul> 
         </div>
 
-        <div class="content cast-description">
-            <ul id="tag-list-cast_{{cast.id}}" class="cast-tags cleared">
-            {% for tag in cast.visible_tags.all %}
-            <li><a href="#!tag/{{tag}}/" class="cast-tag">{{tag}}</a>{% if allowed_edit %}<a title="delete this tag" class="delete-tag">[X]</a>{% endif %}</li>
-            {% endfor %}
-            {% if allowed_edit %}<br /><a class="edit-toggle locast-button">{% trans "Add Tags" %}</a> {% endif %}
-            </ul>
+        <!-- DESCRIPTION -->
+
+        <div class="cast-description section  {% if not cast.description %}none {% endif%}" id="description-cast_{{cast.id}}">
+             
+            {% if cast.description %}{{cast.description|linebreaksbr}}{% else %} {% if allowed_edit %}<p>{% trans "no description"%}</p>{% endif %}{% endif %}
+           
+            <!-- DESCRIPTION EDIT -->
             {% if allowed_edit %}
-            <form id="tag-form-cast_{{cast.id}}" class="tag-edit" method="post"> 
+            <form id="description-form-cast_{{cast.id}}" class="cast-edit cast-description-edit" method="post"> 
+                <label for="id_description">{% trans "Edit Description" %}</label>
+                <textarea id="id_description" type="text" name="description" class="locast-textfield">{% if cast.description %}{{cast.description}}{% endif %}</textarea>
+                <br />
+                <button type="submit" value="{% trans "update" %}" class="btn">Update Description</button>
+            </form> 
+            {% endif %}
+
+             {% if allowed_edit %}
+                    <button id="cast-description-edit-button" class="btn edit-toggle side locast-button" href="#!"><i class="icon-pencil icon-white"></i> {% trans "Edit Description" %}</button>
+            {% endif %}
+        </div>
+            
+        
+        <!-- TAGS -->
+
+        <div class="cast-tags section  tagscount_{{ cast.visible_tags.all|length }}">
+
+            <ul id="tag-list-cast_{{cast.id}}" class="tag-list">
+                                {% if cast.visible_tags.all|length == 0 %}{% if allowed_edit %}<p>{% trans "no tags" %}</p> {% endif%}{% endif%}
+                
+                {% for tag in cast.visible_tags.all %}
+                    <li>
+                    <a href="#!/tag/{{tag}}/" class="cast-tag">{{tag}}    </a>
+                    {% if allowed_edit %}<a title="delete this tag" class="delete-tag"><i class="icon-trash icon-white"></i></a>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- TAG ADD FORM -->
+            {% if allowed_edit %}
+            <form id="tag-form-cast_{{cast.id}}" class="cast-edit tag-edit" method="post"> 
                 <label for="id_tags">{% trans "Add Tags" %}</label>
                 <input id="id_tags" autocomplete="off" type="text" maxlength="200" name="tags" class="locast-textfield">
                 <p class="locast-help">{% trans "seperate tags with a comma" %}</p>
                 <input type="submit" value="add tags" class="locast-button" />
             </form>
             {% endif %}
+            {% if allowed_edit %} <button id="cast-tags-edit-button" class="btn side edit-toggle" href="#!"><i class="icon-plus icon-white"></i> {% trans "Add Tags" %}</button> {% endif %}
 
-            <div class="description" id="description-cast_{{cast.id}}">
-                <p>{% if cast.description %}{{cast.description|linebreaksbr}}{% endif %}</p>
-            {% if allowed_edit %}
-            <br /><a class="edit-toggle locast-button">{% trans "Edit Description" %}</a>
-            {% endif %}
-            </div>
-            {% if allowed_edit %}
-                <form id="description-form-cast_{{cast.id}}" class="cast-description-edit" method="post"> 
-                <label for="id_description">{% trans "Edit Description" %}</label>
-                <textarea id="id_description" type="text" name="description" class="locast-textfield">{% if cast.description %}{{cast.description}}{% endif %}</textarea>
-                <input type="submit" value="{% trans "update" %}" class="locast-button" />
-            </form> 
-            {% endif %}
-                </div>
-
-        <div class="cast-comments closed content">
-            <!--<a id="comments-minimize" href="#!">{% trans "Show Comments"%}</a>-->
-            <div class="comments">
-            <h4 class="sub-title">{% trans "Comments" %}</h4>
-            <div id="comments-cast_{{cast.id}}"></div>
-            {% if request.user.is_authenticated %}
-            <form id="content-form-cast_{{cast.id}}">
-                <textarea id="id_content" name="content" cols="10" rows="2" class="locast-textfield"></textarea>
-                <input type="submit" value="post Comment" class="locast-button" />   
-            </form>    
-            {% else %}
-            <a href="{{FULL_BASE_URL}}/login" class="locast-button">{% trans 'Login to comment!' %}</a>
-            {% endif %}
         </div>
-    </div>
+
+        <!-- CAST FOOTER --> 
+        <div class="cast-footer row-fluid section">
+            
+            <!-- COMMENTS --> 
+
+            <div class="cast-comments span8 ">
+                    <h4 class="sub-head">{% trans "Comments" %}</h4>
+                    <div id="comments-cast_{{cast.id}}" class="comments"></div>
+                    {% if request.user.is_authenticated %}
+                    <form id="content-form-cast_{{cast.id}}">
+                        <textarea id="id_content" name="content" cols="10" rows="2"></textarea> <br />
+                        <button type="submit" value="post Comment" class="btn">{% trans "Post Comment"%} </button>   
+                    </form>    
+                    {% else %}
+                    <a class="login-button" >{% trans 'Login to comment' %}</a>
+                    {% endif %}
+            </div>
+
+
+            <!-- RELATED COLLECTIONS --> 
+
+            <div class="cast-collections span4" id="collections-cast_{{cast.id}}">
+            <h4 class="sub-head"> {% trans "Related <span class='collection-name-plural'>Collections</span>" %} </h4>
+            {% for coll in cast.collection_set.all %}
+                 <a href="#!/collection/{{coll.id}}/">
+                <div class="collection ">
+                    <span class="collection-id">{{coll.id}}</span>
+                   <h4 class="title">{{coll.title}}</h4>
+                    <div class="preview clearfix">
+                        <div id="collection-cast-preview_{{coll.id}}" class="cast-previews"></div>
+                        <!--<div class="placeholder"> <h4>{{coll.casts_count}}<br/> {% trans "Casts"%}</h4></div>-->
+                    </div>
+                </div></a>
+            {% endfor %}
+            </div>
+          </div>    
+
+          </div><!-- end cast-column2 -->
+
+   
+  
+
+    <!-- ADD MEDIA --> 
 
     {% if allowed_edit %}
-    <div id="add-media-cast_{{cast.id}}" class="add-media-cast content-card">
-        <a class="locast-icon locast-button close" id="add-media-close-cast_{{cast.id}}" >{% trans 'Cancel'%}</a>
-        <h4>{% trans "Add Photo to Cast" %}</h4>
-                <form id="photo-upload-form-cast_{{cast.id}}" method="post">
+    <div id="add-media-cast_{{cast.id}}" class="add-media-cast">
+        <button id="add-media-close-cast_{{cast.id}}" class="btn-danger btn-small">{% trans 'Cancel'%}</button>
+        <h4 class="title">{% trans "Add Media to <span class='cast-name'>Cast</span>" %}</h4>
+
+         <!-- PHOTO --> 
+
+        <form id="photo-upload-form-cast_{{cast.id}}" method="post">
             <div id="photo-uploader-cast_{{cast.id}}" class="locast-upload-box">
-                <a href="#" id="photo-uploader-cast_{{cast.id}}-chooser" >{% trans "+ Add A Photo" %}</a>
-                <div id="photo-uploader-cast_{{cast.id}}-list"></div>
+                <button href="#" id="photo-uploader-cast_{{cast.id}}-chooser" class="btn"><i class="icon-camera"></i> {% trans "Add A Photo" %}</button>
             </div>
             <div class="upload-info hidden">
             <label for="id_caption">{% trans "caption (optional)" %}</label>
@@ -202,39 +301,48 @@
             <input type="submit" value="Upload" class="locast-button" />
         </div>
         </form>
- <h4>{% trans "Add Video to Cast" %}</h4>
+
+        <!-- VIDEO --> 
+
         <form id="video-upload-form-cast_{{cast.id}}" method="post">
             <div id="video-uploader-cast_{{cast.id}}" class="locast-upload-box">
-                <a href="#" id="video-uploader-cast_{{cast.id}}-chooser"  title="select file">{% trans "+ Add A Video" %}</a>
-                <div id="video-uploader-cast_{{cast.id}}-list"></div> 
+                <button href="#" id="video-uploader-cast_{{cast.id}}-chooser" class="btn"  title="select file"><i class="icon-film"></i> {% trans "Add A Video" %}</button>
+                
             </div>
             <div class="upload-info hidden">
                 <label for="id_caption">{% trans "caption (optional)" %}</label>
                 <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
                 <input type="hidden" name="content_type" value="videomedia"></input>
-
-                <input type="submit" value="Upload" class="locast-button" />
+                <button type="submit"  value="Upload" class="btn" > {% trans "Upload" %}</button>
             </div>  
         </form>
 
-        <form id="link-post-form-cast_{{cast.id}}" method="post"> 
-            <h4><label for="id_url">{% trans "Link Video to Cast" %}</label></h4>
-            <input id="id_url" type="text" maxlength="200" name="url" class="locast-textfield">
-            <p class="locast-help">{% trans 'enter link to a <a href="http://youtube.com" target="new">YouTube</a> or <a href="http://vimeo.com" target="new" >Vimeo</a> video' %}</p>
-            <input type="hidden" name="content_type" value="linkedmedia"></input>
-            <input type="submit" value="post link" class="locast-button" />
+         <!-- LINKED VIDEO --> 
+
+        <form id="link-post-form-cast_{{cast.id}}" class="add-link-form" method="post"> 
+            <!--<h4><label for="id_url">{% trans "Link Video to Cast" %}</label></h4>-->
+            <button id="link-video-cast_{{cast.id}}" class="btn" ><i class="icon-globe"></i> {% trans "Link To A Video" %}</button>
+            <div class="upload-info hidden">
+                <input id="id_url" type="text" maxlength="200" name="url" class="locast-textfield">
+                <p class="locast-help">{% trans 'enter link to a <a href="http://youtube.com" target="new">YouTube</a> or <a href="http://vimeo.com" target="new" >Vimeo</a> video' %}</p>
+                <input type="hidden" name="content_type" value="linkedmedia"></input>
+                <button type="submit" value="post link" class="btn" >{% trans "Link Video" %}</button>
+            </div>
         </form>
-    </div>
-    
+        </div>
+
+    <!-- DELETE MEDIA --> 
+
     <div class="delete-media-prompt">
         <div class="delete-alert cleared">
-        <h4>{% trans "This Media Will Be Deleted" %}</h4>
-        <a href="#!" class="cancel locast-button">{% trans "Cancel"%}</a><a href="#!" class="delete locast-button">{% trans "Delete"%}</a>
+            <div class="media-preview"> </div>
+            <h4>{% trans "This Media Will Be Deleted" %}</h4>
+            <button href="#!" class="cancel btn">{% trans "Cancel"%}</button>
+            <button class="delete btn-danger">{% trans "Delete"%}</button>
         </div>
-    </div> 
-   
+    </div>  
     {% endif %}
-</div>    
-</div>
+
+    </div>
 </div>
 

@@ -4,14 +4,14 @@ var frontpage_app = null;
 var current_view = null;
 
 $(function() {
-frontpage_app = $.sammy('#main-content', function() {
-    this.get('#!cast/:id/', function(context) { activate_view(context, cast_single_view) });
-    this.get('#!collection/:id/', function(context) { activate_view(context, collection_single_view) });
-    this.get('#!user/:id/', function(context) { activate_view(context, user_single_view) });
-    this.get('#!tag/:tag/', function(context) { activate_view(context, tag_view) });
+frontpage_app = $.sammy('body', function() {
+    this.get('#!/cast/:id/', function(context) { activate_view(context, cast_single_view) });
+    this.get('#!/collection/:id/', function(context) { activate_view(context, collection_single_view) });
+    this.get('#!/user/:id/', function(context) { activate_view(context, user_single_view) });
+    this.get('#!/tag/:tag/', function(context) { activate_view(context, tag_view) });
 
-    this.get('#!home', function(context) { activate_view(context, home_view) });
-    this.get('#!', function(context) { activate_view(context, all_casts_view) });
+    this.get('#!/home/', function(context) { activate_view(context, home_view) });
+    this.get('#!', function(context) { activate_view(context, home_view) });
 });
 });
 
@@ -21,6 +21,7 @@ function activate_view(context, view) {
 
     // In traveler.js 
     update_auth_redirects();
+    replace_names();
     if ( 'activate' in view ) {
         view.activate(context);
     }
@@ -34,688 +35,285 @@ function deactivate_current_view() {
     }
 }
 
-/*** VIEWS ***/
 
-var home_view = {
-    activate: function(context) {
-        $('#intro-page-container').fadeIn();
-    },
-    deactivate: function() {
-        $('#intro-page-container').fadeOut();
+var cast_container_id = 'cast_container';
+
+/*** VIEW RENDERING  ***/
+
+/*
+ * Expects HTML markup to be organized by layers:
+ *  
+ * id=layername_layer class=layer
+ *
+ * which contain containers:
+ *
+ * id=containername_container class=layer-container
+ *
+ * set visibilty in a view using:
+ * 
+ * set_visible_elems( [arrayoflayernames], [arrayofcontainernames]) 
+ *
+ * get currently visible layers with
+ *
+ * get_visible_elems();
+ *
+ */
+
+//init object to track visible elems
+
+var visible_elems = {};
+visible_elems['layers'] = [];
+visible_elems['containers'] = [];
+    
+var set_visible_elems = function(active_layers, active_containers, override_switcher, ignore_switcher){ 
+ 
+    //update visible_elems object
+    if(active_layers != undefined){
+         visible_elems['layers'] = active_layers;
+    }
+
+    if(active_containers != undefined){
+        visible_elems['containers'] = active_containers ;
+    }
+
+    //respect layer switcher control unless overridden
+    if(override_switcher === undefined && ignore_switcher == undefined){
+        activate_layer_switcher();
+        check_layer_switcher();
+    }
+    if(override_switcher == true){
+        deactivate_layer_switcher();
+    }
+
+    //find all layers and containers
+
+    var all_layers = [];
+    $('.layer').each(function(){
+        this_id = $(this).attr('id').split('_')[0];
+        all_layers.push(this_id); 
+    });
+
+    var all_containers = [];
+     $('.layer-container').each(function(){
+        this_id = $(this).attr('id').split('_')[0];
+        all_containers.push(this_id); 
+    });
+
+    //calculate hidden and visible
+   
+    var hidden_layers = _.difference(all_layers, visible_elems['layers']);
+    var hidden_containers = _.difference(all_containers, visible_elems['containers']);
+    var visible_layers = _.intersection(all_layers, visible_elems['layers']);
+    var visible_containers = _.intersection(all_containers, visible_elems['containers']);
+
+    //todo: add and remove class from element instead of setting visibility here
+    //hide
+
+    _.each(hidden_layers, function(layer){
+        $('#'+layer+'_layer').hide();
+    });
+
+    _.each(hidden_containers, function(container){
+        $('#'+container+'_container').hide();
+    });
+
+    //show
+
+    _.each(visible_layers, function(layer){
+        $('#'+layer+'_layer').fadeIn();
+    });
+
+    _.each(visible_containers, function(container){
+        $('#'+container+'_container').fadeIn();
+    });
+
+}
+
+//callbacks for specific layers
+var onMedia = function(){};
+var onMap = function(){};
+
+//checks layer switcher control 
+var check_layer_switcher = function(){
+    var active_layer = $('#layer-switcher .btn.active').attr('id').split('_')[1];
+
+    //map layer selected
+    if(active_layer == 'map'){
+        
+        //default containers
+        //todo: set these using a class in HTML
+        visible_elems['containers'].push('map-title');
+        visible_elems['containers'].push('map-controls');
+            
+        //make sure map redraws
+        locast.main_map.redrawBase();
+        
+        onMap();
+    }
+    
+    //media layer selected
+    if(active_layer == 'media'){  
+        onMedia();   
+    }
+
+    //remove all layers referenced in the layer switcher control
+    $('#layer-switcher .btn').each(function(){
+        visible_elems['layers'] = _.without(visible_elems['layers'], $(this).attr('id').split('_')[1]);
+    });
+
+    //add active layer
+    visible_elems['layers'].push(active_layer); 
+}
+
+var deactivate_layer_switcher = function(){
+    $('#layer-switcher').addClass('inactive');
+}
+
+var activate_layer_switcher = function(){
+     $('#layer-switcher').removeClass('inactive');
+}
+
+var get_visible_layers = function(){
+    return visible_elems['layers']; 
+}
+
+var get_visible_containers = function(){
+    return visible_elems['containers']; 
+}
+
+
+var add_visible_elems = function(adding_layers, adding_containers, refresh){
+    
+    if(adding_layers != undefined){
+        visible_elems['layers'].push(adding_layers);
+        visible_elems['layers'] =  _.flatten(visible_elems['layers']);
+    }
+
+    if(adding_containers != undefined){
+        visible_elems['containers'].push(adding_containers);
+        visible_elems['containers'] =  _.flatten(visible_elems['containers']);
+    }
+ 
+    if(refresh == undefined){
+        //refresh element visibility and ignore switcher
+        set_visible_elems(undefined, undefined, undefined, true);        
     }
 }
 
-var all_casts_view = {
-    activate: function(context) {
-        $('#current-map h4').html(gettext('All Casts'));
-        $('#add-cast-coll').html('');
-        clear_cast_filter();
-    },
-    deactivate: function() {}
+var remove_visible_elems = function(removing_layers, removing_containers, refresh){
+    
+    if(removing_layers != undefined){
+       visible_elems['layers'] =  _.difference(visible_elems['layers'], removing_layers);
+    }
+
+    if(removing_containers != undefined){
+       visible_elems['containers'] =  _.difference(visible_elems['containers'], removing_containers);
+    }
+   
+    if(refresh == undefined){
+        //refresh element visibility and ignore switcher
+        set_visible_elems(undefined, undefined, undefined, true);
+    }
 }
+
+
+/*** VIEWS ***/
+
+
+/********
+ * HOME *
+ ********/
+
+var home_view = {
+    activate: function(context) {
+        clear_cast_filter();
+        $('#current-map').html(gettext('All <span class="cast-name-plural">Casts</span>'));
+        replace_names();        
+        set_visible_elems(['media'],['collection-list']);
+    },
+    deactivate: function() {
+    }
+}
+
 
 /********
  * CAST *
  ********/
 
-function cast_comment_refresh(cast_id) {
-    // refresh the comments
-    $.ajax({
-        url: CAST_API_URL + cast_id + '/comments/', 
-        type: 'GET',
-        success: function(data) { 
-            var comment_data = {
-                comments: data
-            }
 
-            var context = '#comments-cast_' + cast_id;
+function cast_loaded(cast_id) {
+    set_visible_elems(undefined, ['cast'], true);
 
-            var html = render_to_string('castComments.js.html', comment_data);
-            $(context).html(html)
+    //make sure main map redraws
+    locast.main_map.redrawBase();
 
-            format_date($('.date', context), true);
+    //intialize map showing cast location
+    var map = locast.map('cast-map', MAP_DEFAULTS);
+    map.redrawBase();
+    var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
+    map.markCast(loc_arr[1], loc_arr[0]);
 
-            $('a.flag-comment', context).click(function() {
-                var _parent = $(this).parent();
+    // replace cast and collection terms (in traveler.js)
+    replace_names();
 
-                var comment_id = _parent.attr('id').split('_')[1];
-                var url = CAST_API_URL + cast_id + '/comments/' + comment_id + '/flag/';
-
-                $.ajax({
-                    url: url,
-                    data: null,
-                    type: 'POST',
-                    success: function(data) {
-                        _parent.html('<p class="locast-help">' + gettext('flagged') + '</p>');
-                    }
-                });
-                
-                return false;
-            });
-        }
-    });
-}
-
-function cast_fade_in() {
-    $('#content-details').fadeIn(function(){
-        cast_container_size_update();
-        $('#content-details img').each(function(){
-            if(this.height > this.width) {
-                $(this).addClass('portrait');
-            }
-        });
-    });
-
-    $('#map-cast-list-title')
-        .add('#map-title')
-        .add('#map-info-container')
-        .add('#map-controls-container')
-        .add('#add-cast-button-container')
-        .add('#tooltip') 
-        .add('#map-layer-switcher')
-        .add('#map-list')
-        .add('#search-bar')
-        .fadeOut();
-
-    $('#comments-minimize').click(function(){
-        $('.cast-comments').toggleClass('closed', 100);
-        var text = $(this).text();
-        text = (text == gettext('Show Comments'))?gettext('Hide Comments'):gettext('Show Comments') ;
-        $(this).text(text);  
-        return false;
-    });   
-
-    if (CAST_FILTER['collection']) {
-        $('#collection-info').fadeOut();
-    } 
-}
-
-// This is a separate function in order to allow editing / comment posting
-// to refresh the "window"
-
-function cast_info_refresh(cast_id, callback) {
-$.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: function(cast_html) {
-    var cast_url = CAST_API_URL + cast_id + '/';
-    var media_url = cast_url + 'media/';
-    var context = '#open-cast_' + cast_id;
-
-    // refresh the html
-    $('#content-details').html(cast_html);
-
-    // refresh the comments.
-    cast_comment_refresh(cast_id);
-
-    // Urlize the description urls
-    var desc = $('p', '#description-cast_' + cast_id);
-    desc.urlize('');
-
-    // make dates pretty
-    format_date($('.cast-date', context), true);
-
-    activate_favorite_button('cast', cast_id, cast_url + 'favorite/');
-
-    // activate flag button
-    if ( TRAVELER_USER ) {
-        $('#flag-cast_' + cast_id).click(function() {
-            var html = '<h4 class="locast-instruction">';
-            html += gettext('Are you sure you want to flag this cast as inappropriate ?') + '</h4>';
-            html += '<a id="flag-yes-cast_' + cast_id + '" class="locast-button" href="#">yes</a>';
-            html += '<a class="locast-button" id="flag-no-cast_' + cast_id + '" href="#">no</a>';
-
-            $('#flag-confirm-cast_' + cast_id).html(html);
-            
-            $('#flag-confirm-cast_' + cast_id).show();
-
-            $('#flag-yes-cast_' + cast_id).click(function() {
-                $.ajax({
-                    url: cast_url + 'flag/', 
-                    type: 'POST',
-                    success: function(result) { 
-                        $('#flag-cast_' + cast_id).parent().html('<h6 class="flagged">flagged</h6>');
-                         $('#flag-confirm-cast_' + cast_id).hide();
-                    }
-                });
-                return false;
-            });
-            
-            $('#flag-no-cast_' + cast_id).click(function() {
-                $('#flag-confirm-cast_' + cast_id).html('');
-                 $('#flag-confirm-cast_' + cast_id).hide();
-                return false;
-            });
-
-            return false;
-        });
-    }
-    else {
-        $('#flag-cast_' + cast_id).click(function() {
-            prompt_login();
-            return false;
-        });
-    }
-
-    // activate cast delete button
-    $('#delete-cast_' + cast_id).click(function() {
-        var delete_prompt = $(".delete-cast-prompt");
-        delete_prompt.fadeIn();
-       
-        $('.delete', delete_prompt).click(function(){
-                $.ajax({
-                    url: cast_url,
-                    type: 'DELETE',
-                    success: function(cast) {
-                        frontpage_app.setLocation('#!');
-                        map_refresh();
-                    }
-                });
-                return false;
-        });
-        $('.cancel', delete_prompt).click(function(){
-               delete_prompt.fadeOut();
-               return false;
-        });
-
-        return false;
-    });
-
-    // activate commenting
-    var comment_form = $('#content-form-cast_' + cast_id)
-    comment_form.submit(function(event) {
-        var data = form_to_json(comment_form);
-        
-        $.ajax({
-            url: cast_url + 'comments/', 
-            data: data,
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function(cast) { 
-                comment_form[0].reset();
-                cast_comment_refresh(cast_id);
-            }
-        });
-            
-        event.returnValue = false;
-        return false;
-    });
-    
-    //activate title updating
-    var title_form = $('#title-form-cast_' + cast_id);
-
-    $('.cast-info .edit-toggle', '#open-cast_' + cast_id).click(function (){
-        $('.cast-title',   '#open-cast_' + cast_id).fadeOut(0);   
-        title_form.fadeIn();
-        on_resize();
-        return false;
-    });
-
-    title_form.submit(function(event) {
-        var data = form_to_json(title_form);
-
-        $.ajax({
-            url: cast_url,
-            data: data,
-            contentType: 'application/json; charset=utf-8',
-            type: 'PUT',
-            success: function(cast) {
-                title_form[0].reset();
-                cast_info_refresh(cast_id);
-            }
-        });
-
-        event.returnValue = false;
-        return false;
-    });
-        
-    //activate description updating
-    var desc_form = $('#description-form-cast_' + cast_id);
-
-    $('.cast-description .description .edit-toggle', '#open-cast_' + cast_id).click(function (){
-        $('.cast-description .description', '#open-cast_' + cast_id).fadeOut(0);
-        desc_form.fadeIn();
-        on_resize();
-        return false;
-    });
-
-    desc_form.submit(function(event) {
-        var data = form_to_json(desc_form);
-
-        $.ajax({
-            url: cast_url,
-            data: data,
-            contentType: 'application/json; charset=utf-8',
-            type: 'PUT',
-            success: function(cast) {
-                desc_form[0].reset();
-                cast_info_refresh(cast_id);
-            }
-        });
-
-        event.returnValue = false;
-        return false;
-    });
-
-    // tag updating
-    var update_tags = function(event) {
-        var data = tag_form.serializeObject();
-
-        $('a.cast-tag', '#tag-list-cast_' + cast_id).each(function(index) {
-            data['tags'] = data['tags'] + ',' + $(this).html();
-        });
-
-        data['tags'] = data['tags'];
-
-        data = JSON.stringify(data,null,2);
-
-        $.ajax({
-            url: cast_url,
-            contentType: 'application/json; charset=utf-8',
-            data: data,
-            type: 'PUT',
-            success: function(cast) {
-                tag_form[0].reset();
-                cast_info_refresh(cast_id);
-            }
-        });
-
-        // if its called from a submit on a form
-        if ( event ) {
-            event.returnValue = false;
-        }
-        return false;
-    }
-
-    // activate tag updating
-    var tag_form = $('#tag-form-cast_' + cast_id)
-    tag_form.submit(update_tags);
-    
-    // dhtml
-    $('.cast-tags .edit-toggle', '#open-cast_' + cast_id ).click(function(){
-        $(this).fadeOut(0);
-        tag_form.fadeIn();
-        on_resize();
-    });  
-
-    $('.delete-tag', '#tag-list-cast_' + cast_id).click(function() {
-        $(this).parent().remove();
-        update_tags();
-    });
-
-    // activate location updating
-    $('#change-location-cast_' + cast_id).click(function() {
-
-        $('#content-details').fadeOut();
-        $('#map-controls-container')
-            .add('#change-location-container').fadeIn();
-
-        main_map.addCastControl.activate();
-
-        var html = '<h4 class="locast-instruction" >'+gettext('Choose a New Location for This Cast by Clicking the Map')+'</h4>';
-        html += '<div class="cleared" id="change-location-buttons">'
-        html += '<a href="#" id="change-location-cancel-cast_'+ cast_id +'" class="locast-button">'+ gettext('Cancel')+'</a>';
-        html += '<a href="#" class="locast-button"  id="change-location-finish-cast_' + cast_id + '">'+gettext('Save New Location')+'</a>';
-        html += '</div>';
-
-        $('#change-location-container').html(html);       
-
-        // Click cancel
-        $('#change-location-cancel-cast_' + cast_id).click(function() {
-            main_map.addCastControl.deactivate();
-            
-            if ( main_map.addCastPoint ) {
-                main_map.addCastPoint.destroy();	
-                main_map.addCastPoint = null;
-            }
-
-            $('#content-details').fadeIn();
-            $('#map-controls-container')
-                .add('#change-location-container').fadeOut();
-
-            return false;
-        });
-
-        // Click save new location
-        $('#change-location-finish-cast_' + cast_id).click(function() {
-            if ( main_map.addCastPoint ) {
-                var x = main_map.addCastPoint.geometry.x;
-                var y = main_map.addCastPoint.geometry.y;
-                var ll = main_map.get_disp_ll(x,y);
-
-                main_map.addCastControl.deactivate();
-                $('#change-location-container').fadeOut();
-
-                var data = JSON.stringify({'location': [ll.lon, ll.lat]}, null, 2);
-
-                frontpage_app.setLocation('#!');
-
-                $.ajax({
-                    url: cast_url,
-                    data: data,
-                    type: 'PUT',
-                    success: function(cast) {
-                        if ( main_map.addCastPoint ) {
-                            main_map.addCastPoint.destroy();
-                            $('#change-location-container').html('');
-                            map_refresh();
-                        }
-                        frontpage_app.setLocation('#!cast/' + cast.id + '/');
-                    }
-                });
-            }
-            else {
-                alert(gettext('Select a new location!'));
-            }
-            
-            return false;
-        });
-        
-        return false; 
-    });
-
-    // active facebok like button, if facebook is enabled
-    // http://fbexchange.net/questions/19/how-can-i-use-jquery-to-dynamically-load-serverfbml-content-into-my-iframe-app-pa
-    var fb = $('#facebook-share-cast_' + cast_id)[0];
-    if ( fb ) {
-        FB.XFBML.parse(fb);
-    }
-
-    // activate the link poster 
-    var link_form = $('#link-post-form-cast_' + cast_id);
-    link_form.submit(function(event) {
-        var data = form_to_json(link_form);
-
-        $.ajax({
-            url: media_url, 
-            data: data,
-            contentType: 'application/json; charset=utf-8',
-            type: 'POST',
-            success: function(media) { 
-                link_form[0].reset();
-                cast_info_refresh(cast_id);
-            }
-        });
-            
-        event.returnValue = false;
-        return false;
-    });
-
-    var media_list_context = '#media-list-cast_' + cast_id;
-
-    // photos
-    $('.photo a.cast-photo', media_list_context).fancybox({titlePosition:'inside'});
-
-    // vimeo videos
-    $('a.vimeocom', media_list_context).click(function() {
-        $.fancybox({
-            'padding'       : 0,
-            'autoScale'     : false,
-            'title'         : this.title,
-            'width'         : 400,
-            'height'        : 265,
-            'href'          : this.href.replace(new RegExp("([0-9])","i"),'moogaloop.swf?clip_id=$1'),
-            'type'          : 'swf'
-        });
-        return false;
-    });
-
-    // youtube videos
-    $('a.youtubecom', media_list_context).click(function() {
-        $.fancybox({
-            'titleShow' : false,
-            'href'      : this.href.replace(new RegExp("watch\\?v=", "i"), 'v/'),
-            'type'      : 'swf',
-            'swf'       : {'wmode':'transparent','allowfullscreen':'true'}
-        });
-        return false;
-    });
-
-    // hosted videos
-    $('.web-stream-file', media_list_context).click(function() {
-        $('#flowplayer-container').removeClass('hidden');
-
-        $f('flowplayer-player', FLOWPLAYER_SWF, {
-            clip: {
-                url: this.href,
-                autoPlay: true,
-                scaling:'fit'
-            }
-        });
-
-        return false;
-    });
-
-    $('.web-stream.file', media_list_context).flowplayer(FLOWPLAYER_SWF);
-
-    // activate the cast gallery
-    $(media_list_context).xfade({
-        speed:600,
-        interval:10000,
-        autoplay:false,
-        total_num:$('#total-media'),
-        index_num:$('#current-media'),
-        next_button:$('#media-next'),
-        prev_button:$('#media-last')
-    });
-
-    // activate media deleting
-    $('.delete-media', media_list_context).click(function() {
-        var delete_prompt = $('.delete-media-prompt');
-        var media_id = $(this).attr('id').split('_')[1];
-        var m_delete_url = media_url + media_id + '/';
-        
-        delete_prompt.fadeIn();
-       
-         $('.delete' , delete_prompt).click(function(){
-                $.ajax({
-                    url: m_delete_url,
-                    type: 'DELETE',
-                    success: function(cast) {
-                        cast_info_refresh(cast_id);
-                    }
-                });
-                return false;
-        });
-            
-        $('.cancel', delete_prompt).click(function(){
-            delete_prompt.fadeOut();
-            media_id = '';
-            m_delete_url = '';
-            return false;
-        });
-    });
-
-    // media adding
-    $('#add-media-button-cast_' + cast_id).click(function() {
-        var add_media_window = $('#add-media-cast_' + cast_id);
-        add_media_window.fadeIn();
-
-        // close button
-        $('#add-media-close-cast_' + cast_id).click(function() {
-            cast_info_refresh(cast_id);
-            add_media_window.fadeOut();
-        });
-
-        // Pluploader for some reason can't activate choosers
-        // unless they are already visible
-        
-        // activate uploaders
-
-        var photo_uploader = create_uploader('photo-uploader-cast_' + cast_id, 'imagemedia', '',
-            function(){cast_info_refresh(cast_id)});
-
-        activate_upload_form('photo-upload-form-cast_' + cast_id, media_url, photo_uploader);
-
-        var vid_uploader = create_uploader('video-uploader-cast_' + cast_id, 'videomedia', '',
-            function(){cast_info_refresh(cast_id)});
-
-        activate_upload_form('video-upload-form-cast_' + cast_id, media_url, vid_uploader);
-    });
-
-    // CALLBACK
-    if ( callback ) {
-        callback(cast_id, cast_html);
-    }
-}});
-}
-
-// Update open cast position on window resize so it stays aligned with the feature
-
-var cast_marker_id = null;
-var last_marker_x = 0;
-var last_marker_y = 0;
-
-var cast_position_update = function(){  
-    // get the element marking the position of the cast on the map
-    var elem = $(document.getElementById(cast_marker_id));
-
-    // if the element is off the screen its offset is null
-    if(elem.offset() == null){return;}
-    
-    var cast =  $('#content-details .casts');
-    var cast_offset_x = parseInt(cast.css('padding-left'));
-    var cast_offset_y = parseInt(cast.css('padding-top'));
-    
-    var indicator = $('#content-details .indicator');
-    var indicator_offset_x = parseInt(indicator.css('left'));
-    var indicator_offset_y = parseInt(indicator.css('top'));
- 
-    // subtract the change in the element position from the open cast's top and left padding
-    var dx =(last_marker_x-elem.offset().left);
-    var dy = (last_marker_y-elem.offset().top) ;
-
-    last_marker_x = elem.offset().left;
-    last_marker_y = elem.offset().top; 
-    
-    // update open cast padding
-    cast.css('padding-left',cast_offset_x - dx).css('padding-top', cast_offset_y - dy);
-    indicator.css('left',indicator_offset_x - dx ).css('top',indicator_offset_y - dy)
-    cast_container_size_update();
- }
-
-var cast_container_size_update = function(){
-    // update open cast container size so it fits in browser
-    var height = $(window).height();
-    var width = $(window).width();
-    var castHeight = $('#content-details .casts').height();
-    $('#content-details .content-details-close').height(castHeight+150);
-    $('#content-details').height(height-$('#footer').height()).width(width);
+    $('#cast_container .cast').addClass('active');
 }
 
 var cast_single_view = {};
 
 cast_single_view['activate'] = function(context) {
-cast_info_refresh(context.params['id'], function(cast_id) {
-    var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
 
-    var pnt = new OpenLayers.Geometry.Point(parseFloat(loc_arr[0]), parseFloat(loc_arr[1]));
-    pnt.transform(main_map.displayProjection, main_map.projection);
-    var feature = new OpenLayers.Feature.Vector(pnt);
-
-    main_map.openCastLayer.addFeatures([feature]);
-
-    var ll = main_map.get_ll(feature.geometry.x, feature.geometry.y);
-    var bounds = main_map.map.calculateBounds();
-
-    if ( !bounds.containsLonLat(ll) ) {
-        main_map.map.setCenter(ll);
-    }
-
-    main_map.clearPopups();
-
-    // deselect the cast
-    main_map.selectCast.unselectAll();
-
-    cast_marker_id = feature.geometry.id;
-
-    var elem = $(document.getElementById(feature.geometry.id));
-    var dx = 0;
-    var dy = 0;
-
-    // randomly sometimes elem doesn't exist
-    if ( elem && elem.offset() ) {
-        // offset from left of window
-        var xpad = 134;
-
-        // offset from top of window 
-        var ypad = 240;
-
-        // init these values to calculate on window resize
-        last_marker_x = xpad;
-        last_marker_y = ypad;
-        var dx = elem.offset().left - xpad;
-        var dy = elem.offset().top - ypad;
-    }
-
-    if ( dx != 0 && dy != 0 ) {
-        // pan the map, and then fade the cast in.
-
-        // (hackish) this will actually fade in the cast in the moveend map listener
-        // this is because its slow as hell to fade in and pan simultaneously
-        // This boolean is checked in onmap move or something.
-        CAST_FADE_IN = true;
-        main_map.map.pan(dx, dy);
-    }
-    else { 
-        cast_fade_in();
-    }
-
-    // set up close button
-    $('#close-cast_' + cast_id).click(function() {
-        if (CAST_FILTER['collection']) {
-            frontpage_app.setLocation('#!collection/' + CAST_FILTER['collection'] + '/');
-        }
-        else if (CAST_FILTER['author']){
-            frontpage_app.setLocation('#!user/' + CAST_FILTER['author'] + '/');
-        }
-        else if (CAST_FILTER['tag']){
-            frontpage_app.setLocation('#!tag/' + CAST_FILTER['tag'] + '/');
-        }
-        else {
-            frontpage_app.setLocation('#!');
-        }
-        return false;
-    });
-
-    // attach handler to reposition open cast on window resize
-    $(window).resize(cast_position_update); 
+    //set visibility and deactivate layer switcher
+    set_visible_elems(['media','map'],[], true);
     
-});
+    //sometimes the tooltip does not hide -- make sure it does
+    $('#tooltip').css('display','none');
+
+    cast_info_refresh(context.params['id'], function(cast_id) {
+     
+        //check if map layer is visible 
+        var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
+       
+        //don't refresh or move map if map layer is not visible
+        if(map_is_visible != undefined){ 
+            map_refresh(); 
+        }
+
+        cast_loaded(cast_id);
+
+        // set up close button to go back to previous app location
+        $('.cast-close').click(function() {
+            
+            $('#cast_container .cast').removeClass('active');
+            //change layer switcher control to select map
+            $('#layer-switcher .btn').removeClass('active');
+            $('#layer-switch_map').addClass('active');
+
+            if (CAST_FILTER['collection']) {
+                frontpage_app.setLocation('#!/collection/' + CAST_FILTER['collection'] + '/');
+            }
+            else if (CAST_FILTER['author']){
+                frontpage_app.setLocation('#!/user/' + CAST_FILTER['author'] + '/');
+            }
+            else if (CAST_FILTER['tag']){
+                frontpage_app.setLocation('#!/tag/' + CAST_FILTER['tag'] + '/');
+            }
+            else {
+                frontpage_app.setLocation('#!');
+            }
+            return false;
+        });
+        
+    });
 }
 
 cast_single_view['deactivate'] = function() {
-    $('#content-details').fadeOut();
-    $('#content-details').html('');
-     
-    $('#map-cast-list-title')
-        .add('#map-title') 
-        .add('#map-controls-container') 
-        .add('#search-bar')
-        .add('#map-layer-switcher')  
-        .fadeIn(function(){
-            //in case window has been resized while cast was open
-            on_resize();
-        });
-    
-    $('#add-cast-button-container').hide();
+  
+    $('#cast_container .cast').removeClass('active');
 
-    var viewIsList = $('#view-switch-list').hasClass('selected');
-    if ( viewIsList ) {
-        $('#view-switch-map').removeClass('selected');
-        $('#view-switch-list').addClass('selected');
-        $('#map-info-container').fadeIn(100);
-    }
-    else {
-        $('#view-switch-map').addClass('selected');
-        $('#view-switch-list').removeClass('selected');
-        $('#map-info-container').fadeOut(100);
-    }
-
-    // this clears the invisible feature that was added
-    main_map.openCastLayer.removeAllFeatures();
-    
-    //remove handler to adjust open cast position on resize
-    $(window).unbind('resize',cast_position_update);
 } // end deactivate
  
+
 /**************
  * COLLECTION *
  **************/
@@ -723,31 +321,65 @@ cast_single_view['deactivate'] = function() {
 var collection_single_view = {}; 
 
 collection_single_view['activate'] = function(context) {
+    
     var id = context.params['id'];
-
+   
     context.load(COLLECTION_API_URL + id + '/').then(function(coll) {
 
-        // show only casts in this collection
+        // set filter to only show casts in this collection
         set_cast_filter({'collection' : coll.id});
+        set_visible_elems(['media'], ['collection']); 
+                 
+        //check which layers are visible
+        var media_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'media'})
+        var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
 
-        // setup map
-        highlightCollection(coll.id);
-        main_map.clearPopups();
-        
-        var coll_feature = main_map.collectionLayer.getFeatureByFid(coll.id)
-        if (coll_feature && !coll_feature.onScreen()) {
-            main_map.panTo(coll.path[0][0], coll.path[0][1]);
+        //load cast list if visible or queue in view switcher callback  
+        if(media_is_visible != undefined){ 
+           list_casts('collection-cast-list'); 
+        }else{
+            onMedia = function(){
+                list_casts('collection-cast-list');
+                onMedia = function(){};
+            }
         }
-        
-        $('#current-map h4').html(coll.title);
-        $('#add-cast-coll').html(gettext(' to this Collection'));
+
+        //load map if visible or queue in view switcher callback
+        if(map_is_visible != undefined){
+            map_refresh();
+        }
+        else{
+            onMap = function(){
+                map_refresh();
+                onMap = function(){};
+            }
+        }
+
+        //update map title
+        $('#current-map').html(coll.title);
+
+        //update collection cast list header
+        var collection_html = _.template($('#collection-cast-list-info-templ').html(), {collection:coll});
+        $('#collection-info').html(collection_html);
+        replace_names();
 
         // DHTML
         activate_favorite_button('collection', coll.id, COLLECTION_API_URL + coll.id + '/favorite/');
     });  
 }
 
-collection_single_view['deactivate'] = function() {}
+collection_single_view['deactivate'] = function() {
+    //unbind infinite scroll event listener
+    $(window).unbind('scroll');
+
+    //reset html 
+    $('#collection-cast-list').html(''); 
+    $('.list-var', '#collection_container').text('');
+
+    //reset viewswitcher callbacks
+    onMedia = function(){};    
+    onMap = function(){};
+}
 
 /********
  * USER *
@@ -758,12 +390,59 @@ var user_single_view = {
 activate : function(context) {
     var user_id = context.params['id'];
     context.load(USER_API_URL + user_id + '/').then(function(user) { 
-        $('#current-map h4').html(gettext('Casts Created by') + ' ' + user.display_name);
+        //$('#current-map h4').html(gettext('Casts Created by') + ' ' + user.display_name);
         set_cast_filter({'author':user_id});
+        set_visible_elems(['media'], ['user']); 
+         
+        //update user info header
+        var user_html = _.template($('#user-info-templ').html(), {user:user});
+        $('#user-info').html(user_html);
+
+        //update map title
+        $('#current-map').html(gettext('<span class="cast-name-plural">Casts</span> Created by') + ' ' + user.display_name);
+        replace_names();
+
+        //check which layers are visible
+        var media_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'media'})
+        var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
+        
+        if(media_is_visible != undefined){
+            list_casts('user-cast-list'); 
+        }
+        else{
+            onMedia = function(){
+                list_casts('user-cast-list');
+                onMedia = function(){};
+            }
+        }
+
+        if(map_is_visible != undefined){
+            map_refresh();
+        }
+        else{
+            onMap = function(){
+                map_refresh();
+                onMap = function(){};
+            }
+        }
+
+        
     });
     },
 
-    deactivate : function() { }
+    deactivate : function() { 
+        //unbind infinite scroll event listener
+        $(window).unbind('scroll');
+
+        //reset html 
+        $('#user-cast-list').html(''); 
+        $('.list-var', '#user_container').text('');
+
+        //reset viewswitcher callbacks
+        onMedia = function(){};    
+        onMap = function(){};             
+                 
+    }
 }
 
 /*******
@@ -772,10 +451,52 @@ activate : function(context) {
 
 tag_view = {
     activate : function(context) {
-        $('#current-map h4').html(gettext('Casts Tagged') + ' ' + context.params['tag'] + '</h4>');
         set_cast_filter({'tag': context.params['tag']});
+        set_visible_elems(['media'], ['tag']);
+
+        //update tag info header
+        var tag_html = _.template($('#tag-info-templ').html(), {tag:context.params['tag']});
+        $('#tag-info').html(tag_html);
+
+        //update map title
+        $('#current-map').html(gettext('<span class="cast-name-plural">Casts</span> Tagged') + ' "' + context.params['tag'] + '" ');
+        replace_names();
+
+        //check which layers are visible
+        var media_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'media'})
+        var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
+        
+        if(media_is_visible != undefined){
+            list_casts('tag-cast-list'); 
+        }
+        else{
+            onMedia = function(){
+                list_casts('tag-cast-list');
+                onMedia = function(){};
+            }
+        }
+
+        if(map_is_visible != undefined){
+            map_refresh();
+        }
+        else{
+            onMap = function(){
+                map_refresh();
+                onMap = function(){};
+            }
+        }
     },
-    // needs to be deactivated manually clear_open_tag
-    deactivate : function() { }
+    deactivate : function() { 
+        //unbind infinite scroll event listener
+        $(window).unbind('scroll');
+
+        //reset html 
+        $('#tag-cast-list').html(''); 
+        $('.list-var', '#tag_container').text('');
+
+        //reset viewswitcher callbacks
+        onMedia = function(){};    
+        onMap = function(){};    
+    }
 }
 

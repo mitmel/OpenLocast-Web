@@ -1,0 +1,1346 @@
+
+
+
+// Centering helpers
+// --------------------------------------------------
+
+.center-icon(@containerHeight:40px , @containerWidth:40px){
+     position:absolute;
+     top:(@containerHeight*.5) - (@iconHeight*.5);
+     left:(@containerWidth*.5) - (@iconWidth*.5);
+}
+
+.center-text-vert(@height){ 
+    position:absolute;
+    top:30%;
+}
+.center-text-vert(@height) when (@height < 120px){
+    top:10%;
+}
+.center-text-vert(@height) when (@height > 250px){
+    top:50%;
+}
+
+
+// Collection preview styles
+// different layouts of collection preview (.collection)
+// --------------------------------------------------
+
+//empty for default
+.collection-preview-style(@layout) {}
+
+.collection-preview-style(@width:@collectionListWidth , @height:@collectionListHeight, @spacing:@collectionListSpacing, @layout) when ( @layout = block ) {
+    border-bottom:solid @linesColor 1px;
+    cursor:pointer;
+    .collection-info{
+        width:100%;
+        color:@textColor;
+        margin-bottom:@baseLineHeight;
+        .title,.description{
+            margin:0;
+        }
+        .title{
+            line-height:1;
+            text-transform:capitalize;
+            font-family:@displayFontFamily;
+            margin-bottom:@baseLineHeight*.25;
+        }
+        .description{
+            font-weight:300;
+            max-width:600px;
+        }
+    }
+    
+    .preview{
+        height:@height*2;
+        overflow:hidden;
+        box-sizing:border-box;
+        position:relative;
+        .cast-preview{
+            float:left;
+            .cast-media-format(@width, @height, @spacing, @collectionCastPreviewStyle);
+            padding-bottom:0;
+            .placeholder{
+                .title{
+                    display:none;
+                }
+            }
+        }
+        .cast-count{
+            position:absolute;
+            width:100%;
+            height:100%;
+            //background-color: @transparentOverlay;
+            opacity:0;
+            .transition(opacity 0.2s ease);
+            h4{
+                width:150px;
+                position:relative;
+                margin: 0 auto;
+                top:35%;
+                color:@reversedTextColor;
+                background-color: @primaryAccent;
+                text-align:center;
+                font-size:@baseFontSize*1.2;
+                font-weight:300;
+                padding:@baseLineHeight*.5 @baseLineHeight*.25;
+                .border-radius(6px);
+                .default-shadow;
+            }
+        }
+    }
+     &:hover{
+        .cast-count{
+            opacity:1;
+        }
+    }
+
+}
+
+
+// Cast layout styles
+// different layouts of cast content (.cast-content)
+// --------------------------------------------------
+
+
+//empty for default
+.cast-layout-style(@layout) {}
+
+//cast layout base
+.cast-layout-style(@layout) when (@layout = base){
+    
+    .cast-header{
+        .title,.author,.date{
+            margin-top:0;
+        }
+        .title{
+            margin-bottom:@baseLineHeight;
+        }
+        .title, #id_title{
+            font-family:@displayFontFamily;
+            font-size:@baseFontSize*3;
+        }
+        .cast-title-edit{
+            label{
+                display:none;
+            }
+            #id_title{
+                .minimal-textfield;
+                color:@textColor;
+                height:auto;
+                width:80%;
+            }
+        }
+    }
+    
+    .cast-map{
+        width: 100% !important;
+        height: 180px !important;
+        margin-bottom:@baseLineHeight;
+        
+        .leaflet-control {
+            display:none;   
+        }
+    }
+    
+    .cast-options{
+        .btn{
+            .minimal-btn;
+        }
+    }
+    
+    .cast-description{ 
+        .cast-description-edit{
+            textarea{
+                width:60%;
+                height:200px;
+            }
+        }
+        &.none{
+            margin-bottom:0 !important;
+        }
+    }
+    
+    .cast-media{
+        .mediacount_1{
+            .media{
+                width:60%;
+                float:none;
+                margin-left:auto;
+                margin-right:auto;
+                img{
+                    width:100%;
+                    height:auto;
+                    padding: 0; 
+                }
+            }
+        } 
+        .media{
+            float:left;
+            .cast-media-format( @castMediaWidth,  @castMediaHeight, @castMediaSpacing, @castMediaStyle);
+        }
+    }
+
+    .cast-tags{
+        .tag-list{
+            .tag-list-style;
+        }
+        &.tagscount_0{
+            margin-bottom:0 !important;
+        }
+    }
+    
+    .cast-footer{
+        .sub-head{
+            margin-top:0;
+            border-top:@linesColor 1px solid;
+            padding-top:@baseLineHeight*.5;
+        }
+    }
+
+    .cast-collections{
+        .collection-id{
+            display:none;
+        }
+        .collection{
+            margin:0 0 @baseLineHeight 0;
+            border-bottom:@linesColor 1px solid;
+            .collection-preview-style(@castCollectionWidth, @castCollectionHeight, @castCollectionPreviewSpacing, @collectionPreviewLayout);
+            .title{
+                height:30px;
+                font-size:@baseFontSize;
+            }
+            .cast-preview{
+            }
+        }
+    }
+    
+    .cast-comments{
+        form, .comments{
+            width:600px;
+            max-width:90%;
+            textarea{
+                width:100%;
+                height:200px;
+            }
+        }
+        .comment{
+            text-align:left;
+            margin-bottom:@baseLineHeight;
+            .comment-meta{
+                margin-bottom:@baseLineHeight*.25;
+            }
+            .author-image{
+                margin-right:@baseLineHeight*.45;
+                float:left;
+                .user-image-format(@userImageWidth, @userImageHeight);
+            }
+            .name{
+                margin:0;
+            }
+            .date{
+                font-weight:300;
+                margin:0;
+            }
+        } 
+    }
+}
+
+//centers all cast content with balanced emphasis 
+.cast-layout-style(@layout) when (@layout = centered){
+
+    .cast-layout-style(base);
+
+    .section{
+        text-align:center;
+        margin-bottom:@baseLineHeight;
+    }
+
+    .cast-header{
+
+    }
+
+    .cast-column1{
+        float:none;
+        width:100%;
+        margin-left:0;
+    }  
+
+    .cast-column2{
+        float:none;
+        width:100%;
+        margin-left:0;
+    }
+
+    .cast-options{
+        .add-media-btn{
+            display:none;
+        }
+        .btn{
+            display:inline-block;
+            border-top:none;
+            width:auto;
+            padding-left:6px;
+            text-align:center;
+        } 
+    }
+
+    .cast-media{
+        .media-list{
+            .media{
+                float:none !important;
+                display:inline-block;
+            }
+        } 
+    }
+
+    .cast-description{
+        max-width:600px;
+        margin-right:auto;
+        margin-left:auto;
+    }
+
+    .cast-tags{
+        .tag-list{
+           max-width:600px;
+        margin-right:auto;
+        margin-left:auto;
+ 
+        }
+    }
+
+    .cast-footer{
+        text-align:left;
+    }
+
+}
+
+//breaks cast into two columns with balanced emphasis 
+.cast-layout-style(@layout) when (@layout = columns){
+
+    .cast-layout-style(base);
+
+    .section{
+        margin-bottom:@baseLineHeight;
+        .btn.edit-toggle.side{
+            position:static;
+            display:none;
+        }  
+    }
+ 
+    .cast-column1{
+        float:left;
+        width:20%;
+        margin-left:2%;
+    }  
+
+    .cast-column2{
+        float:left;
+        width:65%;
+        margin-left:5%;
+    }
+ 
+
+    .cast-header{
+        .title, #id_title{
+            font-size:@baseFontSize*2.4;
+        }
+    }
+    .cast-options{
+        .btn{
+            display:block;
+            border-top:1px solid @linesColor;
+            width:100%;
+            padding-left:6px;
+            text-align:left;
+        }
+
+    }
+    
+    .cast-media{
+        margin-bottom:0;
+        
+        .clearfix:after, .clearfix:before{
+            display:none;
+        }
+
+        .add-media-btn{
+            display:none !important;
+        } 
+        .mediacount_0{
+            height:0;
+            margin:0 !important;
+            display:block !important;
+        }
+        .mediacount_1{
+            .media{
+                width:auto;
+                height:auto;
+                float:none;
+                margin:0;
+                img{
+                    position:static;
+                    width:auto;
+                    height: @castSingleMediaHeight;
+                }
+            }
+        }  
+        .media-list{
+             margin:0 0 @baseLineHeight 0 ;
+            .media{
+                float:none !important;
+                display:inline-block;
+            }
+        }
+    }
+    
+    .cast-description{
+        .edit-toggle{
+           margin-bottom:@baseLineHeight; 
+        }
+
+    }
+   
+     .cast-tags{
+        .edit-toggle{
+           margin-bottom:@baseLineHeight; 
+        }
+        .tag-list{
+            margin-left:0;
+        }
+    }
+
+    .cast-footer{
+        .cast-collections, .cast-comments{
+            float:none;
+            margin-left:0;
+            width:100%;
+        }
+        .cast-comments{
+            margin-bottom:@baseLineHeight;
+            .comment-meta{ 
+            }
+        }
+        .collection{
+            width:40%;
+            float:left;
+            //display:inline-block;
+            margin-right:5% !important;
+        }
+    }
+}
+
+//makes the description focus of the cast
+.cast-layout-style(@layout) when (@layout = description-emphasis){
+     padding-top:@baseLineHeight*2.5;
+     margin-top:1000px;
+    .transition(margin-top 0.2s ease);
+
+    .cast-description{
+        margin:2% 0 0 2%;
+        padding:@baseLineHeight 0;
+        width:91%;
+        position:absolute;
+        top:@baseLineHeight;
+        left:@baseLineHeight;
+        max-width:none;
+        border-bottom: @linesColor 1px solid;
+
+       font-size:2em;
+       font-family: @empDescriptionFamily;
+       line-height: 1.4;
+
+        #cast-description-edit-button{
+            left:-2% !important;
+            bottom: 8px;
+        }   
+    } 
+}
+
+.cast-layout-style(@layout) when (@layout = description-emphasis-centered){
+    .cast-layout-style(centered);
+    .cast-layout-style(description-emphasis);
+}
+
+
+.cast-layout-style(@layout) when (@layout = description-emphasis-columns){
+    .cast-layout-style(columns);
+    .cast-layout-style(description-emphasis);
+}
+
+//media-emphasis
+
+//number of iterations
+@maxCastMedia: 50;
+
+//loop to create classes based on the number of cast media
+.media-position-loop (@mediaPosIndex) when (@mediaPosIndex > 1) {
+    (~".mediacount_@{mediaPosIndex}"){
+        width:((@castEmphasisHeight * 1.2) + @castMediaSpacing ) * (@mediaPosIndex+2); 
+        .media{
+            float:left !important;
+            margin:0 !important;
+            margin-right: @castMediaSpacing !important;
+            .cast-media-format( @castEmphasisHeight,  @castEmphasisHeight , @castMediaSpacing, @castMediaStyle );
+        }        
+    }
+    .media-position-loop (@mediaPosIndex - 1) 
+}
+
+//stop loop at 1
+.media-position-loop (1) {}
+
+//makes media large and placed at top of cast
+.cast-layout-style(@layout) when (@layout = media-emphasis){
+    margin-top:@castEmphasisHeight + @baseLineHeight*2.5;
+    
+    .cast-media{
+        width:93%;
+        height:@castEmphasisHeight + 15px;
+        overflow:auto;
+        .minimal-scrollbar;
+        margin:2% 0 0 2%;
+        position:absolute;
+        top:@baseLineHeight;
+        left:@baseLineHeight;
+        .media-list{
+            margin:0;
+            &.clearfix:after, &.clearfix:before{
+                display:none;
+            }
+        }
+ 
+        // insert generated classes 
+        .media-position-loop(@maxCastMedia);
+
+        .media-list.mediacount_1{
+            height:100%;
+            overflow:hidden;
+            .media{
+                //float:left !important;
+                width:100%;
+                height:100%;
+                .cast-media-format( 100%,  @castEmphasisHeight , @castMediaSpacing, @castMediaStyle );
+                img{
+                    
+                    width:100% !important;
+                    height:auto;
+                    top:0;
+                    left:0;
+                }
+            }
+        }
+        .media-list.mediacount_0{
+            height:0;
+            margin:0 !important;
+            display:block !important;
+        }  
+    }    
+}
+
+.cast-layout-style(@layout) when (@layout = media-emphasis-columns){
+    .cast-layout-style(columns);
+    .cast-layout-style(media-emphasis);
+}
+
+.cast-layout-style(@layout) when (@layout = media-emphasis-centered){
+    .cast-layout-style(centered);
+    .cast-layout-style(media-emphasis);
+}
+
+
+// Cast media formats
+// apply general styles to a media block element in addition to a media style based on @style parameter 
+// --------------------------------------------------
+
+.cast-media-format(@width:100px, @height:100px, @spacing:8px, @style:centered){
+    position:relative;
+    display:block;
+    margin: 0 @spacing @spacing 0;
+    img, .placeholder{
+        display:block;
+        height:@height;
+        max-width:none;
+    }
+    .placeholder{
+        width:@width;
+        position:relative;
+        .icon{
+            .center-icon(@height, @width);
+        }
+        .title{
+            .center-text-vert(@height);
+            text-align:center;
+            width:100%;
+        }
+    } 
+    .media-style(@style, @width, @height, @spacing);  
+}
+
+
+// Media styles
+// media styles format info (.info elements) and image (img, .placeholder elements) blocks plus unique visual styles   
+// --------------------------------------------------
+
+//declare empty mixin as default
+.media-style(@type, @width, @height, @spacing){}
+
+
+/* PRIVATE STYLES */
+
+// used to create the public styles
+
+// positioning common elements
+.media-style(@type, @width, @height, @spacing) when (@type = base){
+      .placeholder{
+        background-color:@primaryAccent;
+        h4{
+            text-align:center;
+            position:absolute;
+            top:30%;
+            width:100%
+        }
+    }
+    .info{
+        opacity:0;
+    }
+
+    &:hover{
+        .info{
+            opacity:1;
+        }
+        .open-icon{
+            opacity:0;
+        }
+    }
+
+}
+
+// centered style
+.media-style(@type, @width, @height, @spacing) when (@type = centered){
+    .centered-info(@width, @height); 
+    .media-style(base, @width, @height, @spacing);
+}
+
+// bottom style
+.media-style(@type, @width, @height, @spacing) when (@type = bottom){
+    .bottom-info(@width, @height); 
+    .media-style(base, @width, @height, @spacing);
+}
+
+// card style
+.media-style(@type, @width, @height, @spacing) when (@type = card){
+    .card-info(@width, @height, @spacing); 
+    .media-card-border(@width, @height, @spacing);
+    .media-style(base, @width, @height, @spacing);
+}
+
+// positioning elements specific to cast preview
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview){
+    .placeholder{
+        background-color:@primaryAccent;
+        h4{
+            text-align:center;
+            position:absolute;
+            top:30%;
+            width:100%
+        }
+    }
+    .open-icon{
+        position:absolute;
+        top:10px;
+        left:10px;
+        opacity:0;
+    }
+
+    .info{
+        .title{
+            
+            font-size: 2em;
+            line-height:1.2;
+        }
+    }
+
+    &:hover{
+        .open-icon{
+            opacity:1;
+        }
+    }
+}
+
+
+//positioning of elements specific to cast media
+.media-style(@type, @width, @height, @spacing) when (@type = cast-media){
+     .delete-media{
+        position:absolute;
+        right:10px;
+        bottom:6px;
+        z-index:1;
+    }
+
+    .video-icon{
+        position:absolute;
+        left:10px;
+        top:10px;
+        width:20px;
+        height:20px;
+        background-color: @transparentOverlay;
+        padding:8px;
+        .border-radius(9999px);
+        i{
+            position:absolute;
+            top:10px;
+            left:11px;
+        }
+    } 
+
+    .info{
+        opacity:0;
+    }
+
+    &:hover{
+        .info{
+            opacity:1    
+        }
+    }  
+}
+
+/* PUBLIC STYLES */
+
+// media styles for use in other style blocks
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-centered ){
+    .media-style(centered, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-bottom ){
+    .media-style(bottom, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-card ){
+    .media-style(card, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+     &:hover{
+        .info{
+            opacity:1;
+        }
+    }
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-centered-fixed ){
+    .media-style(centered, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+    .media-fixed-size(@width, @height);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-bottom-fixed ){
+    .media-style(bottom, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+    .media-fixed-size(@width, @height);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-preview-card-fixed ){
+    .media-style(card, @width, @height, @spacing);
+    .media-style(cast-preview, @width, @height, @spacing);
+    .media-fixed-size(@width, @height);
+  
+    &:hover{
+        .info{
+            opacity:1;
+        }
+    }
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-media-centered ){
+    .media-style(centered, @width, @height, @spacing);
+    .media-style(cast-media, @width, @height, @spacing);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-media-centered-fixed ){
+    .media-style(centered, @width, @height, @spacing);
+    .media-style(cast-media, @width, @height, @spacing);
+    .media-fixed-size(@width, @height);
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-media-bottom ){
+    .media-style(bottom, @width, @height, @spacing);
+    .media-style(cast-media, @width, @height, @spacing);
+    
+    .info{
+        opacity:1;
+    } 
+    
+    &:hover{
+        .info{
+            opacity:1    
+        }
+    }
+}
+
+.media-style(@type, @width, @height, @spacing) when (@type = cast-media-bottom-fixed ){
+    .media-style(bottom, @width, @height, @spacing);
+    .media-style(cast-media, @width, @height, @spacing);
+    .media-fixed-size(@width, @height);
+    
+    .info{
+        opacity:1;
+    } 
+    
+    &:hover{
+        .info{
+            opacity:1    
+        }
+    }
+}
+
+
+// Image formatters
+// control the display of image (img,.placeholder) elements  
+// --------------------------------------------------
+
+.fixed-size-positioning(@width,@height){
+    width:@width;
+    height:@height;
+    overflow:hidden;
+    img{
+        position:absolute;
+        width:100% !important;
+        height:auto !important;
+    }
+    .placeholder{
+        position:absolute;
+        width:100% !important;
+        height:100% !important;
+    }
+}
+
+.media-fixed-size (@width, @height){}
+
+.media-fixed-size (@width, @height) when ( @width = @height){
+    .fixed-size-positioning(@width, @height);
+    img{
+        top:-5%;
+        left:-35%;
+        width:200% !important;
+    }
+}
+
+.media-fixed-size (@width, @height) when ( @width > @height){
+    .fixed-size-positioning(@width, @height);
+    img{
+        top:0;
+        left:-10%;
+        width:120% !important;
+    }
+
+}
+
+.media-fixed-size (@width, @height) when (@width < @height){
+    .fixed-size-positioning(@width, @height);
+     img{
+        top:-5%;
+        left:-15%;
+        width:200% !important;
+    }
+}
+
+.media-card-border (@width, @height, @spacing) {
+    @cardMargin: (@cardBorderWidth) + @spacing;
+    @cardOffset: @cardBorderWidth + 4px ;
+    margin:@cardOffset @cardMargin @cardMargin @cardOffset;
+    border-box:content;
+    .card-border(@cardBorderWidth);
+
+}
+
+
+// Info formatters
+// control the display of .info blocks  
+// --------------------------------------------------
+
+
+.centered-info(@width, @height){
+    .info{
+        position:absolute;
+        top:0;
+        text-align:center;
+        width:100%;
+        height:100%;
+        color:@white;
+        background-color: @transparentOverlay;
+        .transition(opacity .2s ease);
+
+        .title{
+            .center-text-vert(@height);
+            width:100%;
+            padding:0 8px;
+            box-sizing: border-box;
+            font-size: @baseFontSize;
+            font-weight:300;
+            text-transform:Capitalize;
+        }
+        .author{
+             .center-text-vert(@height);
+            width:100%;
+            padding:0 8px;
+            top:60%;
+
+        }
+    }
+}
+
+.bottom-info(@width, @height){
+    .centered-info(@width, @height);
+    .info{
+        height:auto;
+        top:auto;
+        text-align:left;
+        bottom:0;
+        .title{
+            position:static;
+        }
+    }
+}
+
+
+.card-info(@width, @height, @spacing){
+    .bottom-info(@width, @height);
+    padding-bottom:@baseFontSize*4;
+    .info{
+        text-align:center;
+        background-color:@cardColor;
+        top:@height;
+        color:@textColor;
+        .title{ 
+            //margin:@baseLineHeight*.25;
+        }
+    }
+}
+
+// User preview
+// --------------------------------------------------
+
+//formatting user image
+
+.user-image-format(@width, @height){
+    border:@linesColor 1px solid;
+    height:@height;
+    width:auto;
+    background-color:@primaryAccent;
+    &.placeholder{
+        width:@width;
+        height:@height;
+        position:relative;
+        .icon{
+             .center-icon(@height, @width);
+        }
+    }
+}
+
+
+// Modals
+// --------------------------------------------------
+
+.cast-modal{
+    text-align:center;
+    .default-shadow;
+    display:none;
+    background-color:@bodyBackground;
+    padding:@baseLineHeight;
+    position:fixed;
+    top:200px;
+    left:35%;
+    width:30%;
+    z-index:10;
+}
+
+
+// Loaders
+// --------------------------------------------------
+
+// full screen
+
+.full-screen-loader{
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:0;
+    z-index:@zindexMedia;
+    background-image:url('../img/transGreyAlt.png');
+    opacity:0;
+    .transition(~"opacity .3s ease, height 0s linear"); 
+    &.active{
+        opacity:1;
+        height:100%;
+    }
+    .loader-message{
+        line-height:.75;
+        background-image:url('../img/mapLoader.gif');
+        background-position:8px 8px;
+        margin-left:auto;
+        margin-right:auto;
+        top:30%;
+        padding:12px 8px 8px 54px;
+        position: relative;
+        width:100px;
+        height:26px;
+        background-repeat: no-repeat;
+        background-color:#FFF !important;
+        border: 1px #fff solid; 
+        .box-shadow(0px 0px 8px #fff);
+        .border-radius(6px);
+    }
+}
+
+
+// Visual Styles
+// --------------------------------------------------
+
+.reversed-out-hover{
+    &:hover{
+        color:@white;
+        background-color:@primaryAccent;
+        text-decoration:none;
+    }
+}
+
+.card-border(@border-width:15){
+     @half-border: @border-width*.5;
+     @shadow-rule: ~"0 0 4px 1px @{cardColor},0 0 0 @{border-width}px @{cardColor}, 0 0 8px @{border-width}px @{gray}";
+    .box-shadow(@shadow-rule);
+}
+
+
+.minimal-textfield{
+    font-weight:300;
+    .border-radius(0);
+    padding:0;
+    border:none;
+    border-bottom:@linesColor 1px solid;
+    color:@textColor;
+    background-color:transparent;
+    .box-shadow(none);
+}
+
+.default-shadow{
+    .box-shadow(0 1px 8px rgba(0,0,0, .75));
+}
+
+
+//set the color of icons on the site based on site background color
+.set-icon-color(@color) {}
+
+.set-icon-color(@color) when (lightness(@color) < @autoIconThreshold) and (@autoIcon = true) {
+    [class^="icon-"],
+    [class*=" icon-"]{
+        background-image: url("@{iconWhiteSpritePath}") !important;
+    }
+}
+
+//currently only works in webkit browsers
+.minimal-scrollbar{
+    &::-webkit-scrollbar {
+        width: 12px;
+    }
+     
+    /* Track */
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+        //-webkit-border-radius: 10px;
+        //border-radius: 10px;
+    }
+     
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        //-webkit-border-radius: 10px;
+        //border-radius: 10px;
+        background: @primaryAccent; 
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    }
+    &::-webkit-scrollbar-thumb:window-inactive {
+            background: @secondaryAccent; 
+    }
+}
+
+.tag-list-style{
+    list-style-type:none;
+    li{
+        display:inline-block;
+        box-sizing: border-box;
+        background-color:@primaryAccent;
+        padding:@baseLineHeight*.15 @baseLineHeight*.25;
+        margin-bottom:@baseLineHeight*.25;
+        color:@white;
+        font-weight:300;
+        .border-radius(2px);
+        .transition(background-color .2s ease);
+        &:hover{
+            background-color:darken(@primaryAccent, 10%);
+        } 
+    }
+
+    a{
+        color:@white;
+         &:hover{
+            text-decoration:none;
+        }
+    }
+    
+    .delete-tag{
+        cursor:pointer;
+        display:inline-block;
+        margin-left:@baseLineHeight*.1;
+        padding:0 0 0 @baseLineHeight*.5;
+        border-left:@white 1px solid;
+        i{
+            position:relative;
+            top:@baseLineHeight*.1;
+            right:@baseLineHeight*.2;
+        }
+        &:hover{
+            background-color:@secondaryAccent;
+        }
+    }
+}
+
+
+// Special buttons
+// --------------------------------------------------
+
+.minimal-btn{
+    .buttonBackground(@bodyBackground, @bodyBackground, @bodyBackground);
+    .border-radius(0px);
+    .box-shadow(none);
+    border:none;
+    text-shadow:none;
+    font-weight:300;
+    color:@textColor;
+
+    &:hover{ 
+        .buttonBackground(@primaryAccent, @primaryAccent, @textColor);
+        text-shadow:none;
+    }
+}
+
+.minimal-push-btn{
+    .minimal-btn;
+    margin:0;
+    border-right: fadeout(@linesColor, 60%) 1px solid;
+    padding:@baseLineHeight*.5 0;
+    &:hover, &.active{
+        .box-shadow(~"inset 0 2px 8px rgba(0,0,0,.65), 0 1px 2px rgba(0,0,0,.35)");
+        .buttonBackground(darken(@bodyBackground,5%), darken(@bodyBackground,5%), @textColor);
+    }
+}
+
+.colored-btn{
+    .border-radius(0);
+    .buttonBackground(lighten(@primaryAccent, 10%), lighten(@primaryAccent, 10%), @white);
+    &:hover{
+        .buttonBackground( @primaryAccent, @primaryAccent, @white);
+    }
+    &.active{
+        .buttonBackground(darken(@primaryAccent, 10%), darken(@primaryAccent, 10%), @white);
+    }
+}
+
+.circle-btn{
+    overflow:hidden;
+    width:30px;
+    height:30px;
+    padding:6px 0  0 0;
+    box-sizing: border-box;
+    .box-shadow(0px 0px 1px #000);
+    border:none;
+    .buttonBackground(@primaryAccent, @primaryAccent, @primaryAccent);
+    .border-radius(9999px);
+    text-shadow:none;
+    
+    &:hover{
+       .box-shadow(0px 0px 8px #000);
+    } 
+}
+
+.oval-btn{
+    .circle-btn;
+    height:auto;   
+    width:150px;
+    padding:6px; 
+    .buttonBackground(@secondaryAccent, @secondaryAccent, @white);
+    z-index:@zindexChrome;
+}
+
+// Map Markers
+// --------------------------------------------------
+
+.center-map-marker-text(@markerWidth, @padding){
+    @textWidth: @markerWidth - (@padding*2) - 4px;
+    .title{
+        width:@textWidth;
+        height:@textWidth;
+        line-height:@textWidth;
+        margin: @padding 0 0 @padding;
+    }
+}
+
+.cast-cluster-style(@style, @color, @text){}
+
+.cast-cluster-style(@style, @color:@primaryAccent, @text:@textColor ) when (@style = circles){
+        
+        background-color:darken(fadeOut(@color, 40%),2%);
+        .border-radius(9999px);
+        
+        .title{
+            text-align:center;
+            background-color:darken(@color, 0%);
+            .border-radius(9999px);
+            color:@white;
+            font-weight:300;
+             border:solid @white 2px;
+                .default-shadow();
+        }
+
+
+        &.cast-cluster-small{
+            //40px
+            .center-map-marker-text(40px, 5px);
+        }
+
+        &.cast-cluster-medium{
+            //60px
+            .center-map-marker-text(60px, 5px);
+        }
+
+        &.cast-cluster-large{
+            //60px
+            .center-map-marker-text(60px, 5px);                               
+        } 
+
+        &.single-cast{
+             background-color:transparent; 
+            .center-map-marker-text(40px, 10px);
+            .title{
+                background-color:darken(@color, 0%);
+            }
+        }
+}
+
+.cast-cluster-style(@style, @color:@primaryAccent, @text:@textColor ) when (@style = image){
+
+        .placeholder {
+            background-color:darken(fadeOut(@linesColor, 40%),2%);
+            width: 100%;
+            height: 100%;
+        }
+
+        .title{
+            text-align:center;
+            color:@white;
+            font-weight:300;
+            position:absolute;
+            width: 100%;
+            left:-1px;
+            top: -28px;
+            background-color:darken(@color, 0%);
+            .border-radius(4px);
+            border:solid @white 1px;
+        }
+                
+
+       .cast-cluster-image{
+            position:relative;
+            overflow:hidden;
+            .border-radius(9999px);
+            border:solid @white 2px;
+            .default-shadow();
+             img {
+                .transition(~'left,height .2s ease');
+                height:110%;
+                min-width:140%;  
+                position:absolute;
+                top:-5%;
+                left:-30%; 
+             }
+            
+       }
+
+       &.image-cluster-small {
+            margin-left: -12px;
+            .cast-title{
+                display:none;
+            }
+            .cast-cluster-image{
+                float:left;
+                height:15px;
+                width:15px;
+                margin-bottom: 1px;
+                margin-left: 1px;
+            }
+       }
+
+       &.image-cluster-medium, &.image-cluster-large {
+            margin-left: -12px;
+            .cast-title{
+                display:none;
+            }
+            .cast-cluster-image{
+                float:left;
+                height:15px;
+                width:15px;
+                margin-bottom: -14px;
+                margin-left: -5px;
+                .transition(~'margin-bottom .1s linear'); 
+            }
+            &:hover{
+                .cast-cluster-image{    
+                    margin-bottom:1px;
+                }
+            }
+
+           .title {
+                left:-5px;
+            }
+       }
+       
+       &.single-image{
+           z-index: inherit;
+           .title { display:none; }
+           .cast-title{
+                width:140px;
+                margin-left:-50px;
+                text-align:center;
+                font-family:@displayFontFamily;
+                .border-radius(9999px);
+                background-color:@bodyBackground;
+                padding:5px;
+                text-transform:uppercase;
+                display:none;
+            }
+            &:hover{
+                 z-index:@zindexChrome*3 !important;
+                 .cast-title{
+                        display:block;
+                    }
+            }
+           .border-radius(9999px);
+            .cast-cluster-image{
+                width:40px;
+                height:40px;
+                .transition(~'width .1s linear, height .1s linear, margin .1s linear');
+                &:hover{
+                    width:45px;
+                    height:45px;
+                    margin:-2px 0 0 -2px;
+                    img{
+                        height:130%; 
+                    }
+                   
+                }
+            }
+       }
+         
+}
+
