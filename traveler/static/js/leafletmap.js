@@ -114,7 +114,7 @@ var locast = locast || {};
 
         var _cloudmadeLayer = L.tileLayer( 'http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png' ,{
             key: '55be8cc24afc49f4a4f7e8056455582c',
-            style: '997',
+            style: '66675',
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>' 
         });
 
