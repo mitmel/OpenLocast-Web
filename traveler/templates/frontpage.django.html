@@ -32,7 +32,7 @@
     <div id="login-menu">
         <div class="login-info-item"><a href="#!/user/{{request.user.id}}/">{% trans "View <span class='cast-name-plural'>Casts</span>" %}</a></div>
         <div class="login-info-item"><a id="edit-profile-link" href="#">{% trans "Edit Profile" %}</a></div>
-        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url 'logout' %}?next={{request.path}}">{% trans "Logout" %}</a></div>
+        <div class="login-info-item"><a id="logout-link" class="locast-button" href="{% url "logout" %}?next={{request.path}}">{% trans "Logout" %}</a></div>
     </div>
 {% endif %}
 {% endblock login %}

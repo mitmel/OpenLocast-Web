@@ -1,14 +1,15 @@
 {% extends "base.django.html" %}
 
 {% load i18n %}
-{% block main-content %}
-<div class="static-form cleared">
+{% block body %}
+<div style="margin: 20px;" class="static-form cleared">
 {% if uc and not user.is_anonymous %}
     <p>{% trans "A confirmation email has been sent to: " %}<strong>{{ user.email }}</strong></p>
     <p>{% trans "Follow the link in the email when it arrives. Click " %}<a href="{{BASE_URL}}">{%trans "here" %}</a>{% trans " to be redirected to the home page." %}</p>
 {% else %}
     <h2>{% trans "Register an Account on " %}{{SITE_NAME}}</h2>  
-    <form method="post" enctype="multipart/form-data" action="{% url register %}" class="cleared">
+    <form method="post" enctype="multipart/form-data" action="{% url "register" %}" class="cleared">
+        {% csrf_token %}
         <h6 style="color:red;">{% trans "REQUIRED" %}</h6>
         {{ form.as_p }}
         <br/>

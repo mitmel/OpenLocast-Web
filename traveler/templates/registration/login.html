@@ -1,8 +1,8 @@
 {% extends "base.django.html" %}
 {% load i18n %}
 
-{% block main-content %}
-<div class="static-form login">
+{% block body %}
+<div style="margin: 20px;" class="static-form login">
 {% if form.errors %}
     {% if form.get_user and not form.get_user.is_active %}
         You have not confirmed your registration.
@@ -11,11 +11,12 @@
     {% endif %}
 {% endif %}
 
-<form method="post" action="{% url locast.auth.views.login %}">
+<form method="post" action="{% url "django.contrib.auth.views.login" %}">
+    {% csrf_token %}
     <table>
         <tr>
             <td>{% trans "Email" %}</td>
-            <td>{{ form.username }}</td>
+            <td><input id="id_username" type="text" maxlength="254" name="username"></td>
         </tr>
         <tr>
             <td>{{ form.password.label_tag }}</td>
@@ -28,7 +29,7 @@
 </form>
 
 <br />
-<p class="login-help"><a href="{% url register %}">{% trans "Register</a> a new account if you don't have one" %}</p>
+<p class="login-help"><a href="{% url "register" %}">{% trans "Register</a> a new account if you don't have one" %}</p>
 </div>
 {% endblock %}
 
