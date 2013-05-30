@@ -239,6 +239,24 @@ var home_view = {
 
 var cast_single_view = {};
 
+function cast_loaded(cast_id) {
+    set_visible_elems(undefined, ['cast'], true);
+
+    //make sure main map redraws
+    locast.main_map.redrawBase();
+
+    //intialize map showing cast location
+    var map = locast.map('cast-map', MAP_DEFAULTS);
+    map.redrawBase();
+    var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
+    map.markCast(loc_arr[1], loc_arr[0]);
+
+    // replace cast and collection terms (in traveler.js)
+    replace_names();
+
+    $('#cast_container .cast').addClass('active');
+}
+
 cast_single_view['activate'] = function(context) {
 
     //set visibility and deactivate layer switcher
@@ -251,22 +269,8 @@ cast_single_view['activate'] = function(context) {
      
         //check if map layer is visible 
         var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
-       
-        set_visible_elems(undefined, ['cast'], true);
-
-        //make sure main map redraws
-        locast.main_map.redrawBase();
-
-        //intialize map showing cast location
-        var map = locast.map('cast-map', MAP_DEFAULTS);
-        map.redrawBase();
-        var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
-        map.markCast(loc_arr[1], loc_arr[0]);
-
-        // replace cast and collection terms (in traveler.js)
-        replace_names();
-
-        $('#cast_container .cast').addClass('active');
+        
+        cast_loaded(cast_id); 
 
         // set up close button to go back to previous app location
         $('.cast-close').click(function() {
