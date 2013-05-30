@@ -1,4 +1,4 @@
-#Django settings for the open locast project.
+# Django settings for the open locast project.
 
 # All variables indicated as "settings_local" should be overriden
 # within a deployment specific settings_local.py file
@@ -233,7 +233,14 @@ MAX_PHOTO_SIZE = '1mb'
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
 
-GOOGLE_API_KEY = ''
+MAP_LAYER = u'''
+'http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png', {
+    key: '55be8cc24afc49f4a4f7e8056455582c',
+    style: '66675',
+    style: '997',
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>' 
+}
+'''
 
 # Enables google analytics
 GOOGLE_ANALYTICS_ID = None
@@ -244,10 +251,10 @@ CONTEXT_VARIABLES = (
     'BASE_URL',
     'FULL_BASE_URL',
     'THEME_STATIC_URL',
-    'GOOGLE_API_KEY',
     'GOOGLE_ANALYTICS_ID',
     'FACEBOOK_APP_ID',
     'FLOWPLAYER_SWF',
+    'MAP_LAYER',
     'DEFAULT_LON',
     'DEFAULT_LAT',
     'DEFAULT_ZOOM',

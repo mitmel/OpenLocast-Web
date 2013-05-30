@@ -35,7 +35,6 @@ function deactivate_current_view() {
     }
 }
 
-
 var cast_container_id = 'cast_container';
 
 /*** VIEW RENDERING  ***/
@@ -181,7 +180,6 @@ var get_visible_containers = function(){
     return visible_elems['containers']; 
 }
 
-
 var add_visible_elems = function(adding_layers, adding_containers, refresh){
     
     if(adding_layers != undefined){
@@ -216,7 +214,6 @@ var remove_visible_elems = function(removing_layers, removing_containers, refres
     }
 }
 
-
 /*** VIEWS ***/
 
 
@@ -240,25 +237,6 @@ var home_view = {
  * CAST *
  ********/
 
-
-function cast_loaded(cast_id) {
-    set_visible_elems(undefined, ['cast'], true);
-
-    //make sure main map redraws
-    locast.main_map.redrawBase();
-
-    //intialize map showing cast location
-    var map = locast.map('cast-map', MAP_DEFAULTS);
-    map.redrawBase();
-    var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
-    map.markCast(loc_arr[1], loc_arr[0]);
-
-    // replace cast and collection terms (in traveler.js)
-    replace_names();
-
-    $('#cast_container .cast').addClass('active');
-}
-
 var cast_single_view = {};
 
 cast_single_view['activate'] = function(context) {
@@ -274,17 +252,27 @@ cast_single_view['activate'] = function(context) {
         //check if map layer is visible 
         var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
        
-        //don't refresh or move map if map layer is not visible
-        if(map_is_visible != undefined){ 
-            map_refresh(); 
-        }
+        set_visible_elems(undefined, ['cast'], true);
 
-        cast_loaded(cast_id);
+        //make sure main map redraws
+        locast.main_map.redrawBase();
+
+        //intialize map showing cast location
+        var map = locast.map('cast-map', MAP_DEFAULTS);
+        map.redrawBase();
+        var loc_arr = $('#' + 'location-cast_' + cast_id).html().split(',');
+        map.markCast(loc_arr[1], loc_arr[0]);
+
+        // replace cast and collection terms (in traveler.js)
+        replace_names();
+
+        $('#cast_container .cast').addClass('active');
 
         // set up close button to go back to previous app location
         $('.cast-close').click(function() {
             
             $('#cast_container .cast').removeClass('active');
+
             //change layer switcher control to select map
             $('#layer-switcher .btn').removeClass('active');
             $('#layer-switch_map').addClass('active');
@@ -303,14 +291,11 @@ cast_single_view['activate'] = function(context) {
             }
             return false;
         });
-        
     });
 }
 
 cast_single_view['deactivate'] = function() {
-  
     $('#cast_container .cast').removeClass('active');
-
 } // end deactivate
  
 
@@ -335,10 +320,11 @@ collection_single_view['activate'] = function(context) {
         var map_is_visible = _.find( get_visible_layers() , function(layer){return layer == 'map'})
 
         //load cast list if visible or queue in view switcher callback  
-        if(media_is_visible != undefined){ 
+        if (media_is_visible != undefined){ 
            list_casts('collection-cast-list'); 
-        }else{
-            onMedia = function(){
+        }
+        else {
+            onMedia = function() {
                 list_casts('collection-cast-list');
                 onMedia = function(){};
             }
@@ -348,8 +334,9 @@ collection_single_view['activate'] = function(context) {
         if(map_is_visible != undefined){
             map_refresh();
         }
+
         else{
-            onMap = function(){
+            onMap = function() {
                 map_refresh();
                 onMap = function(){};
             }
@@ -499,4 +486,3 @@ tag_view = {
         onMap = function(){};    
     }
 }
-

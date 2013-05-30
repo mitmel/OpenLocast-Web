@@ -23,6 +23,8 @@ MAP_DEFAULTS = {
 
 MAP_PLACES = {{map_place_json|safe}};
 
+MAP_LAYER = [{{MAP_LAYER|safe}}];
+
 MAP_BOUNDARY = {{boundary|safe}};
 
 // this is set right above the close body tag. Used for UI login prompt only.
@@ -62,7 +64,8 @@ $.fn.urlize = function(base) {
 
 // wow this saved so much setup!
 $.ajaxSetup({
-    dataType: 'json'
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
 });
 
 // TODO: refactor this and facebook and current_path
@@ -146,4 +149,3 @@ function replace_names() {
         }
     });
 }
-

@@ -6,7 +6,6 @@
 <header>
 
     <!-- HEADER -->
-
     <div id="header-content" class="row-fluid">
 
         <div class="title-content span6"> 
@@ -18,14 +17,14 @@
 
             {% get_available_languages as languages %}
             {% if languages.length > 1 %}
-                <div id="language-selector">    
-                    {% for lang in languages %}
-                    <a href="{% url set_language %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
-                        {{lang.1}} 
-                        {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
-                    </a>
-                    {% endfor %}
-                </div>
+            <div id="language-selector">    
+                {% for lang in languages %}
+                <a href="{% url set_language %}?language={{ lang.0 }}&next={{ request.path }}" id="lang-{{ lang.0 }}" class="language-select">
+                    {{lang.1}} 
+                    {% comment %}<img src="{{MEDIA_URL}}img/{{ lang.0 }}.png"></img>{% endcomment %}
+                </a>
+                {% endfor %}
+            </div>
             {% endif %}
         </div>
 
@@ -38,25 +37,19 @@
                 <button id="layer-switch_media" class="btn active  media span6"><i class="icon-camera"></i>  {% trans "Gallery" %}</button>
             </div> 
 
-           
-            
             <!--<a id="locast-credit" href="http://locast.mit.edu" target="_blank">Built with Locast</a>-->
 
             <div id="login-bar" class="span4">
-                    {% block login %}{% endblock %}
+                {% block login %}{% endblock %}
             </div>
         </div>
- 
 
         <div id="search-results" class="span10 offset1 row-fluid"></div>
-        
 
     </div>
      <div id="search-results-overlay">
     </div> 
 </header>
-
-
 
 <div id="chrome_layer" class="layer">
     {% block chrome-content %}{% endblock %}
@@ -70,9 +63,4 @@
     {% block map-content %}{% endblock %}
 </div>    
 
-
 {% endblock body %}
-
-
-
-

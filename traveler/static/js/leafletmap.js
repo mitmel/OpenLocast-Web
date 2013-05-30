@@ -9,7 +9,6 @@ var locast = locast || {};
         var _id = id;
         var _map = null;
       
-      
         var numberedCluster = function(cluster) {
             var castCount = cluster.getChildCount(); 
             var w = 40;
@@ -37,7 +36,6 @@ var locast = locast || {};
             });
         };
 
-
         var imageCluster = function(cluster) {
             var markers = cluster.getAllChildMarkers(),
                 count = markers.length;
@@ -46,14 +44,16 @@ var locast = locast || {};
                 w = 60,
                 h = 60;
 
-             if (count < 8) {
+            if (count < 8) {
                 c += 'small';
-            } else if (count < 100) {
+            } 
+            else if (count < 100) {
                 c += 'medium';
-            } else {
+            }
+            else {
                 c += 'large';
             }
-            if(count === 1){
+            if (count === 1){
                 c = 'single-image';
                 w = 40;
                 h = 40;
@@ -77,6 +77,7 @@ var locast = locast || {};
         var _castClusterLayer = new L.MarkerClusterGroup(); 
         var _castClusterLayerOptions = {
             singleMarkerMode: true,
+            showCoverageOnHover: false,
             iconCreateFunction: function(cluster) { 
                 // set in CURRENT_THEME/settings.js
                 if(locast.MAP_CLUSTER_STYLE === 'circles') {
@@ -112,11 +113,7 @@ var locast = locast || {};
             zoomControl: false
         };
 
-        var _cloudmadeLayer = L.tileLayer( 'http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png' ,{
-            key: '55be8cc24afc49f4a4f7e8056455582c',
-            style: '66675',
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>' 
-        });
+        var _cloudmadeLayer = L.tileLayer.apply(undefined, MAP_LAYER);
 
         var _init = function () {
             _map = L.map(_id, _mapDefaults);
@@ -129,7 +126,6 @@ var locast = locast || {};
                   _map.removeLayer(layer);
             }
         };
-
         
         method.markCast = function (lat, lon) {
             _map.setView([lat, lon] , 12);

@@ -49,7 +49,6 @@ function calculate_cast_layout(container){
     }
 }
 
-
 /***************
  * INTERACTION *
  ***************/
@@ -138,49 +137,43 @@ function activateDHTML(){
     });
 
     // intro map button
-   
-   $('#intro-map-btn').click(function() {
-      $('#layer-switch_map').addClass('active'); 
-      $('#layer-switch_media').removeClass('active');
-      set_visible_elems(); 
-      return false;
-   });
+
+    $('#intro-map-btn').click(function() {
+        $('#layer-switch_map').addClass('active'); 
+        $('#layer-switch_media').removeClass('active');
+        set_visible_elems(); 
+        return false;
+    });
 
 
-   //browsebox
+    //browsebox
    
-  $('#map-title_container').mouseenter(
-        function(e) {
-            if(e.srcElement != $('#add-cast-button')[0]){
-                $('#browsebox-container').addClass('active'); 
-                browsebox_list_refresh();
-            }
+    $('#map-title_container').mouseenter(function(e) {
+        if(e.srcElement != $('#add-cast-button')[0]){
+            $('#browsebox-container').addClass('active'); 
+            browsebox_list_refresh();
         }
-    ).mouseleave(
-        function() { 
-            $('#browsebox-container').removeClass('active'); 
-        }
-   );
+    }).mouseleave(function() { 
+        $('#browsebox-container').removeClass('active'); 
+    });
     
-   $('#add-cast-button').mouseleave(function(e) {
+    $('#add-cast-button').mouseleave(function(e) {
         if($(this).offset().left >= e.pageX){
             $('#map-title_container').trigger('mouseenter');
         }
     });
 
    
-   $('#map-title_container').click(function() {
-         $('#browsebox-container').toggleClass('active'); 
+    $('#map-title_container').click(function() {
+        $('#browsebox-container').toggleClass('active'); 
             if( $('#browsebox-container').hasClass('active')){
                 browsebox_list_refresh();
             }
+    }); 
 
-     }); 
-
-   //logo click
+    //logo click
    
-   $('#project-logo').click(function(){
-
+    $('#project-logo').click(function(){
         //show cast view when logo is clicked
         if( $('#layer-switch_media').hasClass('active') == false){
             $('#layer-switcher .btn').removeClass('active');
@@ -188,7 +181,6 @@ function activateDHTML(){
 
             set_visible_elems();
         }
-
    });
 }    
 
@@ -250,7 +242,6 @@ function get_cast_filter_query() {
     return query;
 }
 
-
 /*******
  * MAP *
  *******/
@@ -295,7 +286,6 @@ function map_refresh_cb(data) {
     locast.main_map.renderCasts(data.casts);
     $('#map-loader').removeClass('active');
 }
-
 
 /*********
  * LISTS * 
@@ -344,7 +334,6 @@ function collection_preview_list(collection, container, preview_num){
                 }       
         })  
 }
-
 
 /* 
  * CAST LISTS
@@ -530,7 +519,6 @@ function next_cast_list_page(list_container){
  * CAST EDITING *
  ****************/
 
-
 function cast_comment_refresh(cast_id) {
     // refresh the comments
     $.ajax({
@@ -575,7 +563,6 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     var media_url = cast_url + 'media/';
     var context = '#open-cast_' + cast_id;
 
-
     // refresh the html
     $('#'+cast_container_id).html(cast_html);
 
@@ -602,7 +589,6 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         });
     });
 
-
     // refresh the comments.
     cast_comment_refresh(cast_id);
 
@@ -613,17 +599,14 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     // make dates pretty
     format_date($('.cast-date', context), true);
 
-    activate_favorite_button('cast', cast_id, cast_url + 'favorite/');
+    activate_favorite_button('cast', cast_id, cast_url);
 
     // activate edit toggle button
     $('#edit-activate_'+cast_id).click(function(){
-       
         $('#edit-activate_'+cast_id).toggleClass('active'); 
         $('.cast-media, #open-cast_'+cast_id ,'#'+cast_container_id).toggleClass('edit');
         $('.media-list','#'+cast_container_id).toggleClass('offset1');
         $('.media-list','#'+cast_container_id).toggleClass('offset2');
-    
-    
     })
 
     // activate flag button
@@ -780,12 +763,10 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         });
 
         data['tags'] = data['tags'];
-
         data = JSON.stringify(data,null,2);
 
         $.ajax({
             url: cast_url,
-            contentType: 'application/json; charset=utf-8',
             data: data,
             type: 'PUT',
             success: function(cast) {
@@ -953,17 +934,6 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
 
     $('.web-stream.file', media_list_context).flowplayer(FLOWPLAYER_SWF);
 
-    // activate the cast gallery
-    $(media_list_context).xfade({
-        speed:600,
-        interval:10000,
-        autoplay:false,
-        total_num:$('#total-media'),
-        index_num:$('#current-media'),
-        next_button:$('#media-next'),
-        prev_button:$('#media-last')
-    });
-
     // activate media deleting
     $('.delete-media', media_list_context).click(function() {
         var delete_prompt = $('.delete-media-prompt');
@@ -1064,7 +1034,6 @@ function activate_search_bar() {
     search_results.attr('tabindex', -1).focusout( function(e){ 
         hide_search();
     });
-   
 
     //on keypress return focus to search input
     search_results.keydown(function(e){
@@ -1185,16 +1154,15 @@ function activate_cast_add() {
     //change layer switcher control to select map
     $('#layer-switcher .btn').removeClass('active');
     $('#layer-switch_map').addClass('active');
- 
 
     //add cast add form container to active containers
     add_visible_elems(undefined, ['cast-add'], true);
+
     //make map layer visible    
     set_visible_elems(['map'], undefined);
 
     //disable map title cast add    
     $('#add-cast-button').addClass('inactive'); 
-
 
     var action = CAST_API_URL;
 
@@ -1212,8 +1180,6 @@ function activate_cast_add() {
 
     $('#cast-add-form').submit(cast_add_form_submit);
 
-    //main_map.addCastControl.activate();
-    
     locast.main_map.addCastPoint();
 
     return false;
@@ -1224,12 +1190,6 @@ function cast_add_form_clear() {
     cast_add_container.fadeOut();
 
     locast.main_map.destroyCastPoint();
-
-    //main_map.addCastControl.deactivate();
-    /*if ( main_map.addCastPoint ) {
-        main_map.addCastPoint.destroy();
-        main_map.addCastPoint = null;
-    }*/
     cast_add_container.html('');
     
     //enable map title cast add    
@@ -1237,11 +1197,9 @@ function cast_add_form_clear() {
 
     remove_visible_elems(undefined, ['cast-add'], true);
     set_visible_elems();
-
 }
 
 function cast_add_form_submit(e) {
-    
     if (locast.main_map.getCastPoint()) {
         
         var obj = $('#cast-add-form').serializeObject();
@@ -1292,9 +1250,8 @@ function activate_favorite_button(type, id, url) {
 
             var val = parseInt($('#favorite-count-' + type + '_' + id).html());
 
-            // unfavorite
             if ( !_this.hasClass('favorited') ) {
-                data = {'favorite' : true}
+                data = {"favorite" : true}
                 val++;
             }
             else {
@@ -1303,14 +1260,15 @@ function activate_favorite_button(type, id, url) {
             }
 
             $('#favorite-count-' + type + '_' + id).html(val);
-
             _this.toggleClass('favorited');
+
+            data = JSON.stringify(data, null, 2);
 
             $.ajax({
                 url: url, 
                 data: data,
                 contentType: 'application/json; charset=utf-8',
-                type: 'POST',
+                type: 'PUT',
                 success: function(result) { 
                 }
             });
@@ -1348,14 +1306,14 @@ function create_uploader(container, content_type, url, callback) {
             title: 'Video file', 
             extensions: '3gp,mp4,mov,mpg,mpeg',
         }
-        max_file_size = '100mb';
+        max_file_size = MAX_VIDEO_SIZE;
     }
     else if ( content_type == 'imagemedia' ) {
         filters = { 
             title: 'Photo file', 
             extensions: 'jpg,jpeg,png' 
         }
-        max_file_size = '8mb';
+        max_file_size = MAX_PHOTO_SIZE;
     }
 
     var extensions_arr = filters['extensions'].split(',');
@@ -1429,7 +1387,7 @@ function create_uploader(container, content_type, url, callback) {
         var msg = error.message;
         if ( error.code == -600 ) {
             //file size error
-            msg = gettext('File too large. Max size is: ')+max_file_size;
+            msg = gettext('File too large. Max size is: ') + max_file_size;
         }
         if ( error.code == -601 ) {
             //file type error, this is checked before hand
@@ -1488,4 +1446,3 @@ function prompt_login() {
     $('#login-alert').fadeIn(300);
     $('#login-alert').delay(2000).fadeOut(300);
 }
-
