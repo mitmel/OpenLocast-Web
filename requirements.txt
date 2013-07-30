@@ -1,5 +1,4 @@
-South==0.7.6
+South
 sorl-thumbnail==11.12
-locast-core>=1.2.1
+locast-core>=1.4,<1.5
 PIL==1.1.7
-pytz==2012f
