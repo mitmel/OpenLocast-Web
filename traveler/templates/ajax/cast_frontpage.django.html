@@ -40,7 +40,6 @@
          <!-- CAST HEADER -->
 
          <div class="cast-header section">  
-        
  
              <h2 class="title" >
                  {{cast.title}}                   
@@ -178,7 +177,7 @@
                 <!--<a id="delete-media_{{i.content.id}}" class="delete-media">delete</a>-->
                     <button id="delete-media_{{i.content.id}}" class="btn edit-toggle delete-media" href="#!"><i class="icon-trash icon-white"></i> {% trans "Delete Photo" %}</button>
                 {% endif %}
-                    <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="<h4> {{i.content.caption}} </h4> <p> {{i.content.description}} </p> ">
+                    <a class="cast-photo" href="{{i.content.file.url}}" rel="media" title="<h4> {{i.content.caption}} </h4> <p> {{i.content.description}} </p>">
                         <img src="{{i.content.medium_file.url}}" />
                         <div class="info media-info">
                             <h6 class="title"><i class="icon-camera icon-white"></i> {{i.content.caption}}</h6>

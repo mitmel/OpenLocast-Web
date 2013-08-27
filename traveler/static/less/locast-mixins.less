@@ -1186,11 +1186,11 @@
     }
 }
 
-.cast-cluster-style(@style, @color, @text){}
+//.cast-cluster-style(@style, @color, @text){}
 
-.cast-cluster-style(@style, @color:@primaryAccent, @text:@textColor ) when (@style = circles){
+.cast-cluster-style(@style, @color:@primaryAccent, @text:@textColor ) when (@style = circles) {
         
-        background-color:darken(fadeOut(@color, 40%),2%);
+        background-color:darken(fadeout(@color, 40%),2%);
         .border-radius(9999px);
         
         .title{
@@ -1231,7 +1231,7 @@
 .cast-cluster-style(@style, @color:@primaryAccent, @text:@textColor ) when (@style = image){
 
         .placeholder {
-            background-color:darken(fadeOut(@linesColor, 40%),2%);
+            background-color:darken(fadeout(@linesColor, 40%),2%);
             width: 100%;
             height: 100%;
         }

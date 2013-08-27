@@ -228,7 +228,7 @@ MIN_ZOOM = 7
 # Uploader settings (client side)
 # This string can be in the following formats 100b, 10kb, 10mb.
 MAX_VIDEO_SIZE = '100mb'
-MAX_PHOTO_SIZE = '1mb'
+MAX_PHOTO_SIZE = '5mb'
 
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'

@@ -23,9 +23,11 @@ from sorl.thumbnail import get_thumbnail
 from sorl.thumbnail.helpers import ThumbnailError
 
 def l_get_thumbnail(*args, **kwargs):
+    import warnings
     try:
         return get_thumbnail(*args, **kwargs)
-    except (IOError, ThumbnailError):
+    except (IOError, ThumbnailError) as e:
+        warnings.warn(e.message)
         return None
 
 # DEPENDENCIES
@@ -366,6 +368,8 @@ class ImageMedia(Media,
         un = u'id: %s' % self.id
         if self.cast:
             un = un + u' (cast: %s)' % str(self.cast.id)
+
+        return un
 
     # Overwrite the ImageContent.content_api_serialize method to provide
     # thumbnails
