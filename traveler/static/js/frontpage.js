@@ -1295,6 +1295,7 @@ function check_extension(filename, valid_extensions) {
 
 function create_uploader(container, content_type, url, callback) {
     var file_list = container + '-list';
+    var file_status = container + '-status';
     var chooser = container + '-chooser';
 
     var filters = {};
@@ -1304,7 +1305,7 @@ function create_uploader(container, content_type, url, callback) {
     if ( content_type == 'videomedia' ) {
         filters = { 
             title: 'Video file', 
-            extensions: '3gp,mp4,mov,mpg,mpeg',
+            extensions: '3gp,mp4,m4v,mov,mpg,mpeg',
         }
         max_file_size = MAX_VIDEO_SIZE;
     }
@@ -1352,7 +1353,6 @@ function create_uploader(container, content_type, url, callback) {
                 $('#' + file_list).append(html); 
                 $('.locast-upload-box, .add-link-form', '.add-media-cast').hide();
                 upload_info.removeClass('hidden');
-
             }
             else {
                 $('#' + file_list).append('<h6 class="upload-file">' + 
@@ -1373,11 +1373,11 @@ function create_uploader(container, content_type, url, callback) {
     var uploading_txt = gettext('Uploading: ');
 
     uploader.bind('UploadProgress', function(up, file) {
-        $('#' + file.id + ' .upload-progress').html(uploading_txt + file.percent + '%');
+        $('#' + file_status).html(uploading_txt + file.percent + '%');
     });
 
     uploader.bind('FileUploaded', function(up, file) {
-        $('#' + file.id + ' .upload-progress').html(uploading_txt + gettext('Done!'));
+        $('#' + file_status).html(uploading_txt + file.percent + '%').html(uploading_txt + gettext('Done!'));
         if ( callback ) { 
             callback(); 
         }
@@ -1388,15 +1388,15 @@ function create_uploader(container, content_type, url, callback) {
         if ( error.code == -600 ) {
             //file size error
             msg = gettext('File too large. Max size is: ') + max_file_size;
+            upload_info.addClass('hidden');
         }
         if ( error.code == -601 ) {
             //file type error, this is checked before hand
             msg = gettext('Invalid file');
         }
-        //upload_info.addClass('hidden');
-        $('#' + file_list).append('<h3 class="upload-file text-error">' + msg + '</h3>');
-        $('#' + file_list).parent().find('.upload-details').hide();        
-        //upload_info.removeClass('hidden');
+        
+        // kind of hacky, I know. Appends it to the main file uploader window
+        $('#' + container).parent().parent().append('<h4 class="upload-file text-error">' + msg + '</h3>');
     });
 
     uploader.init();

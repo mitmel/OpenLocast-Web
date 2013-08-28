@@ -215,7 +215,7 @@
         <div class="cast-tags section  tagscount_{{ cast.visible_tags.all|length }}">
 
             <ul id="tag-list-cast_{{cast.id}}" class="tag-list">
-                                {% if cast.visible_tags.all|length == 0 %}{% if allowed_edit %}<p>{% trans "no tags" %}</p> {% endif%}{% endif%}
+                {% if cast.visible_tags.all|length == 0 %}{% if allowed_edit %}<p>{% trans "no tags" %}</p> {% endif%}{% endif%}
                 
                 {% for tag in cast.visible_tags.all %}
                     <li>
@@ -286,6 +286,7 @@
     <div id="add-media-cast_{{cast.id}}" class="add-media-cast">
         <button id="add-media-close-cast_{{cast.id}}" class="btn-danger btn-small">{% trans 'Cancel'%}</button>
         <h4 class="title">{% trans "Add Media to <span class='cast-name'>Cast</span>" %}</h4>
+        <div id="uploader-error-cast_{{cast.id}}"></div>
 
          <!-- PHOTO --> 
 
@@ -294,11 +295,13 @@
                 <button href="#" id="photo-uploader-cast_{{cast.id}}-chooser" class="btn"><i class="icon-camera"></i> {% trans "Add A Photo" %}</button>
             </div>
             <div class="upload-info hidden">
-            <label for="id_caption">{% trans "caption (optional)" %}</label>
-            <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
-            <input type="hidden" name="content_type" value="imagemedia"></input>
-            <input type="submit" value="Upload" class="locast-button" />
-        </div>
+                <div id="photo-uploader-cast_{{cast.id}}-list"></div>
+                <div id="photo-uploader-cast_{{cast.id}}-status"></div>
+                <label for="id_caption">{% trans "caption (optional)" %}</label>
+                <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
+                <input type="hidden" name="content_type" value="imagemedia"></input>
+                <input type="submit" value="Upload" class="locast-button" />
+            </div>
         </form>
 
         <!-- VIDEO --> 
@@ -306,9 +309,10 @@
         <form id="video-upload-form-cast_{{cast.id}}" method="post">
             <div id="video-uploader-cast_{{cast.id}}" class="locast-upload-box">
                 <button href="#" id="video-uploader-cast_{{cast.id}}-chooser" class="btn"  title="select file"><i class="icon-film"></i> {% trans "Add A Video" %}</button>
-                
             </div>
             <div class="upload-info hidden">
+                <div id="video-uploader-cast_{{cast.id}}-list"></div>
+                <div id="video-uploader-cast_{{cast.id}}-status"></div>
                 <label for="id_caption">{% trans "caption (optional)" %}</label>
                 <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
                 <input type="hidden" name="content_type" value="videomedia"></input>

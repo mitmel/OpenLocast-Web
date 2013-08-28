@@ -258,18 +258,13 @@ class CastAPI(rest.ResourceView):
                 raise exceptions.APIBadRequest('Error uploading file!')
 
             media.content.file.save(file.name, file, save=True)
-            mime_type = media.path_to_mimetype(file.name, media.content.MIME_TYPES)
 
         else:
             media.content.create_file_from_data(request.body, mime_type)
 
-        if not mime_type:
-            raise exceptions.APIBadRequest('Invalid file type!')
-
         # media is the generic holder, media.content is the specific
         # content model (ImageMedia, VideoMedia etc.).
 
-        media.content.mime_type = mime_type
         media.content.content_state = models.Media.STATE_COMPLETE
         media.content.save()
 
