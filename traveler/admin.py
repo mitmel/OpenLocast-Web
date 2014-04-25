@@ -123,15 +123,15 @@ class LocastUserProfileAdmin(admin.ModelAdmin):
 
 
 class VideoMediaAdmin(MapAdmin):
-    fields = ('cast', 'caption', 'capture_time', 'location', 'file')
+    fields = ('cast', 'author', 'caption', 'capture_time', 'location', 'file')
 
 
 class ImageMediaAdmin(MapAdmin):
-    fields = ('cast', 'caption', 'capture_time', 'location', 'file')
+    fields = ('cast', 'author', 'caption', 'capture_time', 'location', 'file')
 
 
 class LinkedMediaAdmin(MapAdmin):
-    fields = ('cast', 'url', 'content_provider', 'video_id')
+    fields = ('cast', 'author', 'url', 'content_provider', 'video_id')
 
 
 admin.site.register(models.Tag, admin.ModelAdmin)
