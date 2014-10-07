@@ -1,4 +1,3 @@
-
 // allow styling of the zoombar
 function fix_openlayers_zoombar() {
     $('#map-controls').children().each(function(index) {
@@ -179,6 +178,14 @@ self.init = function(div) {
     // CONTROLS
     self.addCastControl = new OpenLayers.Control.DrawFeature(self.addCastLayer, OpenLayers.Handler.Point);
 
+    self.map.events.register('mousemove', self.map, function (e) {
+        var offsetY = 10;
+        var offsetX = 10;
+        //console.log(e.pageY);
+        $('#tooltip').css('top', e.pageY + offsetY).css('left', e.pageX + offsetX);
+    });
+
+    // Create a tooltip when hovering over casts and clusters
     var highlight_control = {
         hover: true,
         highlightOnly: true,
@@ -190,12 +197,12 @@ self.init = function(div) {
             featurehighlighted: function(evt) {
                 var html = '';
             
+                // Hovering on a cluster
                 if ( evt.feature.cluster ) {
                     var features = evt.feature.cluster;
                     var num_features = features.length;
                    
                      if (num_features > 6){
-
                         var short_features = features.slice(0,5);
 
                         // create a fake placeholder feature to render the 
@@ -215,26 +222,16 @@ self.init = function(div) {
                             'features': features });
                     }
                 }
-                else {
-                    var layer = evt.feature.layer.name; 
-                    var obj = evt.feature.attributes; 
-                    var tooltip_data = {
-                        body: obj,
-                        tooltip: true
-                    }                        
 
-                    switch(layer) {
-                        case 'Casts':
-                            html = render_to_string('castPopup.js.html',tooltip_data);
-                            break;
-                        case 'Collections':
-                            // tooltip for collection hover
-                            // html = render_to_string('collectionPopup.js.html',tooltip_data);
-                            break;
-                    }
+                // Hovering on a single cast
+                else {
+                    html = render_to_string('castPopup.js.html', {
+                        'feature': evt.feature.data
+                    });
                 }
 
-                $('#tooltip .body').html(html);                 
+                $('#tooltip').show();
+                $('#tooltip').html(html);
             },
 
             featureunhighlighted: function(evt) {
@@ -243,6 +240,9 @@ self.init = function(div) {
                         highlightCollection( COLL_ID_FILTER );
                     }
                 }
+
+                $('#tooltip').html('');
+                $('#tooltip').hide();
             }
         }
     }
@@ -255,8 +255,10 @@ self.init = function(div) {
     self.selectCast = new OpenLayers.Control.SelectFeature(self.castLayer, { 
           clickout: true,
           onSelect: function(feature){
+
             self.clearPopups();
 
+            // If it's a cluster, add a pop up to the map with all of the features
             if ( feature.cluster ) {
                 var features = feature.cluster;
                  
@@ -279,23 +281,11 @@ self.init = function(div) {
 
                 self.map.addPopup(popup);
             }
+
             else {
                 //open cast on click if it is a single cast
                 var cast = feature.attributes;
                 frontpage_app.setLocation('#!cast/'+cast.id+'/');
-               
-                //can delete
-                /* var cast = feature.attributes;
-                var cast_data = {
-                    body: cast
-                }
-                var html = render_to_string('castPopup.js.html', cast_data);
-
-                var lonlat = feature.geometry.getBounds().getCenterLonLat();
-                var popup = new OpenLayers.Popup.FramedCloud('cast_popup_' + cast.id, 
-                    lonlat, null, html, null, true, self.clearPopups);
-
-                self.map.addPopup(popup);*/
             }
         }, 
         onUnselect: function(feature){
@@ -305,27 +295,8 @@ self.init = function(div) {
 
     self.selectCollection = new OpenLayers.Control.SelectFeature(self.collectionLayer, {
         onSelect: function(feature, evt){
-            //disabled popups on collection paths            
-           /* var coll = feature.attributes;
-            
-            // 'this' is the select feature control or something. I have no idea. thanks firebug!
-            var pixel = this.handlers.feature.down;
-            var lonlat = self.map.getLonLatFromPixel(pixel);
-
-            var collection_data = {
-                body: coll
-            }
-
-            var html = render_to_string('collectionPopup.js.html',collection_data);
-            var popup = new OpenLayers.Popup.FramedCloud('collection_popup_' + coll.id, 
-                lonlat, null, html, null, true, self.clearPopups);
-
-            self.clearPopups();
-            self.map.addPopup(popup);
-            $('#' + popup.id).addClass('collection');*/
         }, 
         onUnselect: function(e){
-            self.clearPopups();
         }
     });
 
@@ -343,7 +314,6 @@ self.init = function(div) {
     }
 
     self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
-
 
     self.map.addLayers([self.collectionLayer, self.castLayer, self.boundaryLayer, self.addCastLayer, self.openCastLayer]);
 
@@ -423,6 +393,7 @@ self.clearPopups = function() {
     for (i in self.map.popups){
         self.map.popups[i].destroy();
     };
+    $('#tooltip').hide();
 }
 
 self.setCenter = function(x, y) {
@@ -475,7 +446,6 @@ self.get_proj_ll = function(x, y) {
     ll.transform(self.displayProjection, self.projection);
 
     return ll;
-}
-
+} 
 } // End map class
 

@@ -111,7 +111,6 @@ function cast_fade_in() {
         .add('#map-info-container')
         .add('#map-controls-container')
         .add('#add-cast-button-container')
-        .add('#tooltip') 
         .add('#map-layer-switcher')
         .add('#map-list')
         .add('#search-bar')

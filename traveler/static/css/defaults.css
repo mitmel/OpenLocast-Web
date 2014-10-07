@@ -165,6 +165,7 @@ caption {background:#eee;}
 body{
     color:#000;
     background:#fff;    
+    overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1612,14 +1613,6 @@ div.olLayerGooglePoweredBy
 /*
  *  POPUPS AND TOOLTIPS
  */
-
-#tooltip .hide{
-    display:none;
-}
-
-#tooltip .not.hide{
-    display:inline;
-}
 
 .popup-content{
     width:160px;

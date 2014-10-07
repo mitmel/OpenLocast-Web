@@ -1,8 +1,7 @@
-
-<ul class="popup-content cluster content-card cleared ">
+<ul class="popup-content cluster content-card cleared">
 {{#features}}
 {{#attributes}}
-<li class="clustered-cast {{#official}}official {{/official}} ">
+<li class="clustered-cast">
     {{#placeholder}}
     <span>
         <h4 class="placeholder">{{num_left}} gettext('more casts')</h4>
@@ -10,11 +9,6 @@
     {{/placeholder}}
     {{^placeholder}}
     <a href="#!cast/{{id}}/"> <div class="image-frame">{{#preview_image}}<img src="{{preview_image}}" />{{/preview_image}}</div></a>
-     <!--<p class="stat cleared" >
-            <span class="locast-icon favorite"></span>
-            <span class="number">{{favorites}}</span>
-            </p>-->  
-        
         <h4>
             <a href="#!cast/{{id}}/"><span class="cast-title title">{{title}}</span></a><br />
             <a href="#!user/{{#author}}{{id}}{{/author}}/" class="cast-author author">{{#author}}{{display_name}}{{/author}}</a>
@@ -25,4 +19,3 @@
 {{/attributes}}
 {{/features}}
 </ul>
-

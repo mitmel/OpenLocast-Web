@@ -101,6 +101,7 @@ STATIC_URL = ''
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder'
 )
 
 # Make this unique, and don't share it with anybody.
@@ -142,10 +143,11 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 import os
-BASE_PATH = os.path.split(__file__)[0]
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
 
 LOCALE_PATHS = (
-    '%s/locale' % BASE_PATH,
+    '%s/locale' % PROJECT_PATH,
 )
 
 LOCAL_APPS = ()
@@ -159,6 +161,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'locast',
     'south',
+    'djangobower',
     'sorl.thumbnail',
     'traveler',
     'django.contrib.admin',
@@ -192,6 +195,16 @@ LOGGING = {
         },
     }
 }
+
+BOWER_PATH = '%s/node_modules/bower/bin/bower' % PROJECT_ROOT_PATH
+
+BOWER_COMPONENTS_ROOT = '%s/components/' % PROJECT_ROOT_PATH
+
+BOWER_INSTALLED_APPS = (
+    'sammy#~0.7.6',
+    'moment#~2.8.2',
+    'openlayers#release-2.11'
+)
 
 ### LOCAST CORE SETTINGS ###
 

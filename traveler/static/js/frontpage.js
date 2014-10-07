@@ -18,11 +18,6 @@ $(function() {
     // from frontpage_views.js
     frontpage_app.run(); 
 
-    //check chrome frame
-    CFInstall.check({ 
-        mode:'overlay'
-    });
-
     // If no URL is specified, redirect to home
     if (location.hash == '') { frontpage_app.setLocation('#!home'); }
 });
@@ -61,16 +56,6 @@ function map_cast_list_height() {
 function activateDHTML(){
 
     activate_search_bar();
-
-    // tooltip
-    $('#main-map').tooltip({
-        track: true,
-        delay: 0,
-        showURL: false, 
-        bodyHandler:function() {
-            return '<br />';
-        }
-    });
 
     // map reset button
     $('#map-reset').click(function() {
@@ -124,12 +109,6 @@ function activateDHTML(){
         return false;
     });
 
-    // Collection and user box draggable
-    $('#cast-add-container').draggable({containment:'#main-map'});
-
-    // Collection and user box draggable
-    $('#edit-profile-container').draggable({containment:'#main-map'});
-
     $('#edit-profile-link').click(function() {
         $('#edit-profile-container').fadeIn();
         $('#edit-profile-close').click(function() {
@@ -145,7 +124,6 @@ function activateDHTML(){
         $(this).addClass('selected');
         map_cast_list_refresh();
     });
-
 }    
 
 /*******
