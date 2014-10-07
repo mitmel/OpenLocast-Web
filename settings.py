@@ -245,20 +245,12 @@ MAX_PHOTO_SIZE = '1mb'
 # Flowplayer swf
 FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
 
-GOOGLE_API_KEY = ''
-
-# Enables google analytics
-GOOGLE_ANALYTICS_ID = None
-
 # Allows arbitrary settings variables to be exposed to templates
 CONTEXT_VARIABLES = (
     'HOST',
     'BASE_URL',
     'FULL_BASE_URL',
     'THEME_STATIC_URL',
-    'GOOGLE_API_KEY',
-    'GOOGLE_ANALYTICS_ID',
-    'FACEBOOK_APP_ID',
     'FLOWPLAYER_SWF',
     'DEFAULT_LON',
     'DEFAULT_LAT',

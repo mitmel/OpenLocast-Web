@@ -4,6 +4,7 @@ function fix_openlayers_zoombar() {
         var id = $(this).attr('id');
         var classname = id.substring(id.lastIndexOf('_')+1, id.length);
         if ( classname == '4' ) {
+
             // horrible hack. openlayers, you crazy sometime.
             if (id.indexOf('ZoombarOpenLayers') == -1 ) {
                 $(this).addClass('map-controls-slider');
@@ -110,27 +111,16 @@ self.init = function(div) {
     image_bounds.extend(new OpenLayers.LonLat(-map_center[0], -map_center[1]));
     image_bounds.extend(new OpenLayers.LonLat(map_center[0], map_center[1]));
 
-    self.gterrainLayer = new OpenLayers.Layer.Google('Google Physical', {
-        type: google.maps.MapTypeId.TERRAIN,
-        sphericalMercator: true,
-        maxZoomLevel: defaults['max_zoom'],
-        minZoomLevel: defaults['min_zoom']
-    });
-
-    self.gstreetLayer = new OpenLayers.Layer.Google('Google Streets', {
-        type: google.maps.MapTypeId.NORMAL,
-        sphericalMercator: true,
-        maxZoomLevel: defaults['max_zoom'],
-        minZoomLevel: defaults['min_zoom']
-    });
-
-    self.osmLayer = new OpenLayers.Layer.OSM(
+    self.baseLayer = new OpenLayers.Layer.OSM(
         "Open Street Map", 
         "", 
         {zoomOffset: 8, resolutions: [611.496226171875, 305.7481130859375, 152.87405654296876, 76.43702827148438, 38.21851413574219, 19.109257067871095, 9.554628533935547, 4.777314266967774, 2.388657133483887,1.1943285667419434, 0.597164283]
     });
     
     self.addCastPoint = null;
+
+    // The layer for the "add cast" functionality
+    // e.g. When you can click on the map to set the location
     self.addCastLayer = new OpenLayers.Layer.Vector('Add Cast', { 
         styleMap: cast_stylemap,
         isBaseLayer: false,
@@ -147,7 +137,7 @@ self.init = function(div) {
         }
     });
     
-    // "hidden" style
+    // "Hidden" style, for when a cast is Open
     self.openCastLayer= new OpenLayers.Layer.Vector('Open Cast', {
         styleMap: new OpenLayers.StyleMap({
             pointRadius: 5,
@@ -300,20 +290,8 @@ self.init = function(div) {
         }
     });
 
-    // SETUP
-    // TODO: move base layers to the theme
-    if ( GOOGLE_API_KEY ) {
-        self.gstreetLayer.events.on({moveend: self.baseLayerSwitcher});
-        self.gterrainLayer.events.on({moveend: self.baseLayerSwitcher});
-		self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
-		self.map.setBaseLayer(self.gterrainLayer);
-    }
-    else {
-		self.map.addLayers([self.osmLayer]);
-		self.map.setBaseLayer(self.osmLayer);
-    }
-
-    self.map.addLayers([self.gterrainLayer, self.gstreetLayer,self.osmLayer]);
+    self.map.addLayers([self.baseLayer]);
+    self.map.setBaseLayer(self.baseLayer);
 
     self.map.addLayers([self.collectionLayer, self.castLayer, self.boundaryLayer, self.addCastLayer, self.openCastLayer]);
 
@@ -329,29 +307,13 @@ self.init = function(div) {
 
     fix_openlayers_zoombar();
 
-    // draw the boundary
+    // Draw the boundary
     if ( MAP_BOUNDARY ) {
         var boundary = self.geojson_format.read(MAP_BOUNDARY);
         self.boundaryLayer.addFeatures(boundary);
     }
 }
 // END INIT
-
-// Only called if google maps base layers are enabled
-self.baseLayerSwitcher = function(e) {
-    if (e.zoomChanged) {
-        self.clearPopups();
-        var zoom = parseInt(self.map.zoom);
-        if( zoom >= 9 ) {
-            self.map.setBaseLayer(self.gstreetLayer);
-            fix_openlayers_zoombar();
-        }
-        else {
-            self.map.setBaseLayer(self.gterrainLayer);
-            fix_openlayers_zoombar();
-        }
-    }
-}
 
 self.castFeatures = null;
 
