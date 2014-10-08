@@ -224,7 +224,6 @@ a .cast-title{
 
 /*flowplayer and fancybox overlays*/
 
-/* #fancybox-outer, */
 #flowplayer-player{
     background-color:#FFF !important;
     -moz-box-shadow: -0px 0px 6px #666;  /* FF3.5+ */
@@ -236,7 +235,6 @@ a .cast-title{
     border-radius:6px; 
 }
 
-/* #fancybox-overlay, */
 #flowplayer-container{
     background-image:url('../img/transGreyDark.png');
     background-color:transparent !important;
@@ -1573,14 +1571,6 @@ div.olLayerGooglePoweredBy
     top:0;
 }
 
-.fancybox-wrap {
-    z-index: 6001;
-}
-
-#fancybox-overlay {
-    z-index: 6000;
-}
-
 #flowplayer-wrapper{
    height:65% !important;
    width:50% !important;
@@ -1608,7 +1598,6 @@ div.olLayerGooglePoweredBy
 .fancybox-title h4 {
     color: #FFFFFF;
 }
-
 
 /*
  *  POPUPS AND TOOLTIPS

@@ -25,8 +25,11 @@ MAP_PLACES = {{map_place_json|safe}};
 
 MAP_BOUNDARY = {{boundary|safe}};
 
-// this is set right above the close body tag. Used for UI login prompt only.
-TRAVELER_USER = null;
+{% if request.user.is_authenticated %}
+    TRAVELER_USER = {{ request.user.id }};
+{% else %}
+    TRAVELER_USER = null;
+{% endif %}
 
 // taken from: 
 // http://tobiascohen.com/files/stackoverflow/jquery-form-serializeObject.html

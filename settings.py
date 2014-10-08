@@ -101,7 +101,8 @@ STATIC_URL = ''
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder'
+    'djangobower.finders.BowerFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -152,6 +153,7 @@ LOCALE_PATHS = (
 
 LOCAL_APPS = ()
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -159,12 +161,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
-    'locast',
     'south',
+    'compressor',
     'djangobower',
     'sorl.thumbnail',
+    'locast',
     'traveler',
-    'django.contrib.admin',
 )
 
 # A sample logging configuration. The only tangible logging

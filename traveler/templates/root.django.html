@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load staticfiles %}
+{% load compress %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -19,6 +20,8 @@
     <link rel="stylesheet" href="{% static "fancybox/source/jquery.fancybox.css" %}?v=2.1.5" type="text/css" media="screen" />
     <link type="text/css" href="{{THEME_STATIC_URL}}theme.css" rel="stylesheet" media="screen, projection" />
 
+    <script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
+
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/flowplayer/flowplayer-3.2.11.min.js"></script>
 
@@ -26,25 +29,25 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.html5.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.flash.js"></script>
 
+    {% compress js %}
+    <script type="text/javascript" src="{% static "openlayers/build/OpenLayers.js" %}"></script>
     <script type="text/javascript" src="{% static "mustache/mustache.js" %}"></script>
     <script type="text/javascript" src="{% static "fancybox/source/jquery.fancybox.js" %}?v=2.1.5"></script>
     <script type="text/javascript" src="{% static "sammy/lib/sammy.js" %}"></script>
-    <script type="text/javascript" src="{% static "openlayers/lib/OpenLayers.js" %}"></script>
     <script type="text/javascript" src="{% static "moment/moment.js" %}"></script>
     <script type="text/javascript" src="{% static "js/plugins.js" %}"></script>
+    {% endcompress %}
 
-    <script type="text/javascript">
-        {% if request.user.is_authenticated %}
-            TRAVELER_USER = {{ request.user.id }};
-        {% endif %}
-    </script>
-    <script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
     <script type="text/javascript" src="{{BASE_URL}}/templates.js"></script>
     <script type="text/javascript" src="{{BASE_URL}}/traveler.js"></script>
     <script type="text/javascript" src="{{THEME_STATIC_URL}}mapstyles.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/travelermap.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage_views.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage.js"></script>
+
+    {% compress js %}
+    <script type="text/javascript" src="{% static "js/travelermap.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/frontpage_views.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/frontpage.js" %}"></script>
+    {% endcompress %}
+
 {% block script %}{% endblock %}
 </head>
 <body class="{% block body-class %}{% endblock %}">
