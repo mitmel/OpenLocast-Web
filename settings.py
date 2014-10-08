@@ -201,9 +201,11 @@ BOWER_PATH = '%s/node_modules/bower/bin/bower' % PROJECT_ROOT_PATH
 BOWER_COMPONENTS_ROOT = '%s/components/' % PROJECT_ROOT_PATH
 
 BOWER_INSTALLED_APPS = (
+    'mustache#~0.8.2',
     'sammy#~0.7.6',
     'moment#~2.8.2',
-    'openlayers#release-2.11'
+    'openlayers#release-2.11',
+    'fancybox#2.1.5'
 )
 
 ### LOCAST CORE SETTINGS ###

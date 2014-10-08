@@ -4,47 +4,47 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
     <title>{% block title %}{% endblock %}{{SITE_NAME}}</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta http-equiv="content-language" content="EN" />
+    <meta charset="utf-8" />
     <meta name="description" content="{% block meta-description %}{% endblock %}{{SITE_NAME}}" />
     <meta name="keywords" content="locast, mit" />
     <meta name="author" content="MIT Mobile Experience Lab" />
     <meta name="robots" content="index,follow" />
     <meta name="revisit-after" content="3 days" />
     <meta name="distribution" content="global" />
-    <!-- Force IE to render in standards mode -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <link rel="index" title="TRAVELER" href="{{BASE_URL}}" />
     <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="{{STATIC_URL}}js/fancybox/jquery.fancybox.css?v=2.0.5" type="text/css" media="screen" />
+
+    <link rel="stylesheet" href="{% static "fancybox/source/jquery.fancybox.css" %}?v=2.1.5" type="text/css" media="screen" />
     <link type="text/css" href="{{THEME_STATIC_URL}}theme.css" rel="stylesheet" media="screen, projection" />
 
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/fancybox/jquery.fancybox.pack.js?v=2.0.5"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/plugins.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/flowplayer/flowplayer-3.2.11.min.js"></script>
+
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.html5.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.flash.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/flowplayer/flowplayer-3.2.11.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/mustache.js"></script>
 
-    <!--<script type="text/javascript" src="{% static "js/OpenLayers.js" %}"></script>-->
+    <script type="text/javascript" src="{% static "mustache/mustache.js" %}"></script>
+    <script type="text/javascript" src="{% static "fancybox/source/jquery.fancybox.js" %}?v=2.1.5"></script>
     <script type="text/javascript" src="{% static "sammy/lib/sammy.js" %}"></script>
     <script type="text/javascript" src="{% static "openlayers/lib/OpenLayers.js" %}"></script>
-    <script type="text/javascript" src="{% static "moment/moment.js"%}"></script>
+    <script type="text/javascript" src="{% static "moment/moment.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/plugins.js" %}"></script>
 
+    <script type="text/javascript">
+        {% if request.user.is_authenticated %}
+            TRAVELER_USER = {{ request.user.id }};
+        {% endif %}
+    </script>
     <script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
     <script type="text/javascript" src="{{BASE_URL}}/templates.js"></script>
     <script type="text/javascript" src="{{BASE_URL}}/traveler.js"></script>
     <script type="text/javascript" src="{{THEME_STATIC_URL}}mapstyles.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/travelermap.js"></script>
-    <script type="text/javascript">
-    {% if request.user.is_authenticated %}
-        TRAVELER_USER = {{ request.user.id }};
-    {% endif %}
-    </script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage_views.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/frontpage.js"></script>
 {% block script %}{% endblock %}
 </head>
 <body class="{% block body-class %}{% endblock %}">
