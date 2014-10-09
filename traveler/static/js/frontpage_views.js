@@ -468,21 +468,38 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     });
 
     // hosted videos
+    /*
     $('.web-stream-file', media_list_context).click(function() {
-        $('#flowplayer-container').removeClass('hidden');
-
-        $f('flowplayer-player', FLOWPLAYER_SWF, {
-            clip: {
-                url: this.href,
-                autoPlay: true,
-                scaling:'fit'
-            }
-        });
+        // TODO
 
         return false;
     });
+    */
+    $('.web-stream-file', media_list_context).fancybox({
+        openEffect  : 'none',
+        closeEffect : 'none',
+        content: '<div></div>',
+        afterLoad   : function() {
+            var video_link = $(this.element[0]);
 
-    $('.web-stream.file', media_list_context).flowplayer(FLOWPLAYER_SWF);
+            var video_file = video_link.data('video-file');
+            var video_screenshot = video_link.data('video-screenshot');
+
+            console.log(video_file);
+            console.log(video_screenshot);
+
+            var html = '<video controls preload="auto"' +
+                            'poster="' + video_screenshot + '">' + 
+                        '<source src="' + video_file + '" type="video/mp4" />' +
+                        '<p>To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>' +
+                        '</video>';
+
+            this.inner.html(html);
+        },
+        afterShow: function() {
+            $.fancybox.update();
+        }
+    });
 
     // activate the cast gallery
     $(media_list_context).xfade({
@@ -503,7 +520,7 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         
         delete_prompt.fadeIn();
        
-         $('.delete' , delete_prompt).click(function(){
+         $('.delete', delete_prompt).click(function() {
                 $.ajax({
                     url: m_delete_url,
                     type: 'DELETE',
@@ -514,7 +531,7 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
                 return false;
         });
             
-        $('.cancel', delete_prompt).click(function(){
+        $('.cancel', delete_prompt).click(function() {
             delete_prompt.fadeOut();
             media_id = '';
             m_delete_url = '';

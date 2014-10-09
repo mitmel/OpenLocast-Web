@@ -89,13 +89,15 @@
                     {% if allowed_edit %}
                         <a id="delete-media_{{v.content.id}}" class="delete-media secondary-color">delete</a>
                     {% endif %}
-                        <a class="web-stream-file" href="{{v.content.web_stream_file.url}}"><div class="image-frame">
+                        <a class="web-stream-file" data-video-file="{{v.content.file.url}}" data-video-screenshot="{{v.content.screenshot.url}}">
+                            <div class="image-frame">
                             {% if v.content.caption %}
                                 <h6 class="title">{{v.content.caption}}</h6>
                             {% endif %}
-                            <div class="video-icon"></div>
-                            <img src="{{v.content.screenshot.url}}"></img>
-                        </div></a>
+                                <div class="video-icon"></div>
+                                <img src="{{v.content.screenshot.url}}"></img>
+                            </div>
+                        </a>
                     </li>
                 {% else %}
                     <li class="video cleared">

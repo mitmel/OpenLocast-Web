@@ -207,7 +207,7 @@ BOWER_INSTALLED_APPS = (
     'sammy#~0.7.6',
     'moment#~2.8.2',
     'openlayers#release-2.11',
-    'fancybox#2.1.5'
+    'fancybox#~2.1.5',
 )
 
 ### LOCAST CORE SETTINGS ###
@@ -245,9 +245,6 @@ MIN_ZOOM = 7
 # This string can be in the following formats 100b, 10kb, 10mb.
 MAX_VIDEO_SIZE = '100mb'
 MAX_PHOTO_SIZE = '1mb'
-
-# Flowplayer swf
-FLOWPLAYER_SWF = 'http://releases.flowplayer.org/swf/flowplayer-3.2.14.swf'
 
 # Allows arbitrary settings variables to be exposed to templates
 CONTEXT_VARIABLES = (

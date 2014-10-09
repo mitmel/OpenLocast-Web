@@ -102,13 +102,6 @@ function activateDHTML(){
         return false;
     });
 
-    // Flowplayer overlay interactions
-    $('#flowplayer-close').click(function() {
-        $('#flowplayer-container').addClass('hidden');
-        $('#flowplayer-player').html('');
-        return false;
-    });
-
     $('#edit-profile-link').click(function() {
         $('#edit-profile-container').fadeIn();
         $('#edit-profile-close').click(function() {
