@@ -663,7 +663,7 @@ cast_info_refresh(context.params['id'], function(cast_id) {
 
         // (hackish) this will actually fade in the cast in the moveend map listener
         // this is because its slow as hell to fade in and pan simultaneously
-        // This boolean is checked in onmap move or something.
+        // This boolean is checked in onmapmove or something.
         CAST_FADE_IN = true;
         main_map.map.pan(dx, dy);
     }
@@ -738,10 +738,9 @@ var collection_single_view = {};
 collection_single_view['activate'] = function(context) {
     var id = context.params['id'];
 
-    context.load(COLLECTION_API_URL + id + '/').then(function(coll) {
+    $.get(COLLECTION_API_URL + id + '/', function(coll) {
 
-        // show only casts in this collection
-        set_cast_filter({'collection' : coll.id});
+        set_cast_filter({'collection': coll.id});
 
         // setup map
         highlightCollection(coll.id);
@@ -770,7 +769,7 @@ var user_single_view = {
 
 activate : function(context) {
     var user_id = context.params['id'];
-    context.load(USER_API_URL + user_id + '/').then(function(user) { 
+    $.get(USER_API_URL + user_id + '/', function(user) { 
         $('#current-map h4').html(gettext('Casts Created by') + ' ' + user.display_name);
         set_cast_filter({'author':user_id});
     });

@@ -393,8 +393,6 @@ CAST_FILTER['collection'] = null;
 CAST_FILTER['author'] = null;
 CAST_FILTER['tag'] = null;
 
-// { 'author' : 1, 'collection' : 1 }
-
 function set_cast_filter(new_filter) {
     var changed = false;
 
