@@ -8,6 +8,7 @@ $(function() {
     // map
     on_resize();
     setup_map();
+
     collection_list_refresh();
     map_refresh();
 
@@ -602,44 +603,37 @@ function check_extension(filename, valid_extensions) {
     return false;
 }
 
+/* The url has to be there for plupload to init. However, the real url isn't set until we create a Media object and get back the id */
+
 function create_uploader(container, content_type, url, callback) {
     var file_list = container + '-list';
     var chooser = container + '-chooser';
 
     var filters = {};
-    var max_file_size = '';
     var extensions = '';
 
     if ( content_type == 'videomedia' ) {
         filters = { 
             title: 'Video file', 
-            extensions: '3gp,mp4,mov,mpg,mpeg',
+            extensions: '3gp,mp4,mov,m4v,mpg,mpeg',
+            max_file_size: MAX_VIDEO_SIZE
         }
-        max_file_size = MAX_VIDEO_SIZE;
     }
     else if ( content_type == 'imagemedia' ) {
         filters = { 
             title: 'Photo file', 
-            extensions: 'jpg,jpeg,png' 
+            extensions: 'jpg,jpeg,png',
+            max_file_size: MAX_PHOTO_SIZE
         }
-        max_file_size = MAX_PHOTO_SIZE;
     }
 
     var extensions_arr = filters['extensions'].split(',');
 
     var uploader = new plupload.Uploader({
-        runtimes : 'html5,flash',
         browse_button : chooser,
         container : container,
-        max_file_size : max_file_size,
         url : url,
-        filters : [
-            filters
-        ],
-
-        // Flash settings
-        urlstream_upload: true,
-        flash_swf_url : MEDIA_URL + 'js/plupload/plupload.flash.swf',
+        filters : filters,
     });
 
     var upload_info = $('#' + uploader.settings.container).parent().find('.upload-info');
@@ -650,30 +644,20 @@ function create_uploader(container, content_type, url, callback) {
     uploader.bind('FilesAdded', function(up, files) {
         $('#' + file_list).html('');
 
-        $.each(files, function(i, file) {
-            if ( check_extension(file.name, extensions_arr) ) {
-                var html = '';
-                html += '<h6 id="' + file.id + '" class="upload-file">';
-                html += file.name + ' (' + plupload.formatSize(file.size) + ')';
-                html += '<div class="upload-progress"></div>';
-                html += '</h6>';
-
-                $('#' + file_list).append(html); 
-                upload_info.removeClass('hidden');
-
-            }
-            else {
-                $('#' + file_list).append('<h6 class="upload-file">' + 
-                    gettext('Invalid file type!') + '</h6>');
-                up.removeFile(file);
-                upload_info.addClass('hidden');
-            }
-        });
-
-        // only 1 file allowed
-        if (up.files.length > 0) { 
-            up.removeFile(up.files[0]);
+        // remove all but the most recent file. Only one file allowed.
+        if (up.files.length > 1) {
+            uploader.files.splice(0, uploader.files.length-1);
         }
+
+        file = up.files[0];
+        var html = '';
+        html += '<h6 id="' + file.id + '" class="upload-file">';
+        html += file.name + ' (' + plupload.formatSize(file.size) + ')';
+        html += '<div class="upload-progress"></div>';
+        html += '</h6>';
+
+        $('#' + file_list).append(html); 
+        upload_info.removeClass('hidden');
 
         up.refresh();
     });
@@ -705,7 +689,6 @@ function create_uploader(container, content_type, url, callback) {
         $('#' + file_list).append('<h6 class="upload-file">' + msg + '</h6>');
     });
 
-    uploader.init();
     return uploader;
 }
 
@@ -714,13 +697,18 @@ function activate_upload_form(form_id, url, uploader) {
         var obj = $('#' + form_id).serializeObject();
         var data = JSON.stringify(obj, null, 2);
 
+        // Create the media object, and then upload the file
         $.ajax({
             url: url,
             data: data,
             type: 'POST',
             success: function(media) { 
-                uploader.settings.url = url + media.id + '/'
+
+                // upload the file
+                uploader.settings.url = url + media.id + '/';
                 uploader.start();
+
+                // clear the form
                 $('#' + form_id)[0].reset();
             }
         });
@@ -729,15 +717,4 @@ function activate_upload_form(form_id, url, uploader) {
         event.returnValue = false;
         return false;
     });
-}
-
-function make_p (t){
-    //check if text already has <p> tags
-    if($('p', t).length == 0) {
-        var raw_t = $(t).text();
-        var new_t = p(raw_t); 
-        $(t).html(new_t);
-    } else { 
-        return;
-    }
 }

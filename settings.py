@@ -208,6 +208,7 @@ BOWER_INSTALLED_APPS = (
     'moment#~2.8.2',
     'openlayers#release-2.11',
     'fancybox#~2.1.5',
+    'plupload#~2.1.2'
 )
 
 ### LOCAST CORE SETTINGS ###

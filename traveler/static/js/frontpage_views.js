@@ -468,13 +468,6 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
     });
 
     // hosted videos
-    /*
-    $('.web-stream-file', media_list_context).click(function() {
-        // TODO
-
-        return false;
-    });
-    */
     $('.web-stream-file', media_list_context).fancybox({
         openEffect  : 'none',
         closeEffect : 'none',
@@ -485,13 +478,10 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
             var video_file = video_link.data('video-file');
             var video_screenshot = video_link.data('video-screenshot');
 
-            console.log(video_file);
-            console.log(video_screenshot);
-
             var html = '<video controls preload="auto"' +
                             'poster="' + video_screenshot + '">' + 
-                        '<source src="' + video_file + '" type="video/mp4" />' +
-                        '<p>To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>' +
+                            '<source src="' + video_file + '" type="video/mp4" />' +
+                            '<p>To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>' +
                         '</video>';
 
             this.inner.html(html);
@@ -520,15 +510,15 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         
         delete_prompt.fadeIn();
        
-         $('.delete', delete_prompt).click(function() {
-                $.ajax({
-                    url: m_delete_url,
-                    type: 'DELETE',
-                    success: function(cast) {
-                        cast_info_refresh(cast_id);
-                    }
-                });
-                return false;
+        $('.delete', delete_prompt).click(function() {
+            $.ajax({
+                url: m_delete_url,
+                type: 'DELETE',
+                success: function(cast) {
+                    cast_info_refresh(cast_id);
+                }
+            });
+            return false;
         });
             
         $('.cancel', delete_prompt).click(function() {
@@ -553,16 +543,23 @@ $.ajax({ url: CAST_API_URL + cast_id + '.html/', dataType: 'html', success: func
         // Pluploader for some reason can't activate choosers
         // unless they are already visible
         
-        // activate uploaders
+        // activate uploaders. Call back functions to refresh the cast window.
 
-        var photo_uploader = create_uploader('photo-uploader-cast_' + cast_id, 'imagemedia', '',
-            function(){cast_info_refresh(cast_id)});
+        // photos
+        var photo_uploader = create_uploader('photo-uploader-cast_' + cast_id, 'imagemedia', media_url,
+            function() {
+                cast_info_refresh(cast_id)
+            });
 
+        photo_uploader.init();
         activate_upload_form('photo-upload-form-cast_' + cast_id, media_url, photo_uploader);
 
-        var vid_uploader = create_uploader('video-uploader-cast_' + cast_id, 'videomedia', '',
-            function(){cast_info_refresh(cast_id)});
-
+        // videos
+        var vid_uploader = create_uploader('video-uploader-cast_' + cast_id, 'videomedia', media_url,
+            function() {
+                cast_info_refresh(cast_id)
+            });
+        vid_uploader.init();
         activate_upload_form('video-upload-form-cast_' + cast_id, media_url, vid_uploader);
     });
 

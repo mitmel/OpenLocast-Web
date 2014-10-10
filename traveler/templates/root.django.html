@@ -21,31 +21,27 @@
     <link type="text/css" href="{{THEME_STATIC_URL}}theme.css" rel="stylesheet" media="screen, projection" />
 
     <script type="text/javascript" src="{% url "django.views.i18n.javascript_catalog" %}"></script>
-
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.html5.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/plupload/plupload.flash.js"></script>
-
-    {% compress js %}
+{% compress js %}
     <script type="text/javascript" src="{% static "openlayers/build/OpenLayers.js" %}"></script>
     <script type="text/javascript" src="{% static "mustache/mustache.js" %}"></script>
+    <script type="text/javascript" src="{% static "plupload/js/plupload.full.min.js" %}"></script>
     <script type="text/javascript" src="{% static "fancybox/source/jquery.fancybox.js" %}?v=2.1.5"></script>
     <script type="text/javascript" src="{% static "sammy/lib/sammy.js" %}"></script>
     <script type="text/javascript" src="{% static "moment/moment.js" %}"></script>
     <script type="text/javascript" src="{% static "js/plugins.js" %}"></script>
-    {% endcompress %}
+{% endcompress %}
 
     <script type="text/javascript" src="{{BASE_URL}}/templates.js"></script>
     <script type="text/javascript" src="{{BASE_URL}}/traveler.js"></script>
     <script type="text/javascript" src="{{THEME_STATIC_URL}}mapstyles.js"></script>
 
-    {% compress js %}
+{% compress js %}
     <script type="text/javascript" src="{% static "js/travelermap.js" %}"></script>
     <script type="text/javascript" src="{% static "js/frontpage_views.js" %}"></script>
     <script type="text/javascript" src="{% static "js/frontpage.js" %}"></script>
-    {% endcompress %}
+{% endcompress %}
 
 {% block script %}{% endblock %}
 </head>

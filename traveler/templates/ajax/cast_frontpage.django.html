@@ -192,19 +192,20 @@
     <div id="add-media-cast_{{cast.id}}" class="add-media-cast content-card">
         <a class="locast-icon locast-button close" id="add-media-close-cast_{{cast.id}}" >{% trans 'Cancel'%}</a>
         <h4>{% trans "Add Photo to Cast" %}</h4>
-                <form id="photo-upload-form-cast_{{cast.id}}" method="post">
+        <form id="photo-upload-form-cast_{{cast.id}}" method="post">
             <div id="photo-uploader-cast_{{cast.id}}" class="locast-upload-box">
                 <a href="#" id="photo-uploader-cast_{{cast.id}}-chooser" >{% trans "+ Add A Photo" %}</a>
                 <div id="photo-uploader-cast_{{cast.id}}-list"></div>
             </div>
             <div class="upload-info hidden">
-            <label for="id_caption">{% trans "caption (optional)" %}</label>
-            <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
-            <input type="hidden" name="content_type" value="imagemedia"></input>
-            <input type="submit" value="Upload" class="locast-button" />
-        </div>
+                <label for="id_caption">{% trans "caption (optional)" %}</label>
+                <input id="id_caption" type="text" value="" maxlength="160" name="caption" class="locast-textfield">
+                <input type="hidden" name="content_type" value="imagemedia"></input>
+                <input type="submit" value="Upload" class="locast-button" />
+            </div>
         </form>
- <h4>{% trans "Add Video to Cast" %}</h4>
+
+        <h4>{% trans "Add Video to Cast" %}</h4>
         <form id="video-upload-form-cast_{{cast.id}}" method="post">
             <div id="video-uploader-cast_{{cast.id}}" class="locast-upload-box">
                 <a href="#" id="video-uploader-cast_{{cast.id}}-chooser"  title="select file">{% trans "+ Add A Video" %}</a>
