@@ -449,7 +449,7 @@ class LinkedMedia(Media):
         conn.close()
 
         # it exists! (302 is a redirect for sharing links i.e. youtu.be)
-        if r1.status == 200 or r1.status == 302:
+        if r1.status == 200 or r1.status == 302 or r1.status == 301:
             self.content_provider = url_data.hostname.lstrip('www.')
             query = cgi.parse_qs(url_data.query)
 
@@ -463,16 +463,13 @@ class LinkedMedia(Media):
                     self.content_provider = 'youtube.com'
                     self.url = 'http://www.youtube.com/watch?v=' + self.video_id
 
-                data_url = 'http://gdata.youtube.com/feeds/api/videos/' + self.video_id + '?v=2&alt=json'
+                data_url = 'https://www.googleapis.com/youtube/v3/videos?id='+ self.video_id+'&key='+ settings.YOUTUBE_API_KEY +'&part=snippet'
                 youtube_data = simplejson.load(urllib.urlopen(data_url))
+                item = iter(youtube_data['items']).next()
 
-                thumbs = youtube_data['entry']['media$group']['media$thumbnail']
-                if len(thumbs) > 1:
-                    self.screenshot = thumbs[1]['url']
-                elif len(thumbs):
-                    self.screenshot = thumbs[0]['url']
+                self.screenshot = item['snippet']['thumbnails']['standard']['url']
+                self.caption = item['snippet']['title']
 
-                self.caption = youtube_data['entry']['title']['$t']
 
             # vimeo
             elif self.content_provider == 'vimeo.com':
